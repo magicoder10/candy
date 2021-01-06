@@ -30,8 +30,8 @@ func run() {
 		panic(err)
 	}
 
-	gm := game.NewGame(ass)
+	gm := game.NewGame(ass, &px)
 	gm.Start()
 
-	graphics.StartMainLoop(60, &gm, &px, &px)
+	graphics.StartMainLoop(24, &gm, &px, &px)
 }

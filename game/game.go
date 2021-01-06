@@ -1,7 +1,6 @@
 package game
 
 import (
-	"image"
 	"time"
 
 	"candy/assets"
@@ -14,21 +13,20 @@ import (
 var _ graphics.Sprite = (*Game)(nil)
 
 type Game struct {
-	spriteSheet image.Image
-	gameMap     gamemap.Map
-	currPlayer  int
-	players     []player.Player
+	spriteSheetBatch graphics.Batch
+	gameMap          gamemap.Map
+	currPlayer       int
+	players          []player.Player
 }
 
 func (g Game) Draw(graphics graphics.Graphics) {
 	g.gameMap.DrawMap(graphics)
 
-	batch := graphics.StartNewBatch(g.spriteSheet)
-	g.gameMap.DrawTiles(batch)
+	g.gameMap.DrawTiles(g.spriteSheetBatch)
 	for _, ply := range g.players {
-		ply.Draw(batch)
+		ply.Draw(g.spriteSheetBatch)
 	}
-	batch.RenderBatch()
+	g.spriteSheetBatch.RenderBatch()
 }
 
 func (g Game) HandleInput(in input.Input) {
@@ -45,19 +43,21 @@ func (g *Game) Start() {
 	g.currPlayer = 0
 }
 
-func NewGame(assets assets.Assets) Game {
+func NewGame(assets assets.Assets, g graphics.Graphics) Game {
 	gameMap := gamemap.NewMap(assets)
+	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
 	return Game{
-		spriteSheet: assets.GetImage("sprite_sheet.png"),
-		gameMap:     gameMap,
+		spriteSheetBatch: batch,
+		gameMap:          gameMap,
 		players: []player.Player{
-			player.NewBlackBoy(gameMap, 2, 1),
-			player.NewBlackGirl(gameMap, 3, 1),
-			player.NewBrownBoy(gameMap, 4, 1),
-			player.NewBrownGirl(gameMap, 5, 1),
-			player.NewYellowBoy(gameMap, 7, 1),
-			player.NewOrangeBoy(gameMap, 8, 1),
-			player.NewOrangeGirl(gameMap, 9, 1),
+			player.NewBlackBoy(gameMap, 1, 2),
+			player.NewBlackGirl(gameMap, 1, 3),
+			player.NewBrownBoy(gameMap, 1, 4),
+			player.NewBrownGirl(gameMap, 1, 5),
+			player.NewYellowBoy(gameMap, 1, 6),
+			player.NewYellowGirl(gameMap, 1, 7),
+			player.NewOrangeBoy(gameMap, 1, 8),
+			player.NewOrangeGirl(gameMap, 1, 9),
 		},
 	}
 }
