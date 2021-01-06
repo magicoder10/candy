@@ -43,8 +43,8 @@ func NewStandingOnTile(gameMap gamemap.Map, width int, height int, row int, col 
 			direction: direction.Down,
 			width:     width,
 			height:    height,
-			x:         row * tile.Width,
-			y:         col*tile.Height + tile.Height/2,
+			x:         col*tile.Height + tile.Height/2,
+			y:         row * tile.Width,
 		},
 	}
 }
