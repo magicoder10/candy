@@ -11,7 +11,6 @@ import (
 )
 
 type Map struct {
-	graphics        graphics.Graphics
 	backgroundImage image.Image
 	maxRow          int
 	maxCol          int
@@ -20,14 +19,14 @@ type Map struct {
 	tiles           [][]*tile.Tile
 }
 
-func (m Map) DrawMap() {
+func (m Map) DrawMap(g graphics.Graphics) {
 	bound := graphics.Bound{
 		X:      0,
 		Y:      0,
 		Width:  900,
 		Height: 736,
 	}
-	m.graphics.DrawImage(0, 0, m.backgroundImage, bound, 1)
+	g.DrawImage(0, 0, m.backgroundImage, bound, 1)
 }
 
 func (m Map) DrawTiles(batch graphics.Batch) {
@@ -128,7 +127,7 @@ func (m Map) getNeighborCells(cornerCells cell.CornerCells, dir direction.Direct
 	return []cell.Cell{}
 }
 
-func NewMap(assets assets.Assets, graphics graphics.Graphics) Map {
+func NewMap(assets assets.Assets) Map {
 	mapConfig := [][]rune{
 		{},
 		{},
@@ -154,7 +153,6 @@ func NewMap(assets assets.Assets, graphics graphics.Graphics) Map {
 		tiles = append(tiles, tileRow)
 	}
 	return Map{
-		graphics:        graphics,
 		backgroundImage: assets.GetImage("map/default.png"),
 		maxRow:          11,
 		maxCol:          14,
