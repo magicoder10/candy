@@ -88,6 +88,6 @@ func newWalking(shared sharedState, lag int, direction direction.Direction) *Wal
 	return &Walking{
 		sharedState: shared,
 		lag:         lag,
-		stepSize:    5,
+		stepSize:    10,
 	}
 }

@@ -11,25 +11,27 @@ import (
 	"candy/input"
 )
 
+var _ graphics.Sprite = (*Game)(nil)
+
 type Game struct {
 	spriteSheet image.Image
-	graphics    graphics.Graphics
-	inputs      <-chan input.Input
 	gameMap     gamemap.Map
 	currPlayer  int
 	players     []player.Player
 }
 
-func (g *Game) Start(onGameEnd func()) {
-	g.currPlayer = 0
-	go func() {
-		for in := range g.inputs {
-			g.handleInput(in)
-		}
-	}()
+func (g Game) Draw(graphics graphics.Graphics) {
+	g.gameMap.DrawMap(graphics)
+
+	batch := graphics.StartNewBatch(g.spriteSheet)
+	g.gameMap.DrawTiles(batch)
+	for _, ply := range g.players {
+		ply.Draw(batch)
+	}
+	batch.RenderBatch()
 }
 
-func (g Game) handleInput(in input.Input) {
+func (g Game) HandleInput(in input.Input) {
 	g.players[g.currPlayer].HandleInput(in)
 }
 
@@ -39,22 +41,13 @@ func (g Game) Update(timeElapsed time.Duration) {
 	}
 }
 
-func (g Game) Draw() {
-	g.gameMap.DrawMap()
-
-	batch := g.graphics.StartNewBatch(g.spriteSheet)
-	g.gameMap.DrawTiles(batch)
-	for _, ply := range g.players {
-		ply.Draw(batch)
-	}
-	batch.RenderBatch()
+func (g *Game) Start() {
+	g.currPlayer = 0
 }
 
-func NewGame(assets assets.Assets, graphics graphics.Graphics, inputs <-chan input.Input) Game {
-	gameMap := gamemap.NewMap(assets, graphics)
+func NewGame(assets assets.Assets) Game {
+	gameMap := gamemap.NewMap(assets)
 	return Game{
-		graphics:    graphics,
-		inputs:      inputs,
 		spriteSheet: assets.GetImage("sprite_sheet.png"),
 		gameMap:     gameMap,
 		players: []player.Player{

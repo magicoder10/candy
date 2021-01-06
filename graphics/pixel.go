@@ -4,17 +4,21 @@ import (
 	"image"
 	"sort"
 
+	"candy/input"
+
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 )
 
 var _ Graphics = (*Pixel)(nil)
+var _ Window = (*Pixel)(nil)
 
 type Pixel struct {
 	window *pixelgl.Window
 }
 
+// Graphics
 func (p *Pixel) StartNewBatch(spriteSheet image.Image) Batch {
 	pixelImg := pixel.PictureDataFromImage(spriteSheet)
 	return newPixelBatch(p.window, pixelImg)
@@ -26,12 +30,70 @@ func (p *Pixel) DrawImage(x int, y int, image image.Image, imageBound Bound, sca
 	sprite.Draw(p.window, matrix)
 }
 
+// Window
 func (p Pixel) Clear() {
 	p.window.Clear(colornames.Black)
 }
 
-func NewPixel(window *pixelgl.Window) Pixel {
-	return Pixel{window: window}
+func (p Pixel) IsClosed() bool {
+	return p.window.Closed()
+}
+
+func (p Pixel) Redraw() {
+	p.window.Update()
+}
+
+func (p Pixel) PollEvents() *input.Input {
+	if p.window.Pressed(pixelgl.KeyLeft) {
+		return &input.Input{
+			Action: input.Press,
+			Device: input.LeftArrowKey,
+		}
+	} else if p.window.Pressed(pixelgl.KeyRight) {
+		return &input.Input{
+			Action: input.Press,
+			Device: input.RightArrowKey,
+		}
+	} else if p.window.Pressed(pixelgl.KeyUp) {
+		return &input.Input{
+			Action: input.Press,
+			Device: input.UpArrowKey,
+		}
+	} else if p.window.Pressed(pixelgl.KeyDown) {
+		return &input.Input{
+			Action: input.Press,
+			Device: input.DownArrayKey,
+		}
+	} else if p.window.JustReleased(pixelgl.KeyLeft) {
+		return &input.Input{
+			Action: input.Release,
+			Device: input.LeftArrowKey,
+		}
+	} else if p.window.JustReleased(pixelgl.KeyRight) {
+		return &input.Input{
+			Action: input.Release,
+			Device: input.RightArrowKey,
+		}
+	} else if p.window.JustReleased(pixelgl.KeyUp) {
+		return &input.Input{
+			Action: input.Release,
+			Device: input.UpArrowKey,
+		}
+	} else if p.window.JustReleased(pixelgl.KeyDown) {
+		return &input.Input{
+			Action: input.Release,
+			Device: input.DownArrayKey,
+		}
+	}
+	return nil
+}
+
+func NewPixel(config pixelgl.WindowConfig) (Pixel, error) {
+	win, err := pixelgl.NewWindow(config)
+	if err != nil {
+		return Pixel{}, err
+	}
+	return Pixel{window: win}, nil
 }
 
 var _ Batch = (*PixelBatch)(nil)
