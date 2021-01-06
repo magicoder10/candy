@@ -40,6 +40,14 @@ func (m Map) DrawTiles(batch graphics.Batch) {
 	}
 }
 
+func (m Map)  ShowItems(){
+	m.tiles[0][0].RevealItem()
+}
+
+func (m Map)  HideItem(){
+	m.tiles[0][0].HideItem()
+}
+
 func (m Map) CanMove(currX int, currY int, objectWidth int, objectHeight int, dir direction.Direction, stepSize int) bool {
 	if !m.inBound(currX, currY, objectWidth, objectHeight, dir, stepSize) {
 		return false

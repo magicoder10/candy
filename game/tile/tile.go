@@ -13,6 +13,8 @@ type Tile struct {
 	xOffset      int
 	yOffset      int
 	canEnter     bool
+	showItem     bool
+	gameItem     GameItem
 }
 
 func (t Tile) Draw(batch graphics.Batch, x int, y int) {
@@ -27,6 +29,21 @@ func (t Tile) Draw(batch graphics.Batch, x int, y int) {
 
 func (t Tile) CanEnter() bool {
 	return t.canEnter
+}
+
+func (t Tile) RevealItem()  {
+	t.showItem = true
+}
+
+func (t Tile) HideItem()  {
+	t.showItem = false
+}
+
+func (t Tile) RemoveItem() Tile {
+	res := t;
+	// how to reset that tile to empty cell?
+	t.canEnter = true
+	return res;
 }
 
 func newYellow() Tile {
