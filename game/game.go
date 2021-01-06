@@ -20,7 +20,7 @@ type Game struct {
 	players     []player.Player
 }
 
-func (g *Game) Draw(graphics graphics.Graphics) {
+func (g Game) Draw(graphics graphics.Graphics) {
 	g.gameMap.DrawMap(graphics)
 
 	batch := graphics.StartNewBatch(g.spriteSheet)
@@ -31,7 +31,7 @@ func (g *Game) Draw(graphics graphics.Graphics) {
 	batch.RenderBatch()
 }
 
-func (g *Game) HandleInput(in input.Input) {
+func (g Game) HandleInput(in input.Input) {
 	g.players[g.currPlayer].HandleInput(in)
 }
 
