@@ -18,5 +18,5 @@ const (
 	LeftArrowKey device = iota
 	RightArrowKey
 	UpArrowKey
-	DownArrayKey
+	DownArrowKey
 )
