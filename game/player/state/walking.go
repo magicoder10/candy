@@ -29,14 +29,14 @@ func (w *Walking) Update(timeElapsed time.Duration) {
 func (w Walking) HandleInput(in input.Input) State {
 	if in.Action == input.Release {
 		switch in.Device {
-		case input.UpArrowKey, input.DownArrayKey, input.LeftArrowKey, input.RightArrowKey:
+		case input.UpArrowKey, input.DownArrowKey, input.LeftArrowKey, input.RightArrowKey:
 			return NewStanding(w.sharedState)
 		}
 	} else if in.Action == input.Press {
 		switch in.Device {
 		case input.UpArrowKey:
 			return w.nextWalking(direction.Up)
-		case input.DownArrayKey:
+		case input.DownArrowKey:
 			return w.nextWalking(direction.Down)
 		case input.LeftArrowKey:
 			return w.nextWalking(direction.Left)

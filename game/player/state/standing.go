@@ -24,7 +24,7 @@ func (s Standing) HandleInput(in input.Input) State {
 		switch in.Device {
 		case input.UpArrowKey:
 			return newWalking(s.sharedState, 0, direction.Up)
-		case input.DownArrayKey:
+		case input.DownArrowKey:
 			return newWalking(s.sharedState, 0, direction.Down)
 		case input.LeftArrowKey:
 			return newWalking(s.sharedState, 0, direction.Left)
