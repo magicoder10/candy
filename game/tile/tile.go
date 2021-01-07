@@ -31,12 +31,14 @@ func (t Tile) CanEnter() bool {
 	return t.canEnter
 }
 
-func (t Tile) RevealItem()  {
+func (t Tile) RevealItem()  GameItem {
 	t.showItem = true
+	return t.gameItem
 }
 
-func (t Tile) HideItem()  {
+func (t Tile) HideItem() GameItem {
 	t.showItem = false
+	return t.gameItem
 }
 
 func (t Tile) RemoveItem() Tile {
