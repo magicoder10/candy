@@ -1,16 +1,15 @@
 package gamemap
 
 import (
-	"candy/game/gameitem"
-	"image"
-	"math/rand"
-	"time"
-
 	"candy/assets"
 	"candy/game/cell"
 	"candy/game/direction"
+	"candy/game/gameitem"
 	"candy/game/tile"
 	"candy/graphics"
+	"image"
+	"math/rand"
+	"time"
 )
 
 type Map struct {

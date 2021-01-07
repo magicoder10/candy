@@ -16,8 +16,8 @@ const(
 var GameItems = []GameItem{
 	None,
 	Speed,
-	Candy,
 	Power,
+	Candy,
 }
 
 func (g GameItem) GetBound() graphics.Bound {
