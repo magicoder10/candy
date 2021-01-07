@@ -4,7 +4,6 @@ import (
 	"candy/assets"
 	"candy/game"
 	"candy/graphics"
-
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 )

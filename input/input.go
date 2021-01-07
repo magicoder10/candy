@@ -19,5 +19,5 @@ const (
 	RightArrowKey
 	UpArrowKey
 	DownArrayKey
-	Rkey
+	RKey
 )

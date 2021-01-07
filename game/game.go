@@ -29,29 +29,21 @@ func (g Game) Draw(graphics graphics.Graphics) {
 	g.spriteSheetBatch.RenderBatch()
 }
 
-// when to call showItems or HideItem?
-// during walk state process and press R key?
-// if should integrate with HandleInput in walking, then return type for walk?
-func (g Game) ShowItems(in input.Input)  {
-	if in.Action == input.Press {
-		switch in.Device {
-		case input.Rkey:
-			g.gameMap.ShowItems()
-		}
-	}
-}
-
-func (g Game) HideItem(in input.Input)  {
-	if in.Action == input.Release {
-		switch in.Device {
-		case input.Rkey:
-			g.gameMap.HideItem()
-		}
-	}
-}
-
 func (g Game) HandleInput(in input.Input) {
 	g.players[g.currPlayer].HandleInput(in)
+
+	switch in.Action {
+	case input.Release:
+		switch in.Device {
+		case input.RKey:
+			g.gameMap.HideItems()
+		}
+	case input.Press:
+		switch in.Device {
+		case input.RKey:
+			g.gameMap.RevealItems()
+		}
+	}
 }
 
 func (g Game) Update(timeElapsed time.Duration) {
