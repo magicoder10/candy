@@ -6,7 +6,7 @@ import (
 
 type GameItem int
 
-const(
+const (
 	None GameItem = iota
 	Speed
 	Power

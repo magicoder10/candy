@@ -53,7 +53,7 @@ func (m Map) RevealItems() {
 	}
 }
 
-func (m Map) HideItems(){
+func (m Map) HideItems() {
 	for _, rowTiles := range m.tiles {
 		for _, t := range rowTiles {
 			if t == nil {

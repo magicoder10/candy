@@ -9,7 +9,7 @@ const Width = 60
 const Height = 60
 const revealItemXOffset = 16
 const revealItemYOffset = 36
-const RevealItemZOffset = -1
+const revealItemZOffset = -1
 
 type Tile struct {
 	imageXOffset int
@@ -31,7 +31,7 @@ func (t Tile) Draw(batch graphics.Batch, x int, y int) {
 	batch.DrawSprite(x+t.xOffset, y+t.yOffset, y, bound, 1)
 
 	if t.gameItem != gameitem.None && t.showItem {
-		batch.DrawSprite(x+t.xOffset + revealItemXOffset, y+t.yOffset + revealItemYOffset, y + RevealItemZOffset, t.gameItem.GetBound(), 0.6)
+		batch.DrawSprite(x+t.xOffset+revealItemXOffset, y+t.yOffset+revealItemYOffset, y+revealItemZOffset, t.gameItem.GetBound(), 0.6)
 	}
 }
 
@@ -62,7 +62,7 @@ func newYellow(gameItem gameitem.GameItem) Tile {
 		xOffset:      -4,
 		yOffset:      -2,
 		canEnter:     false,
-		gameItem: gameItem,
+		gameItem:     gameItem,
 	}
 }
 
@@ -73,7 +73,7 @@ func newGreen(gameItem gameitem.GameItem) Tile {
 		xOffset:      -4,
 		yOffset:      -2,
 		canEnter:     false,
-		gameItem: gameItem,
+		gameItem:     gameItem,
 	}
 }
 
