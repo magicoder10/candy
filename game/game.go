@@ -31,6 +31,19 @@ func (g Game) Draw(graphics graphics.Graphics) {
 
 func (g Game) HandleInput(in input.Input) {
 	g.players[g.currPlayer].HandleInput(in)
+
+	switch in.Action {
+	case input.Release:
+		switch in.Device {
+		case input.RKey:
+			g.gameMap.HideItems()
+		}
+	case input.Press:
+		switch in.Device {
+		case input.RKey:
+			g.gameMap.RevealItems()
+		}
+	}
 }
 
 func (g Game) Update(timeElapsed time.Duration) {

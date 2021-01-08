@@ -19,4 +19,5 @@ const (
 	RightArrowKey
 	UpArrowKey
 	DownArrowKey
+	RKey
 )

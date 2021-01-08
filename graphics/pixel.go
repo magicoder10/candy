@@ -64,6 +64,11 @@ func (p Pixel) PollEvents() *input.Input {
 			Action: input.Press,
 			Device: input.DownArrowKey,
 		}
+	} else if p.window.Pressed(pixelgl.KeyR) {
+		return &input.Input{
+			Action: input.Press,
+			Device: input.RKey,
+		}
 	} else if p.window.JustReleased(pixelgl.KeyLeft) {
 		return &input.Input{
 			Action: input.Release,
@@ -83,6 +88,11 @@ func (p Pixel) PollEvents() *input.Input {
 		return &input.Input{
 			Action: input.Release,
 			Device: input.DownArrowKey,
+		}
+	} else if p.window.JustReleased(pixelgl.KeyR) {
+		return &input.Input{
+			Action: input.Release,
+			Device: input.RKey,
 		}
 	}
 	return nil

@@ -1,13 +1,15 @@
 package gamemap
 
 import (
-	"image"
-
 	"candy/assets"
 	"candy/game/cell"
 	"candy/game/direction"
+	"candy/game/gameitem"
 	"candy/game/tile"
 	"candy/graphics"
+	"image"
+	"math/rand"
+	"time"
 )
 
 type Map struct {
@@ -36,6 +38,28 @@ func (m Map) DrawTiles(batch graphics.Batch) {
 				continue
 			}
 			rowTiles[col].Draw(batch, m.tileXOffset+col*tile.Width, m.tileYOffset+row*tile.Height)
+		}
+	}
+}
+
+func (m Map) RevealItems() {
+	for _, rowTiles := range m.tiles {
+		for _, t := range rowTiles {
+			if t == nil {
+				continue
+			}
+			t.RevealItem()
+		}
+	}
+}
+
+func (m Map) HideItems() {
+	for _, rowTiles := range m.tiles {
+		for _, t := range rowTiles {
+			if t == nil {
+				continue
+			}
+			t.HideItem()
 		}
 	}
 }
@@ -127,7 +151,13 @@ func (m Map) getNeighborCells(cornerCells cell.CornerCells, dir direction.Direct
 	return []cell.Cell{}
 }
 
+func randomGameItem() gameitem.GameItem {
+	index := rand.Intn(len(gameitem.GameItems))
+	return gameitem.GameItems[index]
+}
+
 func NewMap(assets assets.Assets) Map {
+	rand.Seed(time.Now().UnixNano())
 	mapConfig := [][]rune{
 		{},
 		{},
@@ -148,7 +178,7 @@ func NewMap(assets assets.Assets) Map {
 		tileRow := make([]*tile.Tile, 0)
 
 		for _, colConfig := range rowConfig {
-			tileRow = append(tileRow, tile.NewTile(colConfig))
+			tileRow = append(tileRow, tile.NewTile(colConfig, randomGameItem()))
 		}
 		tiles = append(tiles, tileRow)
 	}
