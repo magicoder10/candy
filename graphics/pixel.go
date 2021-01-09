@@ -43,59 +43,69 @@ func (p Pixel) Redraw() {
 	p.window.Update()
 }
 
-func (p Pixel) PollEvents() *input.Input {
+func (p Pixel) PollEvents() []input.Input {
+	inputs := make([]input.Input, 0)
 	if p.window.Pressed(pixelgl.KeyLeft) {
-		return &input.Input{
+		inputs = append(inputs, input.Input{
 			Action: input.Press,
 			Device: input.LeftArrowKey,
-		}
-	} else if p.window.Pressed(pixelgl.KeyRight) {
-		return &input.Input{
-			Action: input.Press,
-			Device: input.RightArrowKey,
-		}
-	} else if p.window.Pressed(pixelgl.KeyUp) {
-		return &input.Input{
-			Action: input.Press,
-			Device: input.UpArrowKey,
-		}
-	} else if p.window.Pressed(pixelgl.KeyDown) {
-		return &input.Input{
-			Action: input.Press,
-			Device: input.DownArrowKey,
-		}
-	} else if p.window.Pressed(pixelgl.KeyR) {
-		return &input.Input{
-			Action: input.Press,
-			Device: input.RKey,
-		}
-	} else if p.window.JustReleased(pixelgl.KeyLeft) {
-		return &input.Input{
-			Action: input.Release,
-			Device: input.LeftArrowKey,
-		}
-	} else if p.window.JustReleased(pixelgl.KeyRight) {
-		return &input.Input{
-			Action: input.Release,
-			Device: input.RightArrowKey,
-		}
-	} else if p.window.JustReleased(pixelgl.KeyUp) {
-		return &input.Input{
-			Action: input.Release,
-			Device: input.UpArrowKey,
-		}
-	} else if p.window.JustReleased(pixelgl.KeyDown) {
-		return &input.Input{
-			Action: input.Release,
-			Device: input.DownArrowKey,
-		}
-	} else if p.window.JustReleased(pixelgl.KeyR) {
-		return &input.Input{
-			Action: input.Release,
-			Device: input.RKey,
-		}
+		})
 	}
-	return nil
+	if p.window.Pressed(pixelgl.KeyRight) {
+		inputs = append(inputs, input.Input{
+			Action: input.Press,
+			Device: input.RightArrowKey,
+		})
+	}
+	if p.window.Pressed(pixelgl.KeyUp) {
+		inputs = append(inputs, input.Input{
+			Action: input.Press,
+			Device: input.UpArrowKey,
+		})
+	}
+	if p.window.Pressed(pixelgl.KeyDown) {
+		inputs = append(inputs, input.Input{
+			Action: input.Press,
+			Device: input.DownArrowKey,
+		})
+	}
+	if p.window.Pressed(pixelgl.KeyR) {
+		inputs = append(inputs, input.Input{
+			Action: input.Press,
+			Device: input.RKey,
+		})
+	}
+	if p.window.JustReleased(pixelgl.KeyLeft) {
+		inputs = append(inputs, input.Input{
+			Action: input.Release,
+			Device: input.LeftArrowKey,
+		})
+	}
+	if p.window.JustReleased(pixelgl.KeyRight) {
+		inputs = append(inputs, input.Input{
+			Action: input.Release,
+			Device: input.RightArrowKey,
+		})
+	}
+	if p.window.JustReleased(pixelgl.KeyUp) {
+		inputs = append(inputs, input.Input{
+			Action: input.Release,
+			Device: input.UpArrowKey,
+		})
+	}
+	if p.window.JustReleased(pixelgl.KeyDown) {
+		inputs = append(inputs, input.Input{
+			Action: input.Release,
+			Device: input.DownArrowKey,
+		})
+	}
+	if p.window.JustReleased(pixelgl.KeyR) {
+		inputs = append(inputs, input.Input{
+			Action: input.Release,
+			Device: input.RKey,
+		})
+	}
+	return inputs
 }
 
 func NewPixel(config pixelgl.WindowConfig) (Pixel, error) {
