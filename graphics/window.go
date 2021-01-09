@@ -6,6 +6,6 @@ import (
 
 type Window interface {
 	IsClosed() bool
-	PollEvents() *input.Input
+	PollEvents() []input.Input
 	Redraw()
 }
