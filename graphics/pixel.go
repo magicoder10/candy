@@ -24,12 +24,6 @@ func (p *Pixel) StartNewBatch(spriteSheet image.Image) Batch {
 	return newPixelBatch(p.window, pixelImg)
 }
 
-func (p *Pixel) DrawImage(x int, y int, image image.Image, imageBound Bound, scale float64) {
-	pixelImg := pixel.PictureDataFromImage(image)
-	sprite, matrix := prepareDrawing(x, y, pixelImg, imageBound, scale)
-	sprite.Draw(p.window, matrix)
-}
-
 // Window
 func (p Pixel) Clear() {
 	p.window.Clear(colornames.Black)
@@ -116,16 +110,16 @@ func NewPixel(config pixelgl.WindowConfig) (Pixel, error) {
 	return Pixel{window: win}, nil
 }
 
-var _ Batch = (*PixelBatch)(nil)
+var _ Batch = (*pixelBatch)(nil)
 
-type PixelBatch struct {
+type pixelBatch struct {
 	window       *pixelgl.Window
 	spriteSheet  *pixel.PictureData
 	batch        *pixel.Batch
 	spritesDrawn []spriteDrawn
 }
 
-func (p *PixelBatch) DrawSprite(x int, y int, z int, imageBound Bound, scale float64) {
+func (p *pixelBatch) DrawSprite(x int, y int, z int, imageBound Bound, scale float64) {
 	p.spritesDrawn = append(p.spritesDrawn, spriteDrawn{
 		x:          x,
 		y:          y,
@@ -135,7 +129,7 @@ func (p *PixelBatch) DrawSprite(x int, y int, z int, imageBound Bound, scale flo
 	})
 }
 
-func (p *PixelBatch) RenderBatch() {
+func (p *pixelBatch) RenderBatch() {
 	p.batch.Clear()
 
 	sort.SliceStable(p.spritesDrawn, func(i, j int) bool {
@@ -151,8 +145,8 @@ func (p *PixelBatch) RenderBatch() {
 	p.spritesDrawn = make([]spriteDrawn, 0)
 }
 
-func newPixelBatch(windows *pixelgl.Window, spriteSheet *pixel.PictureData) *PixelBatch {
-	return &PixelBatch{
+func newPixelBatch(windows *pixelgl.Window, spriteSheet *pixel.PictureData) *pixelBatch {
+	return &pixelBatch{
 		window:       windows,
 		spriteSheet:  spriteSheet,
 		batch:        pixel.NewBatch(&pixel.TrianglesData{}, spriteSheet),

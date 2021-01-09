@@ -1,34 +1,36 @@
 package gamemap
 
 import (
+	"math"
+	"math/rand"
+	"time"
+
 	"candy/assets"
 	"candy/game/cell"
 	"candy/game/direction"
 	"candy/game/gameitem"
 	"candy/game/tile"
 	"candy/graphics"
-	"image"
-	"math/rand"
-	"time"
 )
 
 type Map struct {
-	backgroundImage image.Image
-	maxRow          int
-	maxCol          int
-	tileXOffset     int
-	tileYOffset     int
-	tiles           [][]*tile.Tile
+	batch       graphics.Batch
+	maxRow      int
+	maxCol      int
+	tileXOffset int
+	tileYOffset int
+	tiles       [][]*tile.Tile
 }
 
-func (m Map) DrawMap(g graphics.Graphics) {
+func (m Map) DrawMap() {
 	bound := graphics.Bound{
 		X:      0,
 		Y:      0,
 		Width:  900,
 		Height: 736,
 	}
-	g.DrawImage(0, 0, m.backgroundImage, bound, 1)
+	m.batch.DrawSprite(0, 0, math.MaxInt32, bound, 1)
+	m.batch.RenderBatch()
 }
 
 func (m Map) DrawTiles(batch graphics.Batch) {
@@ -156,7 +158,7 @@ func randomGameItem() gameitem.GameItem {
 	return gameitem.GameItems[index]
 }
 
-func NewMap(assets assets.Assets) Map {
+func NewMap(assets assets.Assets, g graphics.Graphics) Map {
 	rand.Seed(time.Now().UnixNano())
 	mapConfig := [][]rune{
 		{},
@@ -183,11 +185,11 @@ func NewMap(assets assets.Assets) Map {
 		tiles = append(tiles, tileRow)
 	}
 	return Map{
-		backgroundImage: assets.GetImage("map/default.png"),
-		maxRow:          11,
-		maxCol:          14,
-		tileXOffset:     0,
-		tileYOffset:     0,
-		tiles:           tiles,
+		batch:       g.StartNewBatch(assets.GetImage("map/default.png")),
+		maxRow:      11,
+		maxCol:      14,
+		tileXOffset: 0,
+		tileYOffset: 0,
+		tiles:       tiles,
 	}
 }
