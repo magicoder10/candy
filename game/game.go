@@ -19,8 +19,8 @@ type Game struct {
 	players          []player.Player
 }
 
-func (g Game) Draw(graphics graphics.Graphics) {
-	g.gameMap.DrawMap(graphics)
+func (g Game) Draw() {
+	g.gameMap.DrawMap()
 
 	g.gameMap.DrawTiles(g.spriteSheetBatch)
 	for _, ply := range g.players {
@@ -57,7 +57,7 @@ func (g *Game) Start() {
 }
 
 func NewGame(assets assets.Assets, g graphics.Graphics) Game {
-	gameMap := gamemap.NewMap(assets)
+	gameMap := gamemap.NewMap(assets, g)
 	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
 	return Game{
 		spriteSheetBatch: batch,

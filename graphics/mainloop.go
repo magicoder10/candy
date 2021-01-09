@@ -26,7 +26,7 @@ func StartMainLoop(framesPerSeconds int64, sp Sprite, window Window, g Graphics)
 			lag -= milliPerUpdate
 		}
 		g.Clear()
-		sp.Draw(g)
+		sp.Draw()
 
 		window.Redraw()
 	}

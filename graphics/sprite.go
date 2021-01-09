@@ -7,7 +7,7 @@ import (
 )
 
 type Sprite interface {
-	Draw(graphics Graphics)
+	Draw()
 	Update(timeElapsed time.Duration)
 	HandleInput(in input.Input)
 }
