@@ -9,17 +9,22 @@ import (
 	"candy/game/cell"
 	"candy/game/direction"
 	"candy/game/gameitem"
+	"candy/game/square"
 	"candy/game/tile"
 	"candy/graphics"
 )
+
+const defaultRows = 12
+const defaultCols = 15
 
 type Map struct {
 	batch       graphics.Batch
 	maxRow      int
 	maxCol      int
-	tileXOffset int
-	tileYOffset int
-	tiles       [][]*tile.Tile
+	gridXOffset int
+	gridYOffset int
+	grid        *[defaultRows][defaultCols]square.Square
+	tiles       *[]*tile.Tile
 }
 
 func (m Map) DrawMap() {
@@ -33,36 +38,26 @@ func (m Map) DrawMap() {
 	m.batch.RenderBatch()
 }
 
-func (m Map) DrawTiles(batch graphics.Batch) {
-	for row, rowTiles := range m.tiles {
-		for col := len(rowTiles) - 1; col >= 0; col-- {
-			if rowTiles[col] == nil {
+func (m Map) DrawGrid(batch graphics.Batch) {
+	for row, gridRow := range m.grid {
+		for col := len(gridRow) - 1; col >= 0; col-- {
+			if gridRow[col] == nil {
 				continue
 			}
-			rowTiles[col].Draw(batch, m.tileXOffset+col*tile.Width, m.tileYOffset+row*tile.Height)
+			gridRow[col].Draw(batch, m.gridXOffset+col*square.Width, m.gridYOffset+row*square.Width)
 		}
 	}
 }
 
 func (m Map) RevealItems() {
-	for _, rowTiles := range m.tiles {
-		for _, t := range rowTiles {
-			if t == nil {
-				continue
-			}
-			t.RevealItem()
-		}
+	for _, t := range *m.tiles {
+		t.RevealItem()
 	}
 }
 
 func (m Map) HideItems() {
-	for _, rowTiles := range m.tiles {
-		for _, t := range rowTiles {
-			if t == nil {
-				continue
-			}
-			t.HideItem()
-		}
+	for _, t := range *m.tiles {
+		t.HideItem()
 	}
 }
 
@@ -70,7 +65,7 @@ func (m Map) CanMove(currX int, currY int, objectWidth int, objectHeight int, di
 	if !m.inBound(currX, currY, objectWidth, objectHeight, dir, stepSize) {
 		return false
 	}
-	cornerCells := cell.GetCornerCells(currX, currY, objectWidth, objectHeight, tile.Width, tile.Height)
+	cornerCells := cell.GetCornerCells(currX, currY, objectWidth, objectHeight, square.Width, square.Width)
 	neighborCells := m.getNeighborCells(cornerCells, dir)
 	blockingCells := m.getBlockingCells(neighborCells)
 
@@ -86,16 +81,16 @@ func (m Map) inBound(currX int, currY int, objectWidth, objectHeight int, dir di
 	switch dir {
 	case direction.Up:
 		nextY := currY + objectHeight + stepSize
-		return nextY <= m.tileYOffset+(m.maxRow+1)*tile.Height
+		return nextY <= m.gridYOffset+(m.maxRow+1)*square.Width
 	case direction.Down:
 		nextY := currY - stepSize
-		return nextY >= m.tileYOffset
+		return nextY >= m.gridYOffset
 	case direction.Left:
 		nextX := currX - stepSize
-		return nextX >= m.tileXOffset
+		return nextX >= m.gridXOffset
 	case direction.Right:
 		nextX := currX + objectWidth + stepSize
-		return nextX <= m.tileXOffset+(m.maxCol+1)*tile.Width
+		return nextX <= m.gridXOffset+(m.maxCol+1)*square.Width
 	}
 	return true
 }
@@ -104,19 +99,19 @@ func isBlocked(blockingCell cell.Cell, currX int, currY int, objectWidth int, ob
 	switch dir {
 	case direction.Up:
 		nextY := currY + objectHeight + stepSize
-		cellBottom := blockingCell.Row * tile.Height
+		cellBottom := blockingCell.Row * square.Width
 		return nextY > cellBottom
 	case direction.Down:
 		nextY := currY - stepSize
-		cellTop := blockingCell.Row*tile.Height + tile.Height
+		cellTop := blockingCell.Row*square.Width + square.Width
 		return nextY < cellTop
 	case direction.Left:
 		nextX := currX - stepSize
-		cellRight := blockingCell.Col*tile.Width + tile.Width
+		cellRight := blockingCell.Col*square.Width + square.Width
 		return nextX < cellRight
 	case direction.Right:
 		nextX := currX + objectWidth + stepSize
-		cellLeft := blockingCell.Col * tile.Width
+		cellLeft := blockingCell.Col * square.Width
 		return nextX > cellLeft
 	}
 	return false
@@ -125,13 +120,13 @@ func isBlocked(blockingCell cell.Cell, currX int, currY int, objectWidth int, ob
 func (m Map) getBlockingCells(cells []cell.Cell) []cell.Cell {
 	newCells := make([]cell.Cell, 0)
 	for _, c := range cells {
-		if len(m.tiles) <= c.Row || len(m.tiles[c.Row]) <= c.Col {
+		if len(*m.tiles) <= c.Row || len(m.grid[c.Row]) <= c.Col {
 			continue
 		}
-		if m.tiles[c.Row][c.Col] == nil {
+		if m.grid[c.Row][c.Col] == nil {
 			continue
 		}
-		if m.tiles[c.Row][c.Col].CanEnter() {
+		if m.grid[c.Row][c.Col].CanEnter() {
 			continue
 		}
 		newCells = append(newCells, c)
@@ -160,6 +155,8 @@ func randomGameItem() gameitem.GameItem {
 
 func NewMap(assets assets.Assets, g graphics.Graphics) Map {
 	rand.Seed(time.Now().UnixNano())
+	var grid [defaultRows][defaultCols]square.Square
+
 	mapConfig := [][]rune{
 		{},
 		{},
@@ -175,21 +172,25 @@ func NewMap(assets assets.Assets, g graphics.Graphics) Map {
 		{},
 	}
 
-	tiles := make([][]*tile.Tile, 0)
-	for _, rowConfig := range mapConfig {
-		tileRow := make([]*tile.Tile, 0)
+	tiles := make([]*tile.Tile, 0)
 
-		for _, colConfig := range rowConfig {
-			tileRow = append(tileRow, tile.NewTile(colConfig, randomGameItem()))
+	for row, rowConfig := range mapConfig {
+		for col, colConfig := range rowConfig {
+			if colConfig == ' ' {
+				continue
+			}
+			t := tile.NewTile(colConfig, randomGameItem())
+			tiles = append(tiles, &t)
+			grid[row][col] = &t
 		}
-		tiles = append(tiles, tileRow)
 	}
 	return Map{
 		batch:       g.StartNewBatch(assets.GetImage("map/default.png")),
 		maxRow:      11,
 		maxCol:      14,
-		tileXOffset: 0,
-		tileYOffset: 0,
-		tiles:       tiles,
+		gridXOffset: 0,
+		gridYOffset: 0,
+		grid:        &grid,
+		tiles:       &tiles,
 	}
 }

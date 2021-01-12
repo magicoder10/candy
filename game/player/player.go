@@ -5,7 +5,7 @@ import (
 
 	"candy/game/gamemap"
 	"candy/game/player/state"
-	"candy/game/tile"
+	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
 )
@@ -16,9 +16,13 @@ const spriteRowWidth = 3 * spriteWidth
 const spriteColHeight = 4 * spriteHeight
 
 type Player struct {
-	regionXOffset    int
-	regionYOffset    int
+	// bottom left X of the whole section of walk cycles for all 8 players
+	regionXOffset int
+	// bottom right Y of the whole section of walk cycles for all 8 players
+	regionYOffset int
+	// bottom left X of the walk cycle for the current player
 	walkCycleXOffset int
+	// bottom left Y of the walk cycle for the current player
 	walkCycleYOffset int
 	state            state.State
 }
@@ -31,7 +35,7 @@ func (p Player) Draw(batch graphics.Batch) {
 		Height: spriteHeight,
 	}
 	y := p.state.GetY()
-	batch.DrawSprite(p.state.GetX()-tile.Width/6, y, y, bound, float64(tile.Width)/spriteWidth)
+	batch.DrawSprite(p.state.GetX()-square.Width/6, y, y, bound, float64(square.Width)/spriteWidth)
 }
 
 func (p *Player) HandleInput(in input.Input) {
@@ -54,7 +58,7 @@ func newPlayer(
 		regionYOffset:    0,
 		walkCycleXOffset: walkCycleXOffset,
 		walkCycleYOffset: walkCycleYOffset,
-		state:            state.NewStandingOnTile(gameMap, tile.Width-2*tile.Width/6, tile.Height/4, row, col),
+		state:            state.NewStandingOnSquare(gameMap, square.Width-2*square.Width/6, square.Width/4, row, col),
 	}
 }
 

@@ -22,7 +22,7 @@ type Game struct {
 func (g Game) Draw() {
 	g.gameMap.DrawMap()
 
-	g.gameMap.DrawTiles(g.spriteSheetBatch)
+	g.gameMap.DrawGrid(g.spriteSheetBatch)
 	for _, ply := range g.players {
 		ply.Draw(g.spriteSheetBatch)
 	}

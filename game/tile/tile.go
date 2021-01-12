@@ -77,18 +77,16 @@ func newGreen(gameItem gameitem.GameItem) Tile {
 	}
 }
 
-func NewTile(tileType rune, gameItem gameitem.GameItem) *Tile {
+func NewTile(tileType rune, gameItem gameitem.GameItem) Tile {
 	switch tileType {
 	case 'Y':
 		tile := newYellow(gameItem)
-		return &tile
+		return tile
 	case 'G':
 		tile := newGreen(gameItem)
-		return &tile
-	case ' ':
-		return nil
+		return tile
 	default:
 		tile := newGreen(gameItem)
-		return &tile
+		return tile
 	}
 }

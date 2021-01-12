@@ -5,7 +5,7 @@ import (
 
 	"candy/game/direction"
 	"candy/game/gamemap"
-	"candy/game/tile"
+	"candy/game/square"
 	"candy/input"
 )
 
@@ -35,7 +35,7 @@ func (s Standing) HandleInput(in input.Input) State {
 	return s
 }
 
-func NewStandingOnTile(gameMap gamemap.Map, width int, height int, row int, col int) Standing {
+func NewStandingOnSquare(gameMap gamemap.Map, width int, height int, row int, col int) Standing {
 	return Standing{
 		sharedState{
 			gameMap:   gameMap,
@@ -43,8 +43,8 @@ func NewStandingOnTile(gameMap gamemap.Map, width int, height int, row int, col 
 			direction: direction.Down,
 			width:     width,
 			height:    height,
-			x:         col*tile.Height + tile.Height/2,
-			y:         row * tile.Width,
+			x:         col*square.Width + square.Width/2,
+			y:         row * square.Width,
 		},
 	}
 }
