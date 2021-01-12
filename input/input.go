@@ -20,4 +20,5 @@ const (
 	UpArrowKey
 	DownArrowKey
 	RKey
+	SpaceKey
 )

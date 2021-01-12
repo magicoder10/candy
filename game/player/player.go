@@ -46,8 +46,28 @@ func (p Player) Update(timeElapsed time.Duration) {
 	p.state.Update(timeElapsed)
 }
 
+func (p Player) GetX() int {
+	return p.state.GetX()
+}
+
+func (p Player) GetY() int {
+	return p.state.GetY()
+}
+
+func (p Player) GetWidth() int {
+	return p.state.GetWidth()
+}
+
+func (p Player) GetHeight() int {
+	return p.state.GetHeight()
+}
+
+func (p Player) GetPowerLevel() int {
+	return 3
+}
+
 func newPlayer(
-	gameMap gamemap.Map,
+	gameMap *gamemap.Map,
 	walkCycleXOffset int,
 	walkCycleYOffset int,
 	row int,
@@ -62,33 +82,33 @@ func newPlayer(
 	}
 }
 
-func NewBlackBoy(gameMap gamemap.Map, row int, col int) Player {
+func NewBlackBoy(gameMap *gamemap.Map, row int, col int) Player {
 	return newPlayer(gameMap, 0, spriteColHeight, row, col)
 }
 
-func NewBlackGirl(gameMap gamemap.Map, row int, col int) Player {
+func NewBlackGirl(gameMap *gamemap.Map, row int, col int) Player {
 	return newPlayer(gameMap, 0, 0, row, col)
 }
 
-func NewBrownBoy(gameMap gamemap.Map, row int, col int) Player {
+func NewBrownBoy(gameMap *gamemap.Map, row int, col int) Player {
 	return newPlayer(gameMap, spriteRowWidth, spriteColHeight, row, col)
 }
 
-func NewBrownGirl(gameMap gamemap.Map, row int, col int) Player {
+func NewBrownGirl(gameMap *gamemap.Map, row int, col int) Player {
 	return newPlayer(gameMap, spriteRowWidth, 0, row, col)
 }
-func NewYellowBoy(gameMap gamemap.Map, row int, col int) Player {
+func NewYellowBoy(gameMap *gamemap.Map, row int, col int) Player {
 	return newPlayer(gameMap, spriteRowWidth*2, spriteColHeight, row, col)
 }
 
-func NewYellowGirl(gameMap gamemap.Map, row int, col int) Player {
+func NewYellowGirl(gameMap *gamemap.Map, row int, col int) Player {
 	return newPlayer(gameMap, spriteRowWidth*2, 0, row, col)
 }
 
-func NewOrangeBoy(gameMap gamemap.Map, row int, col int) Player {
+func NewOrangeBoy(gameMap *gamemap.Map, row int, col int) Player {
 	return newPlayer(gameMap, spriteRowWidth*3, spriteColHeight, row, col)
 }
 
-func NewOrangeGirl(gameMap gamemap.Map, row int, col int) Player {
+func NewOrangeGirl(gameMap *gamemap.Map, row int, col int) Player {
 	return newPlayer(gameMap, spriteRowWidth*3, 0, row, col)
 }

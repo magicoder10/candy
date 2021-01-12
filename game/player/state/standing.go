@@ -23,19 +23,19 @@ func (s Standing) HandleInput(in input.Input) State {
 	if in.Action == input.Press {
 		switch in.Device {
 		case input.UpArrowKey:
-			return newWalking(s.sharedState, 0, direction.Up)
+			return newWalkingFromStanding(s.sharedState, 0, direction.Up)
 		case input.DownArrowKey:
-			return newWalking(s.sharedState, 0, direction.Down)
+			return newWalkingFromStanding(s.sharedState, 0, direction.Down)
 		case input.LeftArrowKey:
-			return newWalking(s.sharedState, 0, direction.Left)
+			return newWalkingFromStanding(s.sharedState, 0, direction.Left)
 		case input.RightArrowKey:
-			return newWalking(s.sharedState, 0, direction.Right)
+			return newWalkingFromStanding(s.sharedState, 0, direction.Right)
 		}
 	}
 	return s
 }
 
-func NewStandingOnSquare(gameMap gamemap.Map, width int, height int, row int, col int) Standing {
+func NewStandingOnSquare(gameMap *gamemap.Map, width int, height int, row int, col int) Standing {
 	return Standing{
 		sharedState{
 			gameMap:   gameMap,

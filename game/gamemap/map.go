@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"candy/assets"
+	"candy/game/candy"
 	"candy/game/cell"
 	"candy/game/direction"
 	"candy/game/gameitem"
@@ -25,6 +26,7 @@ type Map struct {
 	gridYOffset int
 	grid        *[defaultRows][defaultCols]square.Square
 	tiles       *[]*tile.Tile
+	candies     *[]*candy.Candy
 }
 
 func (m Map) DrawMap() {
@@ -59,6 +61,41 @@ func (m Map) HideItems() {
 	for _, t := range *m.tiles {
 		t.HideItem()
 	}
+}
+
+func (m *Map) Update(timeElapsed time.Duration) {
+	for _, c := range *m.candies {
+		c.Update(timeElapsed)
+	}
+	m.removeExplodedCandies()
+}
+
+func (m *Map) AddCandy(cell cell.Cell, candy candy.Candy) bool {
+	if cell.Row < 0 || cell.Row > m.maxRow || cell.Col < 0 || cell.Col > m.maxCol {
+		return false
+	}
+	if m.grid[cell.Row][cell.Col] != nil {
+		return false
+	}
+	*m.candies = append(*m.candies, &candy)
+	m.grid[cell.Row][cell.Col] = &candy
+
+	candy.MoveTo(cell)
+	return true
+}
+
+func (m *Map) removeExplodedCandies() {
+	newCandies := make([]*candy.Candy, 0)
+
+	for _, c := range *m.candies {
+		if c.Exploded() {
+			cellOn := c.GetCellOn()
+			m.grid[cellOn.Row][cellOn.Col] = nil
+		} else {
+			newCandies = append(newCandies, c)
+		}
+	}
+	m.candies = &newCandies
 }
 
 func (m Map) CanMove(currX int, currY int, objectWidth int, objectHeight int, dir direction.Direction, stepSize int) bool {
@@ -153,7 +190,7 @@ func randomGameItem() gameitem.GameItem {
 	return gameitem.GameItems[index]
 }
 
-func NewMap(assets assets.Assets, g graphics.Graphics) Map {
+func NewMap(assets assets.Assets, g graphics.Graphics) *Map {
 	rand.Seed(time.Now().UnixNano())
 	var grid [defaultRows][defaultCols]square.Square
 
@@ -184,13 +221,16 @@ func NewMap(assets assets.Assets, g graphics.Graphics) Map {
 			grid[row][col] = &t
 		}
 	}
-	return Map{
+
+	candies := make([]*candy.Candy, 0)
+	return &Map{
 		batch:       g.StartNewBatch(assets.GetImage("map/default.png")),
-		maxRow:      11,
-		maxCol:      14,
+		maxRow:      defaultRows - 1,
+		maxCol:      defaultCols - 1,
 		gridXOffset: 0,
 		gridYOffset: 0,
 		grid:        &grid,
 		tiles:       &tiles,
+		candies:     &candies,
 	}
 }
