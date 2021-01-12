@@ -7,7 +7,8 @@ import (
 	"candy/input"
 )
 
-const milliPerStep = 300
+var nanoPerStep = (100 * time.Millisecond).Nanoseconds()
+
 const totalSteps = 3
 
 var _ State = (*Walking)(nil)
@@ -15,15 +16,15 @@ var _ State = (*Walking)(nil)
 type Walking struct {
 	sharedState
 	stepSize int
-	lag      int
+	lag      int64
 }
 
 func (w *Walking) Update(timeElapsed time.Duration) {
-	w.lag += int(timeElapsed.Milliseconds())
-	steps := w.lag / milliPerStep
+	w.lag += timeElapsed.Nanoseconds()
+	steps := int(w.lag / nanoPerStep)
 	w.sharedState.currStep = nextStep(w.sharedState.currStep, steps)
 
-	w.lag = w.lag % milliPerStep
+	w.lag %= nanoPerStep
 }
 
 func (w Walking) HandleInput(in input.Input) State {
@@ -82,7 +83,7 @@ func nextStep(currStep int, steps int) int {
 	return (currStep + steps) % totalSteps
 }
 
-func newWalking(shared sharedState, lag int, direction direction.Direction) *Walking {
+func newWalking(shared sharedState, lag int64, direction direction.Direction) *Walking {
 	// Check change of direction
 	shared.direction = direction
 	return &Walking{

@@ -5,7 +5,7 @@ import (
 )
 
 func StartMainLoop(framesPerSeconds int64, sp Sprite, window Window, g Graphics) {
-	milliPerUpdate := (time.Second / time.Duration(framesPerSeconds)).Milliseconds()
+	nanoPerUpdate := time.Second.Nanoseconds() / framesPerSeconds
 
 	prevTime := time.Now()
 	var lag int64
@@ -13,7 +13,7 @@ func StartMainLoop(framesPerSeconds int64, sp Sprite, window Window, g Graphics)
 	for !window.IsClosed() {
 		now := time.Now()
 		elapsed := now.Sub(prevTime)
-		lag += elapsed.Milliseconds()
+		lag += elapsed.Nanoseconds()
 		prevTime = now
 
 		inputs := window.PollEvents()
@@ -21,9 +21,10 @@ func StartMainLoop(framesPerSeconds int64, sp Sprite, window Window, g Graphics)
 			sp.HandleInput(in)
 		}
 
-		for lag >= milliPerUpdate {
-			sp.Update(elapsed)
-			lag -= milliPerUpdate
+		fullLen := time.Duration(lag)
+		for lag >= nanoPerUpdate {
+			sp.Update(fullLen)
+			lag -= nanoPerUpdate
 		}
 		g.Clear()
 		sp.Draw()
