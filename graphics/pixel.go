@@ -99,6 +99,12 @@ func (p Pixel) PollEvents() []input.Input {
 			Device: input.RKey,
 		})
 	}
+	if p.window.JustReleased(pixelgl.KeySpace) {
+		inputs = append(inputs, input.Input{
+			Action: input.Release,
+			Device: input.SpaceKey,
+		})
+	}
 	return inputs
 }
 

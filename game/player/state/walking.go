@@ -92,3 +92,9 @@ func newWalking(shared sharedState, lag int64, direction direction.Direction) *W
 		stepSize:    10,
 	}
 }
+
+func newWalkingFromStanding(shared sharedState, lag int64, direction direction.Direction) *Walking {
+	// Check change of direction
+	shared.currStep = nextStep(shared.currStep, 1)
+	return newWalking(shared, lag, direction)
+}
