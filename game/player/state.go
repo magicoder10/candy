@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"candy/game/direction"
-	"candy/game/gamemap"
 	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
@@ -25,13 +24,13 @@ type state interface {
 }
 
 type sharedState struct {
-	gameMap   *gamemap.Map
-	currStep  int
-	direction direction.Direction
-	width     int
-	height    int
-	x         int
-	y         int
+	currStep    int
+	direction   direction.Direction
+	width       int
+	height      int
+	x           int
+	y           int
+	moveChecker MoveChecker
 }
 
 func (s sharedState) update(timeElapsed time.Duration) {

@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"candy/game/cell"
-	"candy/game/cutter"
 	"candy/graphics"
 )
 
@@ -25,7 +24,7 @@ type sharedState struct {
 	remainingTime time.Duration
 	lag           int64
 	shouldExplode bool
-	rangeCutter   cutter.Range
+	rangeCutter   RangeCutter
 }
 
 func (s *sharedState) setCenter(center cell.Cell) {

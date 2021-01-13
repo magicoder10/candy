@@ -2,7 +2,6 @@ package player
 
 import (
 	"candy/game/direction"
-	"candy/game/gamemap"
 	"candy/game/square"
 	"candy/input"
 )
@@ -29,16 +28,16 @@ func (s standingState) handleInput(in input.Input) state {
 	return s
 }
 
-func newStandingStateOnSquare(gameMap *gamemap.Map, width int, height int, row int, col int) standingState {
+func newStandingStateOnSquare(moveChecker MoveChecker, width int, height int, row int, col int) standingState {
 	return standingState{
 		sharedState{
-			gameMap:   gameMap,
-			currStep:  1,
-			direction: direction.Down,
-			width:     width,
-			height:    height,
-			x:         col*square.Width + square.Width/2,
-			y:         row * square.Width,
+			moveChecker: moveChecker,
+			currStep:    1,
+			direction:   direction.Down,
+			width:       width,
+			height:      height,
+			x:           col*square.Width + square.Width/2,
+			y:           row * square.Width,
 		},
 	}
 }

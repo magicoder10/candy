@@ -73,19 +73,20 @@ func (g *Game) Start() {
 
 func NewGame(assets assets.Assets, g graphics.Graphics) Game {
 	gameMap := gamemap.NewMap(assets, g)
+	playerMoveChecker := gameMap.GetPlayerMoveChecker()
 	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
 	return Game{
 		spriteSheetBatch: batch,
 		gameMap:          gameMap,
 		players: []player.Player{
-			player.NewBlackBoy(gameMap, 1, 2),
-			player.NewBlackGirl(gameMap, 1, 3),
-			player.NewBrownBoy(gameMap, 1, 4),
-			player.NewBrownGirl(gameMap, 1, 5),
-			player.NewYellowBoy(gameMap, 1, 6),
-			player.NewYellowGirl(gameMap, 1, 7),
-			player.NewOrangeBoy(gameMap, 1, 8),
-			player.NewOrangeGirl(gameMap, 1, 9),
+			player.NewBlackBoy(playerMoveChecker, 1, 2),
+			player.NewBlackGirl(playerMoveChecker, 1, 3),
+			player.NewBrownBoy(playerMoveChecker, 1, 4),
+			player.NewBrownGirl(playerMoveChecker, 1, 5),
+			player.NewYellowBoy(playerMoveChecker, 1, 6),
+			player.NewYellowGirl(playerMoveChecker, 1, 7),
+			player.NewOrangeBoy(playerMoveChecker, 1, 8),
+			player.NewOrangeGirl(playerMoveChecker, 1, 9),
 		},
 	}
 }

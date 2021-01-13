@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"candy/game/cell"
-	"candy/game/cutter"
 	"candy/game/square"
 	"candy/graphics"
 )
@@ -56,14 +55,14 @@ func (c Candy) GetCellOn() cell.Cell {
 	return c.state.getCenter()
 }
 
-func newCandy(powerLevel int, center cell.Cell, rangeCutter cutter.Range) Candy {
+func newCandy(powerLevel int, center cell.Cell, rangeCutter RangeCutter) Candy {
 	return Candy{state: newMeltingState(powerLevel, center, rangeCutter)}
 }
 
 type Builder struct {
 	powerLevel  int
 	center      *cell.Cell
-	rangeCutter cutter.Range
+	rangeCutter RangeCutter
 }
 
 func (b *Builder) Center(center cell.Cell) *Builder {
@@ -71,7 +70,7 @@ func (b *Builder) Center(center cell.Cell) *Builder {
 	return b
 }
 
-func (b *Builder) RangeCutter(rangeCutter cutter.Range) *Builder {
+func (b *Builder) RangeCutter(rangeCutter RangeCutter) *Builder {
 	b.rangeCutter = rangeCutter
 	return b
 }
@@ -84,5 +83,5 @@ func (b *Builder) Build() (Candy, error) {
 }
 
 func NewBuilder(powerLevel int) Builder {
-	return Builder{powerLevel: powerLevel, rangeCutter: cutter.NoChange{}}
+	return Builder{powerLevel: powerLevel, rangeCutter: noChange{}}
 }

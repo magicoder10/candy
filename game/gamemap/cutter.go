@@ -1,18 +1,18 @@
 package gamemap
 
 import (
+	"candy/game/candy"
 	"candy/game/cell"
-	"candy/game/cutter"
 	"candy/game/direction"
 	"candy/game/square"
 )
 
-var _ cutter.Range = (*candyRangeCutter)(nil)
+var _ candy.RangeCutter = (*candyRangeCutter)(nil)
 
 type candyRangeCutter struct {
 	maxRow int
 	maxCol int
-	grid   *[defaultRows][defaultCols]square.Square
+	grid   *[][]square.Square
 }
 
 func (c candyRangeCutter) CutRange(start cell.Cell, initialRange int, dir direction.Direction) int {
@@ -21,7 +21,7 @@ func (c candyRangeCutter) CutRange(start cell.Cell, initialRange int, dir direct
 		if !inGrid(nc, c.maxRow, c.maxCol) {
 			return currRange - 1
 		}
-		sq := c.grid[nc.Row][nc.Col]
+		sq := (*c.grid)[nc.Row][nc.Col]
 		if sq != nil && !sq.IsBreakable() {
 			return currRange - 1
 		}

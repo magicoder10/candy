@@ -1,8 +1,7 @@
-package tile
+package square
 
 import (
 	"candy/game/gameitem"
-	"candy/game/square"
 	"candy/graphics"
 )
 
@@ -10,7 +9,7 @@ const revealItemXOffset = 16
 const revealItemYOffset = 36
 const revealItemZOffset = -1
 
-var _ square.Square = (*Tile)(nil)
+var _ Square = (*Tile)(nil)
 
 type Tile struct {
 	imageXOffset int
