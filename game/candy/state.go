@@ -1,4 +1,4 @@
-package state
+package candy
 
 import (
 	"time"
@@ -38,4 +38,24 @@ func (s shared) GetCenter() cell.Cell {
 
 func (s *shared) Explode() {
 	s.shouldExplode = true
+}
+
+func (s shared) CellsHit() []cell.Cell {
+	return []cell.Cell{}
+}
+
+func (s shared) Exploding() bool {
+	return false
+}
+
+func (s shared) Update(timeElapsed time.Duration) State {
+	return &s
+}
+
+func (s shared) Draw(batch graphics.Batch, x int, y int, z int) {
+	return
+}
+
+func (s shared) Exploded() bool {
+	return false
 }

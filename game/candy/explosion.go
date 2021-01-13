@@ -1,4 +1,4 @@
-package state
+package candy
 
 import (
 	"candy/game/square"
