@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"candy/game/cell"
-	"candy/game/cutter"
 	"candy/graphics"
 )
 
@@ -47,7 +46,7 @@ func (m meltingState) draw(batch graphics.Batch, x int, y int, z int) {
 	batch.DrawSprite(x, y, z, bound, 1)
 }
 
-func newMeltingState(powerLevel int, center cell.Cell, rangeCutter cutter.Range) *meltingState {
+func newMeltingState(powerLevel int, center cell.Cell, rangeCutter RangeCutter) *meltingState {
 	return &meltingState{
 		sharedState: sharedState{
 			center:        center,

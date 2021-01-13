@@ -8,11 +8,9 @@ import (
 	"candy/assets"
 	"candy/game/candy"
 	"candy/game/cell"
-	"candy/game/cutter"
 	"candy/game/direction"
 	"candy/game/gameitem"
 	"candy/game/square"
-	"candy/game/tile"
 	"candy/graphics"
 )
 
@@ -26,9 +24,9 @@ type Map struct {
 	gridXOffset      int
 	gridYOffset      int
 	grid             *[defaultRows][defaultCols]square.Square
-	tiles            *[]*tile.Tile
+	tiles            *[]*square.Tile
 	candies          *map[cell.Cell]*candy.Candy
-	candyRangeCutter cutter.Range
+	candyRangeCutter candy.RangeCutter
 }
 
 func (m Map) DrawMap() {
@@ -244,14 +242,14 @@ func NewMap(assets assets.Assets, g graphics.Graphics) *Map {
 		{},
 	}
 
-	tiles := make([]*tile.Tile, 0)
+	tiles := make([]*square.Tile, 0)
 
 	for row, rowConfig := range mapConfig {
 		for col, colConfig := range rowConfig {
 			if colConfig == ' ' {
 				continue
 			}
-			t := tile.NewTile(colConfig, randomGameItem())
+			t := square.NewTile(colConfig, randomGameItem())
 			tiles = append(tiles, &t)
 			grid[row][col] = &t
 		}

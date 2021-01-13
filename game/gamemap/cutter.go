@@ -1,13 +1,13 @@
 package gamemap
 
 import (
+	"candy/game/candy"
 	"candy/game/cell"
-	"candy/game/cutter"
 	"candy/game/direction"
 	"candy/game/square"
 )
 
-var _ cutter.Range = (*candyRangeCutter)(nil)
+var _ candy.RangeCutter = (*candyRangeCutter)(nil)
 
 type candyRangeCutter struct {
 	maxRow int
