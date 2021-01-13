@@ -28,16 +28,28 @@ func (s standingState) handleInput(in input.Input) state {
 	return s
 }
 
-func newStandingStateOnSquare(moveChecker MoveChecker, width int, height int, row int, col int) standingState {
+func newStandingStateOnSquare(
+	moveChecker MoveChecker,
+	width int, height int,
+	row int, col int,
+	regionXOffset int,
+	regionYOffset int,
+	walkCycleXOffset int,
+	walkCycleYOffset int,
+) standingState {
 	return standingState{
 		sharedState{
-			moveChecker: moveChecker,
-			currStep:    1,
-			direction:   direction.Down,
-			width:       width,
-			height:      height,
-			x:           col*square.Width + square.Width/2,
-			y:           row * square.Width,
+			moveChecker:      moveChecker,
+			currStep:         1,
+			direction:        direction.Down,
+			width:            width,
+			height:           height,
+			x:                col*square.Width + square.Width/2,
+			y:                row * square.Width,
+			regionXOffset:    regionXOffset,
+			regionYOffset:    regionYOffset,
+			walkCycleXOffset: walkCycleXOffset,
+			walkCycleYOffset: walkCycleYOffset,
 		},
 	}
 }

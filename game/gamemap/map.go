@@ -28,6 +28,7 @@ type Map struct {
 	candies           *map[cell.Cell]*candy.Candy
 	candyRangeCutter  candy.RangeCutter
 	playerMoveChecker player.MoveChecker
+	eventHandlers     eventHandlers
 }
 
 func (m Map) DrawMap() {
@@ -94,6 +95,7 @@ func (m *Map) Update(timeElapsed time.Duration) {
 				}
 				visited[nextCell] = struct{}{}
 				queue = append(queue, nextCell)
+				m.eventHandlers.onCandyExploding(nextCell)
 			}
 		}
 	}
@@ -139,6 +141,10 @@ func (m *Map) AddCandy(cell cell.Cell, candyBuilder candy.Builder) bool {
 func randomGameItem() gameitem.GameItem {
 	index := rand.Intn(len(gameitem.GameItems))
 	return gameitem.GameItems[index]
+}
+
+func (m *Map) OnCandyExploding(callback func(hitCell cell.Cell)) {
+	m.eventHandlers.onCandyExploding = callback
 }
 
 func NewMap(assets assets.Assets, g graphics.Graphics) *Map {
