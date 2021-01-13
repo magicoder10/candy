@@ -1,4 +1,4 @@
-package state
+package candy
 
 import (
 	"time"
@@ -46,18 +46,18 @@ var directions = []explodeDirection{
 		direction: direction.Left,
 	},
 }
-var _ State = (*Exploding)(nil)
+var _ state = (*explodingState)(nil)
 
-type Exploding struct {
-	shared
+type explodingState struct {
+	sharedState
 	hitRange int
 }
 
-func (e Exploding) Exploding() bool {
+func (e explodingState) Exploding() bool {
 	return true
 }
 
-func (e Exploding) CellsHit() []cell.Cell {
+func (e explodingState) CellsHit() []cell.Cell {
 	cells := make([]cell.Cell, 0)
 	for currRange := 1; currRange <= e.hitRange; currRange++ {
 		for _, dir := range directions {
@@ -69,10 +69,10 @@ func (e Exploding) CellsHit() []cell.Cell {
 	return cells
 }
 
-func (e *Exploding) Update(timeElapsed time.Duration) State {
+func (e *explodingState) Update(timeElapsed time.Duration) state {
 	e.remainingTime -= timeElapsed
 	if e.remainingTime <= 0 {
-		return &Exploded{}
+		return &explodedState{}
 	}
 	e.lag += timeElapsed.Nanoseconds()
 
@@ -84,13 +84,13 @@ func (e *Exploding) Update(timeElapsed time.Duration) State {
 	return e
 }
 
-func (e Exploding) Draw(batch graphics.Batch, x int, y int, z int) {
+func (e explodingState) Draw(batch graphics.Batch, x int, y int, z int) {
 	e.drawEnds(batch, x, y, z)
 	e.drawEdges(batch, x, y, z)
 	batch.DrawSprite(x, y, z, explosionCenter, 1)
 }
 
-func (e Exploding) drawEdges(batch graphics.Batch, x int, y int, z int) {
+func (e explodingState) drawEdges(batch graphics.Batch, x int, y int, z int) {
 	for _, dir := range directions {
 		hitRange := e.rangeCutter.CutRange(e.center, e.hitRange, dir.direction)
 		for i := 1; i < hitRange; i++ {
@@ -102,7 +102,7 @@ func (e Exploding) drawEdges(batch graphics.Batch, x int, y int, z int) {
 	}
 }
 
-func (e Exploding) drawEnds(batch graphics.Batch, x int, y int, z int) {
+func (e explodingState) drawEnds(batch graphics.Batch, x int, y int, z int) {
 	if e.hitRange < 1 {
 		return
 	}
@@ -119,11 +119,7 @@ func (e Exploding) drawEnds(batch graphics.Batch, x int, y int, z int) {
 	}
 }
 
-func (e Exploding) Exploded() bool {
-	return false
-}
-
-func newExploding(shared shared) *Exploding {
-	shared.remainingTime = explodingTime + 500*time.Millisecond
-	return &Exploding{shared: shared, hitRange: 0}
+func newExplodingState(sharedState sharedState) *explodingState {
+	sharedState.remainingTime = explodingTime + 500*time.Millisecond
+	return &explodingState{sharedState: sharedState, hitRange: 0}
 }

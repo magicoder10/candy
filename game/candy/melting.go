@@ -1,4 +1,4 @@
-package state
+package candy
 
 import (
 	"time"
@@ -17,35 +17,27 @@ const maxMeltingImages = 4
 const width = 60
 const height = 60
 
-var _ State = (*Melting)(nil)
+var _ state = (*meltingState)(nil)
 
-type Melting struct {
-	shared
+type meltingState struct {
+	sharedState
 	meltingImageIndex int
 }
 
-func (m *Melting) CellsHit() []cell.Cell {
-	return []cell.Cell{}
-}
-
-func (m *Melting) Exploding() bool {
-	return false
-}
-
-func (m *Melting) Update(timeElapsed time.Duration) State {
+func (m *meltingState) Update(timeElapsed time.Duration) state {
 	m.remainingTime -= timeElapsed
 	if m.remainingTime <= 0 || m.shouldExplode {
-		return newExploding(m.shared)
+		return newExplodingState(m.sharedState)
 	}
 	m.lag += timeElapsed.Nanoseconds()
 
 	imageJumps := int(m.lag / meltingImageDuration)
 	m.meltingImageIndex = (m.meltingImageIndex + imageJumps) % maxMeltingImages
-	m.shared.lag %= meltingImageDuration
+	m.sharedState.lag %= meltingImageDuration
 	return m
 }
 
-func (m Melting) Draw(batch graphics.Batch, x int, y int, z int) {
+func (m meltingState) Draw(batch graphics.Batch, x int, y int, z int) {
 	bound := graphics.Bound{
 		X:      640,
 		Y:      323 - m.meltingImageIndex*height,
@@ -55,13 +47,9 @@ func (m Melting) Draw(batch graphics.Batch, x int, y int, z int) {
 	batch.DrawSprite(x, y, z, bound, 1)
 }
 
-func (m Melting) Exploded() bool {
-	return false
-}
-
-func NewMelting(powerLevel int, center cell.Cell, rangeCutter cutter.Range) *Melting {
-	return &Melting{
-		shared: shared{
+func newMeltingState(powerLevel int, center cell.Cell, rangeCutter cutter.Range) *meltingState {
+	return &meltingState{
+		sharedState: sharedState{
 			center:        center,
 			powerLevel:    powerLevel,
 			remainingTime: meltingTime,

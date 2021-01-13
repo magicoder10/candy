@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	"candy/game/candy/state"
 	"candy/game/cell"
 	"candy/game/cutter"
 	"candy/game/square"
@@ -14,7 +13,7 @@ import (
 var _ square.Square = (*Candy)(nil)
 
 type Candy struct {
-	state state.State
+	state state
 }
 
 func (c Candy) IsBreakable() bool {
@@ -58,7 +57,7 @@ func (c Candy) GetCellOn() cell.Cell {
 }
 
 func newCandy(powerLevel int, center cell.Cell, rangeCutter cutter.Range) Candy {
-	return Candy{state: state.NewMelting(powerLevel, center, rangeCutter)}
+	return Candy{state: newMeltingState(powerLevel, center, rangeCutter)}
 }
 
 type Builder struct {
