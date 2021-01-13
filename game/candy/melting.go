@@ -24,7 +24,7 @@ type meltingState struct {
 	meltingImageIndex int
 }
 
-func (m *meltingState) Update(timeElapsed time.Duration) state {
+func (m *meltingState) update(timeElapsed time.Duration) state {
 	m.remainingTime -= timeElapsed
 	if m.remainingTime <= 0 || m.shouldExplode {
 		return newExplodingState(m.sharedState)
@@ -37,7 +37,7 @@ func (m *meltingState) Update(timeElapsed time.Duration) state {
 	return m
 }
 
-func (m meltingState) Draw(batch graphics.Batch, x int, y int, z int) {
+func (m meltingState) draw(batch graphics.Batch, x int, y int, z int) {
 	bound := graphics.Bound{
 		X:      640,
 		Y:      323 - m.meltingImageIndex*height,

@@ -10,6 +10,7 @@ import (
 )
 
 const explodingTime = 400 * time.Millisecond
+const animationDelay = 500 * time.Millisecond
 
 var explodingTimeNano = explodingTime.Nanoseconds()
 
@@ -53,11 +54,11 @@ type explodingState struct {
 	hitRange int
 }
 
-func (e explodingState) Exploding() bool {
+func (e explodingState) exploding() bool {
 	return true
 }
 
-func (e explodingState) CellsHit() []cell.Cell {
+func (e explodingState) cellsHit() []cell.Cell {
 	cells := make([]cell.Cell, 0)
 	for currRange := 1; currRange <= e.hitRange; currRange++ {
 		for _, dir := range directions {
@@ -69,7 +70,7 @@ func (e explodingState) CellsHit() []cell.Cell {
 	return cells
 }
 
-func (e *explodingState) Update(timeElapsed time.Duration) state {
+func (e *explodingState) update(timeElapsed time.Duration) state {
 	e.remainingTime -= timeElapsed
 	if e.remainingTime <= 0 {
 		return &explodedState{}
@@ -84,7 +85,7 @@ func (e *explodingState) Update(timeElapsed time.Duration) state {
 	return e
 }
 
-func (e explodingState) Draw(batch graphics.Batch, x int, y int, z int) {
+func (e explodingState) draw(batch graphics.Batch, x int, y int, z int) {
 	e.drawEnds(batch, x, y, z)
 	e.drawEdges(batch, x, y, z)
 	batch.DrawSprite(x, y, z, explosionCenter, 1)
@@ -120,6 +121,6 @@ func (e explodingState) drawEnds(batch graphics.Batch, x int, y int, z int) {
 }
 
 func newExplodingState(sharedState sharedState) *explodingState {
-	sharedState.remainingTime = explodingTime + 500*time.Millisecond
+	sharedState.remainingTime = explodingTime + animationDelay
 	return &explodingState{sharedState: sharedState, hitRange: 0}
 }

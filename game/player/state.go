@@ -5,18 +5,24 @@ import (
 
 	"candy/game/direction"
 	"candy/game/gamemap"
+	"candy/game/square"
+	"candy/graphics"
 	"candy/input"
 )
 
 type state interface {
-	HandleInput(in input.Input) state
-	Update(timeElapsed time.Duration)
-	GetCurrentStep() int
-	GetDirection() direction.Direction
-	GetX() int
-	GetY() int
-	GetWidth() int
-	GetHeight() int
+	handleInput(in input.Input) state
+	update(timeElapsed time.Duration)
+	draw(batch graphics.Batch,
+		regionXOffset int,
+		regionYOffset int,
+		walkCycleXOffset int,
+		walkCycleYOffset int,
+	)
+	getX() int
+	getY() int
+	getWidth() int
+	getHeight() int
 }
 
 type sharedState struct {
@@ -29,26 +35,37 @@ type sharedState struct {
 	y         int
 }
 
-func (s sharedState) GetCurrentStep() int {
-	return s.currStep
+func (s sharedState) update(timeElapsed time.Duration) {
+	return
 }
 
-func (s sharedState) GetDirection() direction.Direction {
-	return s.direction
+func (s sharedState) draw(
+	batch graphics.Batch,
+	regionXOffset int, regionYOffset int,
+	walkCycleXOffset int,
+	walkCycleYOffset int,
+) {
+	bound := graphics.Bound{
+		X:      regionXOffset + walkCycleXOffset + s.currStep*spriteWidth,
+		Y:      regionYOffset + walkCycleYOffset + int(s.direction)*spriteHeight,
+		Width:  spriteWidth,
+		Height: spriteHeight,
+	}
+	batch.DrawSprite(s.x-square.Width/6, s.y, s.y, bound, float64(square.Width)/spriteWidth)
 }
 
-func (s sharedState) GetX() int {
+func (s sharedState) getX() int {
 	return s.x
 }
 
-func (s sharedState) GetY() int {
+func (s sharedState) getY() int {
 	return s.y
 }
 
-func (s sharedState) GetWidth() int {
+func (s sharedState) getWidth() int {
 	return s.width
 }
 
-func (s sharedState) GetHeight() int {
+func (s sharedState) getHeight() int {
 	return s.height
 }

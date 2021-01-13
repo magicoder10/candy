@@ -21,7 +21,7 @@ func (c Candy) IsBreakable() bool {
 }
 
 func (c Candy) Draw(batch graphics.Batch, x int, y int) {
-	c.state.Draw(batch, x, y, y+square.Width-1)
+	c.state.draw(batch, x, y, y+square.Width-1)
 }
 
 func (c Candy) CanEnter() bool {
@@ -29,31 +29,31 @@ func (c Candy) CanEnter() bool {
 }
 
 func (c *Candy) Update(timeElapsed time.Duration) {
-	c.state = c.state.Update(timeElapsed)
+	c.state = c.state.update(timeElapsed)
 }
 
 func (c Candy) Explode() {
-	c.state.Explode()
+	c.state.explode()
 }
 
 func (c Candy) Exploded() bool {
-	return c.state.Exploded()
+	return c.state.exploded()
 }
 
 func (c Candy) Exploding() bool {
-	return c.state.Exploding()
+	return c.state.exploding()
 }
 
 func (c Candy) CellsHit() []cell.Cell {
-	return c.state.CellsHit()
+	return c.state.cellsHit()
 }
 
 func (c *Candy) MoveTo(cell cell.Cell) {
-	c.state.SetCenter(cell)
+	c.state.setCenter(cell)
 }
 
 func (c Candy) GetCellOn() cell.Cell {
-	return c.state.GetCenter()
+	return c.state.getCenter()
 }
 
 func newCandy(powerLevel int, center cell.Cell, rangeCutter cutter.Range) Candy {
