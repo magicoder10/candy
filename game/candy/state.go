@@ -8,8 +8,8 @@ import (
 	"candy/graphics"
 )
 
-type State interface {
-	Update(timeElapsed time.Duration) State
+type state interface {
+	Update(timeElapsed time.Duration) state
 	Draw(batch graphics.Batch, x int, y int, z int)
 	GetCenter() cell.Cell
 	SetCenter(center cell.Cell)
@@ -48,7 +48,7 @@ func (s shared) Exploding() bool {
 	return false
 }
 
-func (s shared) Update(timeElapsed time.Duration) State {
+func (s shared) Update(timeElapsed time.Duration) state {
 	return &s
 }
 

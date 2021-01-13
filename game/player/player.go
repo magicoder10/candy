@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"candy/game/gamemap"
-	"candy/game/player/state"
 	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
@@ -24,7 +23,7 @@ type Player struct {
 	walkCycleXOffset int
 	// bottom left Y of the walk cycle for the current player
 	walkCycleYOffset int
-	state            state.State
+	state            state
 }
 
 func (p Player) Draw(batch graphics.Batch) {
@@ -78,7 +77,7 @@ func newPlayer(
 		regionYOffset:    0,
 		walkCycleXOffset: walkCycleXOffset,
 		walkCycleYOffset: walkCycleYOffset,
-		state:            state.NewStandingOnSquare(gameMap, square.Width-2*square.Width/6, square.Width/4, row, col),
+		state:            newStandingOnSquare(gameMap, square.Width-2*square.Width/6, square.Width/4, row, col),
 	}
 }
 

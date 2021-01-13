@@ -46,7 +46,7 @@ var directions = []explodeDirection{
 		direction: direction.Left,
 	},
 }
-var _ State = (*explodingState)(nil)
+var _ state = (*explodingState)(nil)
 
 type explodingState struct {
 	shared
@@ -69,7 +69,7 @@ func (e explodingState) CellsHit() []cell.Cell {
 	return cells
 }
 
-func (e *explodingState) Update(timeElapsed time.Duration) State {
+func (e *explodingState) Update(timeElapsed time.Duration) state {
 	e.remainingTime -= timeElapsed
 	if e.remainingTime <= 0 {
 		return &explodedState{}

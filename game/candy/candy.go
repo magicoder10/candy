@@ -13,7 +13,7 @@ import (
 var _ square.Square = (*Candy)(nil)
 
 type Candy struct {
-	state State
+	state state
 }
 
 func (c Candy) IsBreakable() bool {

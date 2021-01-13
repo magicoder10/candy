@@ -1,6 +1,6 @@
 package candy
 
-var _ State = (*explodedState)(nil)
+var _ state = (*explodedState)(nil)
 
 type explodedState struct {
 	shared

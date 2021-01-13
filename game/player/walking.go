@@ -1,4 +1,4 @@
-package state
+package player
 
 import (
 	"time"
@@ -12,15 +12,15 @@ var nanoPerStep = (100 * time.Millisecond).Nanoseconds()
 
 const totalSteps = 3
 
-var _ State = (*Walking)(nil)
+var _ state = (*walkingState)(nil)
 
-type Walking struct {
+type walkingState struct {
 	sharedState
 	stepSize int
 	lag      int64
 }
 
-func (w *Walking) Update(timeElapsed time.Duration) {
+func (w *walkingState) Update(timeElapsed time.Duration) {
 	w.lag += timeElapsed.Nanoseconds()
 	steps := int(w.lag / nanoPerStep)
 	w.sharedState.currStep = nextStep(w.sharedState.currStep, steps)
@@ -28,11 +28,11 @@ func (w *Walking) Update(timeElapsed time.Duration) {
 	w.lag %= nanoPerStep
 }
 
-func (w Walking) HandleInput(in input.Input) State {
+func (w walkingState) HandleInput(in input.Input) state {
 	if in.Action == input.Release {
 		switch in.Device {
 		case input.UpArrowKey, input.DownArrowKey, input.LeftArrowKey, input.RightArrowKey:
-			return NewStanding(w.sharedState)
+			return newStandingState(w.sharedState)
 		}
 	} else if in.Action == input.Press {
 		switch in.Device {
@@ -49,17 +49,17 @@ func (w Walking) HandleInput(in input.Input) State {
 	return &w
 }
 
-func (w Walking) nextWalking(direction direction.Direction) *Walking {
+func (w walkingState) nextWalking(direction direction.Direction) *walkingState {
 	w.currStep = nextStep(w.sharedState.currStep, 1)
 	w.sharedState = resetStepIfChangeDirection(w.sharedState, direction)
 
 	if w.gameMap.CanMove(w.sharedState.x, w.sharedState.y, w.width, w.height, direction, w.stepSize) {
 		w.sharedState.x, w.sharedState.y = w.nextPosition(w.sharedState.x, w.sharedState.y, direction)
 	}
-	return newWalking(w.sharedState, w.lag, direction)
+	return newWalkingState(w.sharedState, w.lag, direction)
 }
 
-func (w Walking) nextPosition(currX int, currY int, dir direction.Direction) (int, int) {
+func (w walkingState) nextPosition(currX int, currY int, dir direction.Direction) (int, int) {
 	switch dir {
 	case direction.Up:
 		return currX, currY + w.stepSize
@@ -84,18 +84,18 @@ func nextStep(currStep int, steps int) int {
 	return (currStep + steps) % totalSteps
 }
 
-func newWalking(shared sharedState, lag int64, direction direction.Direction) *Walking {
+func newWalkingState(shared sharedState, lag int64, direction direction.Direction) *walkingState {
 	// Check change of direction
 	shared.direction = direction
-	return &Walking{
+	return &walkingState{
 		sharedState: shared,
 		lag:         lag,
 		stepSize:    square.Width / 10,
 	}
 }
 
-func newWalkingFromStanding(shared sharedState, lag int64, direction direction.Direction) *Walking {
+func newWalkingStateFromStanding(shared sharedState, lag int64, direction direction.Direction) *walkingState {
 	// Check change of direction
 	shared.currStep = nextStep(shared.currStep, 1)
-	return newWalking(shared, lag, direction)
+	return newWalkingState(shared, lag, direction)
 }

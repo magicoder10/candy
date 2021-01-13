@@ -1,4 +1,4 @@
-package state
+package player
 
 import (
 	"time"
@@ -8,8 +8,8 @@ import (
 	"candy/input"
 )
 
-type State interface {
-	HandleInput(in input.Input) State
+type state interface {
+	HandleInput(in input.Input) state
 	Update(timeElapsed time.Duration)
 	GetCurrentStep() int
 	GetDirection() direction.Direction

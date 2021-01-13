@@ -17,14 +17,14 @@ const maxMeltingImages = 4
 const width = 60
 const height = 60
 
-var _ State = (*meltingState)(nil)
+var _ state = (*meltingState)(nil)
 
 type meltingState struct {
 	shared
 	meltingImageIndex int
 }
 
-func (m *meltingState) Update(timeElapsed time.Duration) State {
+func (m *meltingState) Update(timeElapsed time.Duration) state {
 	m.remainingTime -= timeElapsed
 	if m.remainingTime <= 0 || m.shouldExplode {
 		return newExplodingState(m.shared)
