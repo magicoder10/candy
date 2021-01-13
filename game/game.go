@@ -57,7 +57,7 @@ func (g Game) dropCandy() {
 		currPlayer.GetX(), currPlayer.GetY(), currPlayer.GetWidth(), currPlayer.GetHeight(),
 		square.Width, square.Width,
 	)
-	g.gameMap.AddCandy(playerCell, candy.NewCandy(currPlayer.GetPowerLevel()))
+	g.gameMap.AddCandy(playerCell, candy.NewBuilder(currPlayer.GetPowerLevel()))
 }
 
 func (g Game) Update(timeElapsed time.Duration) {

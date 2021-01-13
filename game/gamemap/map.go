@@ -8,6 +8,7 @@ import (
 	"candy/assets"
 	"candy/game/candy"
 	"candy/game/cell"
+	"candy/game/cutter"
 	"candy/game/direction"
 	"candy/game/gameitem"
 	"candy/game/square"
@@ -19,14 +20,15 @@ const defaultRows = 12
 const defaultCols = 15
 
 type Map struct {
-	batch       graphics.Batch
-	maxRow      int
-	maxCol      int
-	gridXOffset int
-	gridYOffset int
-	grid        *[defaultRows][defaultCols]square.Square
-	tiles       *[]*tile.Tile
-	candies     *[]*candy.Candy
+	batch            graphics.Batch
+	maxRow           int
+	maxCol           int
+	gridXOffset      int
+	gridYOffset      int
+	grid             *[defaultRows][defaultCols]square.Square
+	tiles            *[]*tile.Tile
+	candies          *map[cell.Cell]*candy.Candy
+	candyRangeCutter cutter.Range
 }
 
 func (m Map) DrawMap() {
@@ -67,35 +69,68 @@ func (m *Map) Update(timeElapsed time.Duration) {
 	for _, c := range *m.candies {
 		c.Update(timeElapsed)
 	}
+	queue := make([]cell.Cell, 0)
+	visited := make(map[cell.Cell]struct{})
+
+	for candyCell, c := range *m.candies {
+		if c.Exploding() {
+			visited[candyCell] = struct{}{}
+			queue = append(queue, candyCell)
+		}
+	}
+
+	for len(queue) > 0 {
+		currCell := queue[0]
+		queue = queue[1:]
+
+		if c, ok := (*m.candies)[currCell]; ok {
+			c.Explode()
+
+			for _, nextCell := range c.CellsHit() {
+				if !inGrid(nextCell, m.maxRow, m.maxCol) {
+					continue
+				}
+				if _, ok := visited[nextCell]; ok {
+					continue
+				}
+				visited[nextCell] = struct{}{}
+				queue = append(queue, nextCell)
+			}
+		}
+	}
 	m.removeExplodedCandies()
 }
 
-func (m *Map) AddCandy(cell cell.Cell, candy candy.Candy) bool {
+func (m *Map) removeExplodedCandies() {
+	newCandies := make(map[cell.Cell]*candy.Candy)
+
+	for candyCell, c := range *m.candies {
+		if c.Exploded() {
+			m.grid[candyCell.Row][candyCell.Col] = nil
+		} else {
+			newCandies[candyCell] = c
+		}
+	}
+	m.candies = &newCandies
+}
+
+func (m *Map) AddCandy(cell cell.Cell, candyBuilder candy.Builder) bool {
 	if cell.Row < 0 || cell.Row > m.maxRow || cell.Col < 0 || cell.Col > m.maxCol {
 		return false
 	}
 	if m.grid[cell.Row][cell.Col] != nil {
 		return false
 	}
-	*m.candies = append(*m.candies, &candy)
-	m.grid[cell.Row][cell.Col] = &candy
-
-	candy.MoveTo(cell)
-	return true
-}
-
-func (m *Map) removeExplodedCandies() {
-	newCandies := make([]*candy.Candy, 0)
-
-	for _, c := range *m.candies {
-		if c.Exploded() {
-			cellOn := c.GetCellOn()
-			m.grid[cellOn.Row][cellOn.Col] = nil
-		} else {
-			newCandies = append(newCandies, c)
-		}
+	c, err := candyBuilder.
+		Center(cell).
+		RangeCutter(m.candyRangeCutter).
+		Build()
+	if err != nil {
+		return false
 	}
-	m.candies = &newCandies
+	(*m.candies)[cell] = &c
+	m.grid[cell.Row][cell.Col] = &c
+	return true
 }
 
 func (m Map) CanMove(currX int, currY int, objectWidth int, objectHeight int, dir direction.Direction, stepSize int) bool {
@@ -222,15 +257,23 @@ func NewMap(assets assets.Assets, g graphics.Graphics) *Map {
 		}
 	}
 
-	candies := make([]*candy.Candy, 0)
+	candies := make(map[cell.Cell]*candy.Candy, 0)
+	maxRow := defaultRows - 1
+	maxCol := defaultCols - 1
+	cdRangeCutter := candyRangeCutter{
+		maxRow: maxRow,
+		maxCol: maxCol,
+		grid:   &grid,
+	}
 	return &Map{
-		batch:       g.StartNewBatch(assets.GetImage("map/default.png")),
-		maxRow:      defaultRows - 1,
-		maxCol:      defaultCols - 1,
-		gridXOffset: 0,
-		gridYOffset: 0,
-		grid:        &grid,
-		tiles:       &tiles,
-		candies:     &candies,
+		batch:            g.StartNewBatch(assets.GetImage("map/default.png")),
+		maxRow:           maxRow,
+		maxCol:           maxCol,
+		gridXOffset:      0,
+		gridYOffset:      0,
+		grid:             &grid,
+		tiles:            &tiles,
+		candies:          &candies,
+		candyRangeCutter: &cdRangeCutter,
 	}
 }

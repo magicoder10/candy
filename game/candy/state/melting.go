@@ -3,6 +3,8 @@ package state
 import (
 	"time"
 
+	"candy/game/cell"
+	"candy/game/cutter"
 	"candy/graphics"
 )
 
@@ -22,9 +24,17 @@ type Melting struct {
 	meltingImageIndex int
 }
 
+func (m *Melting) CellsHit() []cell.Cell {
+	return []cell.Cell{}
+}
+
+func (m *Melting) Exploding() bool {
+	return false
+}
+
 func (m *Melting) Update(timeElapsed time.Duration) State {
 	m.remainingTime -= timeElapsed
-	if m.remainingTime <= 0 {
+	if m.remainingTime <= 0 || m.shouldExplode {
 		return newExploding(m.shared)
 	}
 	m.lag += timeElapsed.Nanoseconds()
@@ -49,11 +59,13 @@ func (m Melting) Exploded() bool {
 	return false
 }
 
-func NewMelting(powerLevel int) *Melting {
+func NewMelting(powerLevel int, center cell.Cell, rangeCutter cutter.Range) *Melting {
 	return &Melting{
 		shared: shared{
+			center:        center,
 			powerLevel:    powerLevel,
 			remainingTime: meltingTime,
+			rangeCutter:   rangeCutter,
 		},
 	}
 }

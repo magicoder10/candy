@@ -2,14 +2,15 @@ package tile
 
 import (
 	"candy/game/gameitem"
+	"candy/game/square"
 	"candy/graphics"
 )
 
-const Width = 60
-const Height = 60
 const revealItemXOffset = 16
 const revealItemYOffset = 36
 const revealItemZOffset = -1
+
+var _ square.Square = (*Tile)(nil)
 
 type Tile struct {
 	imageXOffset int
@@ -19,6 +20,10 @@ type Tile struct {
 	canEnter     bool
 	showItem     bool
 	gameItem     gameitem.GameItem
+}
+
+func (t Tile) IsBreakable() bool {
+	return false
 }
 
 func (t Tile) Draw(batch graphics.Batch, x int, y int) {

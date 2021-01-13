@@ -1,10 +1,12 @@
 package candy
 
 import (
+	"errors"
 	"time"
 
 	"candy/game/candy/state"
 	"candy/game/cell"
+	"candy/game/cutter"
 	"candy/game/square"
 	"candy/graphics"
 )
@@ -12,8 +14,11 @@ import (
 var _ square.Square = (*Candy)(nil)
 
 type Candy struct {
-	cell  cell.Cell
 	state state.State
+}
+
+func (c Candy) IsBreakable() bool {
+	return true
 }
 
 func (c Candy) Draw(batch graphics.Batch, x int, y int) {
@@ -29,20 +34,56 @@ func (c *Candy) Update(timeElapsed time.Duration) {
 }
 
 func (c Candy) Explode() {
+	c.state.Explode()
 }
 
 func (c Candy) Exploded() bool {
 	return c.state.Exploded()
 }
 
+func (c Candy) Exploding() bool {
+	return c.state.Exploding()
+}
+
+func (c Candy) CellsHit() []cell.Cell {
+	return c.state.CellsHit()
+}
+
 func (c *Candy) MoveTo(cell cell.Cell) {
-	c.cell = cell
+	c.state.SetCenter(cell)
 }
 
 func (c Candy) GetCellOn() cell.Cell {
-	return c.cell
+	return c.state.GetCenter()
 }
 
-func NewCandy(powerLevel int) Candy {
-	return Candy{state: state.NewMelting(powerLevel)}
+func newCandy(powerLevel int, center cell.Cell, rangeCutter cutter.Range) Candy {
+	return Candy{state: state.NewMelting(powerLevel, center, rangeCutter)}
+}
+
+type Builder struct {
+	powerLevel  int
+	center      *cell.Cell
+	rangeCutter cutter.Range
+}
+
+func (b *Builder) Center(center cell.Cell) *Builder {
+	b.center = &center
+	return b
+}
+
+func (b *Builder) RangeCutter(rangeCutter cutter.Range) *Builder {
+	b.rangeCutter = rangeCutter
+	return b
+}
+
+func (b *Builder) Build() (Candy, error) {
+	if b.center == nil {
+		return Candy{}, errors.New("center cannot be empty")
+	}
+	return newCandy(b.powerLevel, *b.center, b.rangeCutter), nil
+}
+
+func NewBuilder(powerLevel int) Builder {
+	return Builder{powerLevel: powerLevel, rangeCutter: cutter.NoChange{}}
 }
