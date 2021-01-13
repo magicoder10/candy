@@ -60,13 +60,12 @@ func (e explodingState) exploding() bool {
 
 func (e explodingState) cellsHit() []cell.Cell {
 	cells := make([]cell.Cell, 0)
-	for currRange := 1; currRange <= e.hitRange; currRange++ {
-		for _, dir := range directions {
-			nextRow := e.center.Row + currRange*dir.cell.Row
-			nextCol := e.center.Col + currRange*dir.cell.Col
-			cells = append(cells, cell.Cell{Row: nextRow, Col: nextCol})
-		}
-	}
+
+	e.hitRanges(func(dir explodeDirection, currRange int) {
+		nextRow := e.center.Row + currRange*dir.cell.Row
+		nextCol := e.center.Col + currRange*dir.cell.Col
+		cells = append(cells, cell.Cell{Row: nextRow, Col: nextCol})
+	})
 	return cells
 }
 
@@ -92,15 +91,12 @@ func (e explodingState) draw(batch graphics.Batch, x int, y int, z int) {
 }
 
 func (e explodingState) drawEdges(batch graphics.Batch, x int, y int, z int) {
-	for _, dir := range directions {
-		hitRange := e.rangeCutter.CutRange(e.center, e.hitRange, dir.direction)
-		for i := 1; i < hitRange; i++ {
-			shift := i * square.Width
-			nextX := x + dir.cell.Col*shift
-			nextY := y + dir.cell.Row*shift
-			batch.DrawSprite(nextX, nextY, nextY, dir.edge, 1)
-		}
-	}
+	e.hitRanges(func(dir explodeDirection, currRange int) {
+		shift := currRange * square.Width
+		nextX := x + dir.cell.Col*shift
+		nextY := y + dir.cell.Row*shift
+		batch.DrawSprite(nextX, nextY, z+nextY, dir.edge, 1)
+	})
 }
 
 func (e explodingState) drawEnds(batch graphics.Batch, x int, y int, z int) {
@@ -117,6 +113,15 @@ func (e explodingState) drawEnds(batch graphics.Batch, x int, y int, z int) {
 		nextX := x + dir.cell.Col*shift
 		nextY := y + dir.cell.Row*shift
 		batch.DrawSprite(nextX, nextY, nextY, dir.end, 1)
+	}
+}
+
+func (e explodingState) hitRanges(processRange func(dir explodeDirection, currRange int)) {
+	for _, dir := range directions {
+		hitRange := e.rangeCutter.CutRange(e.center, e.hitRange, dir.direction)
+		for currRange := 1; currRange <= hitRange; currRange++ {
+			processRange(dir, currRange)
+		}
 	}
 }
 

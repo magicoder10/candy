@@ -12,39 +12,45 @@ import (
 type state interface {
 	handleInput(in input.Input) state
 	update(timeElapsed time.Duration)
-	draw(
-		batch graphics.Batch,
-		regionXOffset int, regionYOffset int,
-		walkCycleXOffset int, walkCycleYOffset int,
-	)
+	draw(batch graphics.Batch)
+	trapped() state
 	getX() int
 	getY() int
 	getWidth() int
 	getHeight() int
+	isNormal() bool
 }
 
 type sharedState struct {
-	currStep    int
-	direction   direction.Direction
-	width       int
-	height      int
-	x           int
-	y           int
-	moveChecker MoveChecker
+	currStep         int
+	direction        direction.Direction
+	width            int
+	height           int
+	x                int
+	y                int
+	moveChecker      MoveChecker
+	regionXOffset    int
+	regionYOffset    int
+	walkCycleXOffset int
+	walkCycleYOffset int
 }
 
 func (s sharedState) update(timeElapsed time.Duration) {
 	return
 }
 
-func (s sharedState) draw(
-	batch graphics.Batch,
-	regionXOffset int, regionYOffset int,
-	walkCycleXOffset int, walkCycleYOffset int,
-) {
+func (s sharedState) isNormal() bool {
+	return true
+}
+
+func (s sharedState) trapped() state {
+	return trappedState{sharedState: s}
+}
+
+func (s sharedState) draw(batch graphics.Batch) {
 	bound := graphics.Bound{
-		X:      regionXOffset + walkCycleXOffset + s.currStep*spriteWidth,
-		Y:      regionYOffset + walkCycleYOffset + int(s.direction)*spriteHeight,
+		X:      s.regionXOffset + s.walkCycleXOffset + s.currStep*spriteWidth,
+		Y:      s.regionYOffset + s.walkCycleYOffset + int(s.direction)*spriteHeight,
 		Width:  spriteWidth,
 		Height: spriteHeight,
 	}
