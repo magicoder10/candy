@@ -8,8 +8,8 @@ import (
 	"candy/assets"
 	"candy/game/candy"
 	"candy/game/cell"
-	"candy/game/direction"
 	"candy/game/gameitem"
+	"candy/game/player"
 	"candy/game/square"
 	"candy/graphics"
 )
@@ -18,15 +18,16 @@ const defaultRows = 12
 const defaultCols = 15
 
 type Map struct {
-	batch            graphics.Batch
-	maxRow           int
-	maxCol           int
-	gridXOffset      int
-	gridYOffset      int
-	grid             *[defaultRows][defaultCols]square.Square
-	tiles            *[]*square.Tile
-	candies          *map[cell.Cell]*candy.Candy
-	candyRangeCutter candy.RangeCutter
+	batch             graphics.Batch
+	maxRow            int
+	maxCol            int
+	gridXOffset       int
+	gridYOffset       int
+	grid              *[][]square.Square
+	tiles             *[]*square.Tile
+	candies           *map[cell.Cell]*candy.Candy
+	candyRangeCutter  candy.RangeCutter
+	playerMoveChecker player.MoveChecker
 }
 
 func (m Map) DrawMap() {
@@ -41,7 +42,7 @@ func (m Map) DrawMap() {
 }
 
 func (m Map) DrawGrid(batch graphics.Batch) {
-	for row, gridRow := range m.grid {
+	for row, gridRow := range *m.grid {
 		for col := len(gridRow) - 1; col >= 0; col-- {
 			if gridRow[col] == nil {
 				continue
@@ -104,7 +105,7 @@ func (m *Map) removeExplodedCandies() {
 
 	for candyCell, c := range *m.candies {
 		if c.Exploded() {
-			m.grid[candyCell.Row][candyCell.Col] = nil
+			(*m.grid)[candyCell.Row][candyCell.Col] = nil
 		} else {
 			newCandies[candyCell] = c
 		}
@@ -112,11 +113,15 @@ func (m *Map) removeExplodedCandies() {
 	m.candies = &newCandies
 }
 
+func (m Map) GetPlayerMoveChecker() player.MoveChecker {
+	return m.playerMoveChecker
+}
+
 func (m *Map) AddCandy(cell cell.Cell, candyBuilder candy.Builder) bool {
 	if cell.Row < 0 || cell.Row > m.maxRow || cell.Col < 0 || cell.Col > m.maxCol {
 		return false
 	}
-	if m.grid[cell.Row][cell.Col] != nil {
+	if (*m.grid)[cell.Row][cell.Col] != nil {
 		return false
 	}
 	c, err := candyBuilder.
@@ -127,95 +132,8 @@ func (m *Map) AddCandy(cell cell.Cell, candyBuilder candy.Builder) bool {
 		return false
 	}
 	(*m.candies)[cell] = &c
-	m.grid[cell.Row][cell.Col] = &c
+	(*m.grid)[cell.Row][cell.Col] = &c
 	return true
-}
-
-func (m Map) CanMove(currX int, currY int, objectWidth int, objectHeight int, dir direction.Direction, stepSize int) bool {
-	if !m.inBound(currX, currY, objectWidth, objectHeight, dir, stepSize) {
-		return false
-	}
-	cornerCells := cell.GetCornerCells(currX, currY, objectWidth, objectHeight, square.Width, square.Width)
-	neighborCells := m.getNeighborCells(cornerCells, dir)
-	blockingCells := m.getBlockingCells(neighborCells)
-
-	for _, blockingCell := range blockingCells {
-		if isBlocked(blockingCell, currX, currY, objectWidth, objectHeight, dir, stepSize) {
-			return false
-		}
-	}
-	return true
-}
-
-func (m Map) inBound(currX int, currY int, objectWidth, objectHeight int, dir direction.Direction, stepSize int) bool {
-	switch dir {
-	case direction.Up:
-		nextY := currY + objectHeight + stepSize
-		return nextY <= m.gridYOffset+(m.maxRow+1)*square.Width
-	case direction.Down:
-		nextY := currY - stepSize
-		return nextY >= m.gridYOffset
-	case direction.Left:
-		nextX := currX - stepSize
-		return nextX >= m.gridXOffset
-	case direction.Right:
-		nextX := currX + objectWidth + stepSize
-		return nextX <= m.gridXOffset+(m.maxCol+1)*square.Width
-	}
-	return true
-}
-
-func isBlocked(blockingCell cell.Cell, currX int, currY int, objectWidth int, objectHeight int, dir direction.Direction, stepSize int) bool {
-	switch dir {
-	case direction.Up:
-		nextY := currY + objectHeight + stepSize
-		cellBottom := blockingCell.Row * square.Width
-		return nextY > cellBottom
-	case direction.Down:
-		nextY := currY - stepSize
-		cellTop := blockingCell.Row*square.Width + square.Width
-		return nextY < cellTop
-	case direction.Left:
-		nextX := currX - stepSize
-		cellRight := blockingCell.Col*square.Width + square.Width
-		return nextX < cellRight
-	case direction.Right:
-		nextX := currX + objectWidth + stepSize
-		cellLeft := blockingCell.Col * square.Width
-		return nextX > cellLeft
-	}
-	return false
-}
-
-func (m Map) getBlockingCells(cells []cell.Cell) []cell.Cell {
-	newCells := make([]cell.Cell, 0)
-	for _, c := range cells {
-		if len(*m.tiles) <= c.Row || len(m.grid[c.Row]) <= c.Col {
-			continue
-		}
-		if m.grid[c.Row][c.Col] == nil {
-			continue
-		}
-		if m.grid[c.Row][c.Col].CanEnter() {
-			continue
-		}
-		newCells = append(newCells, c)
-	}
-	return newCells
-}
-
-func (m Map) getNeighborCells(cornerCells cell.CornerCells, dir direction.Direction) []cell.Cell {
-	switch dir {
-	case direction.Up:
-		return cell.GetTopNeighborCells(cornerCells, m.maxRow)
-	case direction.Down:
-		return cell.GetBottomNeighborCells(cornerCells, 0)
-	case direction.Left:
-		return cell.GetLeftNeighborCells(cornerCells, 0)
-	case direction.Right:
-		return cell.GetRightNeighborCells(cornerCells, m.maxCol)
-	}
-	return []cell.Cell{}
 }
 
 func randomGameItem() gameitem.GameItem {
@@ -225,7 +143,12 @@ func randomGameItem() gameitem.GameItem {
 
 func NewMap(assets assets.Assets, g graphics.Graphics) *Map {
 	rand.Seed(time.Now().UnixNano())
-	var grid [defaultRows][defaultCols]square.Square
+	grid := make([][]square.Square, 0)
+
+	for row := 0; row < defaultRows; row++ {
+		gridRow := make([]square.Square, defaultCols)
+		grid = append(grid, gridRow)
+	}
 
 	mapConfig := [][]rune{
 		{},
@@ -273,5 +196,13 @@ func NewMap(assets assets.Assets, g graphics.Graphics) *Map {
 		tiles:            &tiles,
 		candies:          &candies,
 		candyRangeCutter: &cdRangeCutter,
+		playerMoveChecker: &moveChecker{
+			gridXOffset: 0,
+			gridYOffset: 0,
+			maxRow:      maxRow,
+			maxCol:      maxCol,
+			grid:        &grid,
+			tiles:       &tiles,
+		},
 	}
 }

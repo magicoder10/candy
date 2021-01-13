@@ -53,7 +53,7 @@ func (w walkingState) nextWalking(direction direction.Direction) *walkingState {
 	w.currStep = nextStep(w.sharedState.currStep, 1)
 	w.sharedState = resetStepIfChangeDirection(w.sharedState, direction)
 
-	if w.gameMap.CanMove(w.sharedState.x, w.sharedState.y, w.width, w.height, direction, w.stepSize) {
+	if w.moveChecker.CanMove(w.sharedState.x, w.sharedState.y, w.width, w.height, direction, w.stepSize) {
 		w.sharedState.x, w.sharedState.y = w.nextPosition(w.sharedState.x, w.sharedState.y, direction)
 	}
 	return newWalkingState(w.sharedState, w.lag, direction)

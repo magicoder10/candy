@@ -3,7 +3,6 @@ package player
 import (
 	"time"
 
-	"candy/game/gamemap"
 	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
@@ -59,7 +58,7 @@ func (p Player) GetPowerLevel() int {
 }
 
 func newPlayer(
-	gameMap *gamemap.Map,
+	moveChecker MoveChecker,
 	walkCycleXOffset int,
 	walkCycleYOffset int,
 	row int,
@@ -70,37 +69,37 @@ func newPlayer(
 		regionYOffset:    0,
 		walkCycleXOffset: walkCycleXOffset,
 		walkCycleYOffset: walkCycleYOffset,
-		state:            newStandingStateOnSquare(gameMap, square.Width-2*square.Width/6, square.Width/4, row, col),
+		state:            newStandingStateOnSquare(moveChecker, square.Width-2*square.Width/6, square.Width/4, row, col),
 	}
 }
 
-func NewBlackBoy(gameMap *gamemap.Map, row int, col int) Player {
-	return newPlayer(gameMap, 0, spriteColHeight, row, col)
+func NewBlackBoy(moveChecker MoveChecker, row int, col int) Player {
+	return newPlayer(moveChecker, 0, spriteColHeight, row, col)
 }
 
-func NewBlackGirl(gameMap *gamemap.Map, row int, col int) Player {
-	return newPlayer(gameMap, 0, 0, row, col)
+func NewBlackGirl(moveChecker MoveChecker, row int, col int) Player {
+	return newPlayer(moveChecker, 0, 0, row, col)
 }
 
-func NewBrownBoy(gameMap *gamemap.Map, row int, col int) Player {
-	return newPlayer(gameMap, spriteRowWidth, spriteColHeight, row, col)
+func NewBrownBoy(moveChecker MoveChecker, row int, col int) Player {
+	return newPlayer(moveChecker, spriteRowWidth, spriteColHeight, row, col)
 }
 
-func NewBrownGirl(gameMap *gamemap.Map, row int, col int) Player {
-	return newPlayer(gameMap, spriteRowWidth, 0, row, col)
+func NewBrownGirl(moveChecker MoveChecker, row int, col int) Player {
+	return newPlayer(moveChecker, spriteRowWidth, 0, row, col)
 }
-func NewYellowBoy(gameMap *gamemap.Map, row int, col int) Player {
-	return newPlayer(gameMap, spriteRowWidth*2, spriteColHeight, row, col)
-}
-
-func NewYellowGirl(gameMap *gamemap.Map, row int, col int) Player {
-	return newPlayer(gameMap, spriteRowWidth*2, 0, row, col)
+func NewYellowBoy(moveChecker MoveChecker, row int, col int) Player {
+	return newPlayer(moveChecker, spriteRowWidth*2, spriteColHeight, row, col)
 }
 
-func NewOrangeBoy(gameMap *gamemap.Map, row int, col int) Player {
-	return newPlayer(gameMap, spriteRowWidth*3, spriteColHeight, row, col)
+func NewYellowGirl(moveChecker MoveChecker, row int, col int) Player {
+	return newPlayer(moveChecker, spriteRowWidth*2, 0, row, col)
 }
 
-func NewOrangeGirl(gameMap *gamemap.Map, row int, col int) Player {
-	return newPlayer(gameMap, spriteRowWidth*3, 0, row, col)
+func NewOrangeBoy(moveChecker MoveChecker, row int, col int) Player {
+	return newPlayer(moveChecker, spriteRowWidth*3, spriteColHeight, row, col)
+}
+
+func NewOrangeGirl(moveChecker MoveChecker, row int, col int) Player {
+	return newPlayer(moveChecker, spriteRowWidth*3, 0, row, col)
 }
