@@ -87,7 +87,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					expectedCanMove: false,
 				},
 				{
-					name:            "move down at bottom border",
+					name:            "move up at bottom border",
 					currX:           1,
 					currY:           1,
 					objectWidth:     10,
