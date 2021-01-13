@@ -6,6 +6,6 @@ type explodedState struct {
 	sharedState
 }
 
-func (e explodedState) Exploded() bool {
+func (e explodedState) exploded() bool {
 	return true
 }

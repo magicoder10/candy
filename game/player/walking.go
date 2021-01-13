@@ -20,7 +20,7 @@ type walkingState struct {
 	lag      int64
 }
 
-func (w *walkingState) Update(timeElapsed time.Duration) {
+func (w *walkingState) update(timeElapsed time.Duration) {
 	w.lag += timeElapsed.Nanoseconds()
 	steps := int(w.lag / nanoPerStep)
 	w.sharedState.currStep = nextStep(w.sharedState.currStep, steps)
@@ -28,7 +28,7 @@ func (w *walkingState) Update(timeElapsed time.Duration) {
 	w.lag %= nanoPerStep
 }
 
-func (w walkingState) HandleInput(in input.Input) state {
+func (w walkingState) handleInput(in input.Input) state {
 	if in.Action == input.Release {
 		switch in.Device {
 		case input.UpArrowKey, input.DownArrowKey, input.LeftArrowKey, input.RightArrowKey:

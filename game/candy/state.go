@@ -9,14 +9,14 @@ import (
 )
 
 type state interface {
-	Update(timeElapsed time.Duration) state
-	Draw(batch graphics.Batch, x int, y int, z int)
-	GetCenter() cell.Cell
-	SetCenter(center cell.Cell)
-	CellsHit() []cell.Cell
-	Exploding() bool
-	Exploded() bool
-	Explode()
+	update(timeElapsed time.Duration) state
+	draw(batch graphics.Batch, x int, y int, z int)
+	getCenter() cell.Cell
+	setCenter(center cell.Cell)
+	cellsHit() []cell.Cell
+	exploding() bool
+	exploded() bool
+	explode()
 }
 
 type sharedState struct {
@@ -28,34 +28,34 @@ type sharedState struct {
 	rangeCutter   cutter.Range
 }
 
-func (s *sharedState) SetCenter(center cell.Cell) {
+func (s *sharedState) setCenter(center cell.Cell) {
 	s.center = center
 }
 
-func (s sharedState) GetCenter() cell.Cell {
+func (s sharedState) getCenter() cell.Cell {
 	return s.center
 }
 
-func (s *sharedState) Explode() {
+func (s *sharedState) explode() {
 	s.shouldExplode = true
 }
 
-func (s sharedState) CellsHit() []cell.Cell {
+func (s sharedState) cellsHit() []cell.Cell {
 	return []cell.Cell{}
 }
 
-func (s sharedState) Exploding() bool {
+func (s sharedState) exploding() bool {
 	return false
 }
 
-func (s sharedState) Update(timeElapsed time.Duration) state {
+func (s sharedState) update(timeElapsed time.Duration) state {
 	return &s
 }
 
-func (s sharedState) Draw(batch graphics.Batch, x int, y int, z int) {
+func (s sharedState) draw(batch graphics.Batch, x int, y int, z int) {
 	return
 }
 
-func (s sharedState) Exploded() bool {
+func (s sharedState) exploded() bool {
 	return false
 }

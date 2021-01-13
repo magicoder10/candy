@@ -27,38 +27,31 @@ type Player struct {
 }
 
 func (p Player) Draw(batch graphics.Batch) {
-	bound := graphics.Bound{
-		X:      p.regionXOffset + p.walkCycleXOffset + p.state.GetCurrentStep()*spriteWidth,
-		Y:      p.regionYOffset + p.walkCycleYOffset + int(p.state.GetDirection())*spriteHeight,
-		Width:  spriteWidth,
-		Height: spriteHeight,
-	}
-	y := p.state.GetY()
-	batch.DrawSprite(p.state.GetX()-square.Width/6, y, y, bound, float64(square.Width)/spriteWidth)
+	p.state.draw(batch, p.regionXOffset, p.regionYOffset, p.walkCycleXOffset, p.walkCycleYOffset)
 }
 
 func (p *Player) HandleInput(in input.Input) {
-	p.state = p.state.HandleInput(in)
+	p.state = p.state.handleInput(in)
 }
 
 func (p Player) Update(timeElapsed time.Duration) {
-	p.state.Update(timeElapsed)
+	p.state.update(timeElapsed)
 }
 
 func (p Player) GetX() int {
-	return p.state.GetX()
+	return p.state.getX()
 }
 
 func (p Player) GetY() int {
-	return p.state.GetY()
+	return p.state.getY()
 }
 
 func (p Player) GetWidth() int {
-	return p.state.GetWidth()
+	return p.state.getWidth()
 }
 
 func (p Player) GetHeight() int {
-	return p.state.GetHeight()
+	return p.state.getHeight()
 }
 
 func (p Player) GetPowerLevel() int {
@@ -77,7 +70,7 @@ func newPlayer(
 		regionYOffset:    0,
 		walkCycleXOffset: walkCycleXOffset,
 		walkCycleYOffset: walkCycleYOffset,
-		state:            newStandingOnSquare(gameMap, square.Width-2*square.Width/6, square.Width/4, row, col),
+		state:            newStandingStateOnSquare(gameMap, square.Width-2*square.Width/6, square.Width/4, row, col),
 	}
 }
 

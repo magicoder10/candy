@@ -1,8 +1,6 @@
 package player
 
 import (
-	"time"
-
 	"candy/game/direction"
 	"candy/game/gamemap"
 	"candy/game/square"
@@ -15,11 +13,7 @@ type standingState struct {
 	sharedState
 }
 
-func (s standingState) Update(timeElapsed time.Duration) {
-	return
-}
-
-func (s standingState) HandleInput(in input.Input) state {
+func (s standingState) handleInput(in input.Input) state {
 	if in.Action == input.Press {
 		switch in.Device {
 		case input.UpArrowKey:
@@ -35,7 +29,7 @@ func (s standingState) HandleInput(in input.Input) state {
 	return s
 }
 
-func newStandingOnSquare(gameMap *gamemap.Map, width int, height int, row int, col int) standingState {
+func newStandingStateOnSquare(gameMap *gamemap.Map, width int, height int, row int, col int) standingState {
 	return standingState{
 		sharedState{
 			gameMap:   gameMap,
