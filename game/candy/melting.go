@@ -20,20 +20,20 @@ const height = 60
 var _ state = (*meltingState)(nil)
 
 type meltingState struct {
-	shared
+	sharedState
 	meltingImageIndex int
 }
 
 func (m *meltingState) Update(timeElapsed time.Duration) state {
 	m.remainingTime -= timeElapsed
 	if m.remainingTime <= 0 || m.shouldExplode {
-		return newExplodingState(m.shared)
+		return newExplodingState(m.sharedState)
 	}
 	m.lag += timeElapsed.Nanoseconds()
 
 	imageJumps := int(m.lag / meltingImageDuration)
 	m.meltingImageIndex = (m.meltingImageIndex + imageJumps) % maxMeltingImages
-	m.shared.lag %= meltingImageDuration
+	m.sharedState.lag %= meltingImageDuration
 	return m
 }
 
@@ -49,7 +49,7 @@ func (m meltingState) Draw(batch graphics.Batch, x int, y int, z int) {
 
 func newMeltingState(powerLevel int, center cell.Cell, rangeCutter cutter.Range) *meltingState {
 	return &meltingState{
-		shared: shared{
+		sharedState: sharedState{
 			center:        center,
 			powerLevel:    powerLevel,
 			remainingTime: meltingTime,

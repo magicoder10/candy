@@ -19,7 +19,7 @@ type state interface {
 	Explode()
 }
 
-type shared struct {
+type sharedState struct {
 	center        cell.Cell
 	powerLevel    int
 	remainingTime time.Duration
@@ -28,34 +28,34 @@ type shared struct {
 	rangeCutter   cutter.Range
 }
 
-func (s *shared) SetCenter(center cell.Cell) {
+func (s *sharedState) SetCenter(center cell.Cell) {
 	s.center = center
 }
 
-func (s shared) GetCenter() cell.Cell {
+func (s sharedState) GetCenter() cell.Cell {
 	return s.center
 }
 
-func (s *shared) Explode() {
+func (s *sharedState) Explode() {
 	s.shouldExplode = true
 }
 
-func (s shared) CellsHit() []cell.Cell {
+func (s sharedState) CellsHit() []cell.Cell {
 	return []cell.Cell{}
 }
 
-func (s shared) Exploding() bool {
+func (s sharedState) Exploding() bool {
 	return false
 }
 
-func (s shared) Update(timeElapsed time.Duration) state {
+func (s sharedState) Update(timeElapsed time.Duration) state {
 	return &s
 }
 
-func (s shared) Draw(batch graphics.Batch, x int, y int, z int) {
+func (s sharedState) Draw(batch graphics.Batch, x int, y int, z int) {
 	return
 }
 
-func (s shared) Exploded() bool {
+func (s sharedState) Exploded() bool {
 	return false
 }

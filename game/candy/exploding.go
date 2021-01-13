@@ -49,7 +49,7 @@ var directions = []explodeDirection{
 var _ state = (*explodingState)(nil)
 
 type explodingState struct {
-	shared
+	sharedState
 	hitRange int
 }
 
@@ -119,7 +119,7 @@ func (e explodingState) drawEnds(batch graphics.Batch, x int, y int, z int) {
 	}
 }
 
-func newExplodingState(shared shared) *explodingState {
-	shared.remainingTime = explodingTime + 500*time.Millisecond
-	return &explodingState{shared: shared, hitRange: 0}
+func newExplodingState(sharedState sharedState) *explodingState {
+	sharedState.remainingTime = explodingTime + 500*time.Millisecond
+	return &explodingState{sharedState: sharedState, hitRange: 0}
 }
