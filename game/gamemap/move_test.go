@@ -26,31 +26,56 @@ func (o obstacle) CanEnter() bool {
 	return o.canEnter
 }
 
+/**
+
+3           t
+2   t           t
+1           t
+0   t
+	0	1	2	3
+
+
+
+	0	1	2	3
+0   t
+1           t
+2   t           t
+3           t
+
+*/
+
+
 func Test_moveCheckerCanMove(t *testing.T) {
 	checker := moveChecker{
 		gridXOffset: 0,
 		gridYOffset: 0,
-		maxRow:      2,
+		maxRow:      3,
 		maxCol:      3,
 		grid: &[][]square.Square{
 
 			{
 				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
+				nil,
+				nil,
+				nil,
 			},
 			{
+				nil,
+				nil,
 				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
+				nil,
 			},
 			{
 				&obstacle{canEnter: false},
 				nil,
+				nil,
 				&obstacle{canEnter: false},
+			},
+			{
+				nil,
+				nil,
 				&obstacle{canEnter: false},
+				nil,
 			},
 		},
 		tiles: &[]*square.Tile{},
@@ -118,6 +143,50 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					stepSize:        2,
 					moveChecker:     checker,
 					expectedCanMove: true,
+				},
+				{
+					name:            "move left facing blocker",
+					currX:           1,
+					currY:           3,
+					objectWidth:     10,
+					objectHeight:    10,
+					dir:             direction.Left,
+					stepSize:        10,
+					moveChecker:     checker,
+					expectedCanMove: false,
+				},
+				{
+					name:            "move down facing blocker",
+					currX:           1,
+					currY:           0,
+					objectWidth:     10,
+					objectHeight:    10,
+					dir:             direction.Down,
+					stepSize:        10,
+					moveChecker:     checker,
+					expectedCanMove: false,
+				},
+				{
+					name:            "move right facing blocker",
+					currX:           3,
+					currY:           1,
+					objectWidth:     10,
+					objectHeight:    10,
+					dir:             direction.Right,
+					stepSize:        10,
+					moveChecker:     checker,
+					expectedCanMove: false,
+				},
+				{
+					name:            "move up facing blocker",
+					currX:           3,
+					currY:           3,
+					objectWidth:     10,
+					objectHeight:    10,
+					dir:             direction.Up,
+					stepSize:        10,
+					moveChecker:     checker,
+					expectedCanMove: false,
 				},
 			},
 		},
