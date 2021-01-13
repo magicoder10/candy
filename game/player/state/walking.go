@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"candy/game/direction"
+	"candy/game/square"
 	"candy/input"
 )
 
@@ -89,7 +90,7 @@ func newWalking(shared sharedState, lag int64, direction direction.Direction) *W
 	return &Walking{
 		sharedState: shared,
 		lag:         lag,
-		stepSize:    10,
+		stepSize:    square.Width / 10,
 	}
 }
 
