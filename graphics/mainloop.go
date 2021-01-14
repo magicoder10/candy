@@ -16,14 +16,17 @@ func StartMainLoop(framesPerSeconds int64, sp Sprite, window Window, g Graphics)
 		lag += elapsed.Nanoseconds()
 		prevTime = now
 
+
+
 		inputs := window.PollEvents()
 		for _, in := range inputs {
 			sp.HandleInput(in)
 		}
 
-		fullLen := time.Duration(lag)
+		//fullLen := time.Duration(lag)
+
 		for lag >= nanoPerUpdate {
-			sp.Update(fullLen)
+			sp.Update(time.Duration(nanoPerUpdate))
 			lag -= nanoPerUpdate
 		}
 		g.Clear()
