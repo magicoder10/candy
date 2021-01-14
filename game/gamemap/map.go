@@ -208,7 +208,6 @@ func NewMap(assets assets.Assets, g graphics.Graphics) *Map {
 			maxRow:      maxRow,
 			maxCol:      maxCol,
 			grid:        &grid,
-			tiles:       &tiles,
 		},
 	}
 }

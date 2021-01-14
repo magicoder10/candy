@@ -4,8 +4,9 @@ import (
 	"candy/game/direction"
 	"candy/game/square"
 	"candy/graphics"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 var _ square.Square = (*obstacle)(nil)
@@ -30,30 +31,14 @@ func Test_moveCheckerCanMove(t *testing.T) {
 	checker := moveChecker{
 		gridXOffset: 0,
 		gridYOffset: 0,
-		maxRow:      2,
+		maxRow:      3,
 		maxCol:      3,
 		grid: &[][]square.Square{
-
-			{
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-			},
-			{
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-			},
-			{
-				&obstacle{canEnter: false},
-				nil,
-				&obstacle{canEnter: false},
-				&obstacle{canEnter: false},
-			},
+			{&obstacle{canEnter: false}, nil, nil, nil},
+			{nil, nil, &obstacle{canEnter: false}, nil},
+			{&obstacle{canEnter: false}, nil, &obstacle{canEnter: false}, nil},
+			{nil, nil, nil, &obstacle{canEnter: false}},
 		},
-		tiles: &[]*square.Tile{},
 	}
 
 	type testCase struct {
@@ -118,6 +103,56 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					stepSize:        2,
 					moveChecker:     checker,
 					expectedCanMove: true,
+				},
+			},
+		},
+		{
+			name: "Blockers in the direction of movement",
+			testCases: []testCase{
+				{
+					name:            "move left facing blocker",
+					currX:           1 * square.Width,
+					currY:           0,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Left,
+					stepSize:        square.Width,
+					moveChecker:     checker,
+					expectedCanMove: false,
+				},
+
+				{
+					name:            "move down facing blocker",
+					currX:           0,
+					currY:           3 * square.Width,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Down,
+					stepSize:        square.Width,
+					moveChecker:     checker,
+					expectedCanMove: false,
+				},
+				{
+					name:            "move right facing blocker",
+					currX:           1 * square.Width,
+					currY:           2 * square.Width,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Right,
+					stepSize:        square.Width,
+					moveChecker:     checker,
+					expectedCanMove: false,
+				},
+				{
+					name:            "move up facing blocker",
+					currX:           2 * square.Width,
+					currY:           0,
+					objectWidth:     10,
+					objectHeight:    10,
+					dir:             direction.Up,
+					stepSize:        square.Width,
+					moveChecker:     checker,
+					expectedCanMove: false,
 				},
 			},
 		},
