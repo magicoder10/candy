@@ -81,7 +81,6 @@ func newPlayer(
 		walkCycleYOffset: walkCycleYOffset,
 		state: newStandingStateOnSquare(
 			moveChecker, bodyWidth, feetLength, row, col,
-			//moveChecker, square.Width, square.Width, row, col,
 			0,
 			0,
 			walkCycleXOffset,
