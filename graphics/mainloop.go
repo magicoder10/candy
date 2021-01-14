@@ -16,7 +16,6 @@ func StartMainLoop(framesPerSeconds int64, sp Sprite, window Window, g Graphics)
 		lag += elapsed.Nanoseconds()
 		prevTime = now
 
-
 		inputs := window.PollEvents()
 		for _, in := range inputs {
 			sp.HandleInput(in)
