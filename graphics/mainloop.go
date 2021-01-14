@@ -23,8 +23,6 @@ func StartMainLoop(framesPerSeconds int64, sp Sprite, window Window, g Graphics)
 			sp.HandleInput(in)
 		}
 
-		//fullLen := time.Duration(lag)
-
 		for lag >= nanoPerUpdate {
 			sp.Update(time.Duration(nanoPerUpdate))
 			lag -= nanoPerUpdate
