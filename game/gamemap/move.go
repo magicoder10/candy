@@ -15,7 +15,6 @@ type moveChecker struct {
 	maxRow      int
 	maxCol      int
 	grid        *[][]square.Square
-	tiles       *[]*square.Tile
 }
 
 func (m moveChecker) CanMove(currX int, currY int, objectWidth int, objectHeight int, dir direction.Direction, stepSize int) bool {
@@ -55,7 +54,7 @@ func (m moveChecker) inBound(currX int, currY int, objectWidth, objectHeight int
 func (m moveChecker) getBlockingCells(cells []cell.Cell) []cell.Cell {
 	newCells := make([]cell.Cell, 0)
 	for _, c := range cells {
-		if len(*m.tiles) <= c.Row || len((*m.grid)[c.Row]) <= c.Col {
+		if m.maxRow < c.Row || m.maxCol < c.Col {
 			continue
 		}
 		if (*m.grid)[c.Row][c.Col] == nil {
