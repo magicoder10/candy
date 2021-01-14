@@ -26,25 +26,6 @@ func (o obstacle) CanEnter() bool {
 	return o.canEnter
 }
 
-/**
-
-3           t
-2   t           t
-1           t
-0   t
-	0	1	2	3
-
-
-
-	0	1	2	3
-0   t
-1           t
-2   t           t
-3           t
-
-*/
-
-
 func Test_moveCheckerCanMove(t *testing.T) {
 	checker := moveChecker{
 		gridXOffset: 0,
@@ -144,6 +125,32 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					moveChecker:     checker,
 					expectedCanMove: true,
 				},
+			},
+		},
+	}
+
+	for _, testSuite := range testSuites {
+		t.Run(testSuite.name, func(t *testing.T) {
+			for _, tc := range testSuite.testCases {
+				t.Run(tc.name, func(t *testing.T) {
+					canMove := tc.moveChecker.CanMove(
+						tc.currX, tc.currY, tc.objectWidth, tc.objectHeight,
+						tc.dir, tc.stepSize,
+					)
+					assert.Equal(t, tc.expectedCanMove, canMove)
+				})
+			}
+		})
+	}
+
+
+	testSuitesFacingBlocker := []struct {
+		name      string
+		testCases []testCase
+	}{
+		{
+			name: "Blockers in the direction of movement",
+			testCases: []testCase{
 				{
 					name:            "move left facing blocker",
 					currX:           1,
@@ -167,24 +174,41 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					expectedCanMove: false,
 				},
 				{
+					/**
+					3           t
+					2   t   p   t
+					1           t
+					0   t
+						0	1	2	3
+					*/
+
 					name:            "move right facing blocker",
-					currX:           3,
-					currY:           1,
-					objectWidth:     10,
-					objectHeight:    10,
+					currX:           1 * square.Width,
+					currY:           2 * square.Width,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
 					dir:             direction.Right,
-					stepSize:        10,
+					stepSize:        square.Width,
 					moveChecker:     checker,
 					expectedCanMove: false,
 				},
 				{
+
+					/**
+					3           t
+					2   t       t
+					1           t
+					0   t       p
+						0	1	2	3
+					*/
+
 					name:            "move up facing blocker",
-					currX:           3,
-					currY:           3,
+					currX:           2 * square.Width,
+					currY:           0,
 					objectWidth:     10,
 					objectHeight:    10,
 					dir:             direction.Up,
-					stepSize:        10,
+					stepSize:        square.Width,
 					moveChecker:     checker,
 					expectedCanMove: false,
 				},
@@ -192,7 +216,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 		},
 	}
 
-	for _, testSuite := range testSuites {
+	for _, testSuite := range testSuitesFacingBlocker {
 		t.Run(testSuite.name, func(t *testing.T) {
 			for _, tc := range testSuite.testCases {
 				t.Run(tc.name, func(t *testing.T) {
