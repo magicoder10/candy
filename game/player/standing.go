@@ -30,7 +30,7 @@ func (s standingState) handleInput(in input.Input) state {
 
 func newStandingStateOnSquare(
 	moveChecker MoveChecker,
-	width int, height int,
+	playerWidth int, playerHeight int,
 	row int, col int,
 	regionXOffset int,
 	regionYOffset int,
@@ -42,9 +42,9 @@ func newStandingStateOnSquare(
 			moveChecker:      moveChecker,
 			currStep:         1,
 			direction:        direction.Down,
-			width:            width,
-			height:           height,
-			x:                col*square.Width + square.Width/2,
+			playerWidth:      playerWidth,
+			playerHeight:     playerHeight,
+			x:                col*square.Width,
 			y:                row * square.Width,
 			regionXOffset:    regionXOffset,
 			regionYOffset:    regionYOffset,

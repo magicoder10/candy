@@ -12,6 +12,8 @@ const spriteWidth = 48
 const spriteHeight = 48
 const spriteRowWidth = 3 * spriteWidth
 const spriteColHeight = 4 * spriteHeight
+const bodyWidth = 2 * square.Width / 3
+const feetLength = square.Width / 4
 
 type Player struct {
 	// bottom left X of the whole section of walk cycles for all 8 players
@@ -78,7 +80,7 @@ func newPlayer(
 		walkCycleXOffset: walkCycleXOffset,
 		walkCycleYOffset: walkCycleYOffset,
 		state: newStandingStateOnSquare(
-			moveChecker, square.Width-2*square.Width/6, square.Width/4, row, col,
+			moveChecker, bodyWidth, feetLength, row, col,
 			0,
 			0,
 			walkCycleXOffset,
