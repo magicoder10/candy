@@ -24,8 +24,8 @@ type state interface {
 type sharedState struct {
 	currStep         int
 	direction        direction.Direction
-	width            int
-	height           int
+	playerWidth      int
+	playerHeight     int
 	x                int
 	y                int
 	moveChecker      MoveChecker
@@ -33,6 +33,7 @@ type sharedState struct {
 	regionYOffset    int
 	walkCycleXOffset int
 	walkCycleYOffset int
+
 }
 
 func (s sharedState) update(timeElapsed time.Duration) {
@@ -66,9 +67,9 @@ func (s sharedState) getY() int {
 }
 
 func (s sharedState) getWidth() int {
-	return s.width
+	return s.playerWidth
 }
 
 func (s sharedState) getHeight() int {
-	return s.height
+	return s.playerHeight
 }
