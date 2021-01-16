@@ -2,8 +2,8 @@ package main
 
 import (
 	"candy/assets"
-	"candy/game"
 	"candy/graphics"
+	"candy/view"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -30,7 +30,7 @@ func run() {
 		panic(err)
 	}
 
-	gm := game.NewGame(ass, &px)
+	gm := view.NewGameScreen(ass, &px)
 	gm.Start()
 
 	graphics.StartMainLoop(24, &gm, &px, &px)
