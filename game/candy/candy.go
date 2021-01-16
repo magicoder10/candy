@@ -15,6 +15,18 @@ type Candy struct {
 	state state
 }
 
+func (c Candy) ShouldRemove() bool {
+	return false
+}
+
+func (c Candy) UnblockFire() {
+	return
+}
+
+func (c Candy) Break() {
+	c.state.explode()
+}
+
 func (c Candy) IsBreakable() bool {
 	return true
 }
@@ -29,10 +41,6 @@ func (c Candy) CanEnter() bool {
 
 func (c *Candy) Update(timeElapsed time.Duration) {
 	c.state = c.state.update(timeElapsed)
-}
-
-func (c Candy) Explode() {
-	c.state.explode()
 }
 
 func (c Candy) Exploded() bool {

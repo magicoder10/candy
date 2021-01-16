@@ -17,17 +17,24 @@ import (
 const defaultRows = 12
 const defaultCols = 15
 
+type brokenSquare struct {
+	cell   cell.Cell
+	square square.Square
+}
+
 type Map struct {
-	screenX           int
-	screenY           int
-	batch             graphics.Batch
-	maxRow            int
-	maxCol            int
-	gridXOffset       int
-	gridYOffset       int
-	grid              *[][]square.Square
+	screenX     int
+	screenY     int
+	batch       graphics.Batch
+	maxRow      int
+	maxCol      int
+	gridXOffset int
+	gridYOffset int
+	grid        *[][]square.Square
+	// this is only used for debugging
 	tiles             *[]*square.Tile
 	candies           *map[cell.Cell]*candy.Candy
+	brokenSquares     map[*candy.Candy][]brokenSquare
 	candyRangeCutter  candy.RangeCutter
 	playerMoveChecker player.MoveChecker
 	eventHandlers     eventHandlers
@@ -58,12 +65,14 @@ func (m Map) DrawGrid(batch graphics.Batch) {
 }
 
 func (m Map) RevealItems() {
+	// this is only used for debugging
 	for _, t := range *m.tiles {
 		t.RevealItem()
 	}
 }
 
 func (m Map) HideItems() {
+	// this is only used for debugging
 	for _, t := range *m.tiles {
 		t.HideItem()
 	}
@@ -73,6 +82,14 @@ func (m *Map) Update(timeElapsed time.Duration) {
 	for _, c := range *m.candies {
 		c.Update(timeElapsed)
 	}
+	m.propagateExplosion(func(currCandy *candy.Candy, nextHitCell cell.Cell) {
+		m.collectBrokenSquares(nextHitCell, currCandy)
+		m.eventHandlers.onCandyExploding(nextHitCell)
+	})
+	m.removeExplodedCandies()
+}
+
+func (m Map) propagateExplosion(onHitNextCell func(currCandy *candy.Candy, nextHitCell cell.Cell)) {
 	queue := make([]cell.Cell, 0)
 	visited := make(map[cell.Cell]struct{})
 
@@ -87,10 +104,8 @@ func (m *Map) Update(timeElapsed time.Duration) {
 		currCell := queue[0]
 		queue = queue[1:]
 
-		if c, ok := (*m.candies)[currCell]; ok {
-			c.Explode()
-
-			for _, nextCell := range c.CellsHit() {
+		if currCandy, ok := (*m.candies)[currCell]; ok {
+			for _, nextCell := range currCandy.CellsHit() {
 				if !inGrid(nextCell, m.maxRow, m.maxCol) {
 					continue
 				}
@@ -99,11 +114,26 @@ func (m *Map) Update(timeElapsed time.Duration) {
 				}
 				visited[nextCell] = struct{}{}
 				queue = append(queue, nextCell)
-				m.eventHandlers.onCandyExploding(nextCell)
+				onHitNextCell(currCandy, nextCell)
 			}
 		}
 	}
-	m.removeExplodedCandies()
+}
+
+func (m Map) collectBrokenSquares(cell cell.Cell, candy *candy.Candy) {
+	sq := (*m.grid)[cell.Row][cell.Col]
+	if sq != nil && sq.IsBreakable() {
+		sq.Break()
+
+		if _, ok := m.brokenSquares[candy]; !ok {
+			m.brokenSquares[candy] = make([]brokenSquare, 0)
+		}
+		m.brokenSquares[candy] = append(m.brokenSquares[candy],
+			brokenSquare{
+				cell:   cell,
+				square: sq,
+			})
+	}
 }
 
 func (m *Map) removeExplodedCandies() {
@@ -112,11 +142,24 @@ func (m *Map) removeExplodedCandies() {
 	for candyCell, c := range *m.candies {
 		if c.Exploded() {
 			(*m.grid)[candyCell.Row][candyCell.Col] = nil
+			m.removeBrokenSquares(c)
 		} else {
 			newCandies[candyCell] = c
 		}
 	}
 	m.candies = &newCandies
+}
+
+func (m *Map) removeBrokenSquares(cd *candy.Candy) {
+	if brokenSquares, ok := m.brokenSquares[cd]; ok {
+		for _, bs := range brokenSquares {
+			bs.square.UnblockFire()
+			if bs.square.ShouldRemove() {
+				(*m.grid)[bs.cell.Row][bs.cell.Col] = nil
+			}
+		}
+		delete(m.brokenSquares, cd)
+	}
 }
 
 func (m Map) GetPlayerMoveChecker() player.MoveChecker {
@@ -226,5 +269,6 @@ func NewMap(assets assets.Assets, g graphics.Graphics, screenX int, screenY int)
 			maxCol:      maxCol,
 			grid:        &grid,
 		},
+		brokenSquares: make(map[*candy.Candy][]brokenSquare),
 	}
 }

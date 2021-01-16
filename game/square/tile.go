@@ -8,76 +8,80 @@ import (
 const revealItemXOffset = 16
 const revealItemYOffset = 36
 const revealItemZOffset = -1
+const brokenTileXOffset = 4
+const brokenTileYOffset = 2
 
 var _ Square = (*Tile)(nil)
 
 type Tile struct {
-	imageXOffset int
-	imageYOffset int
-	xOffset      int
-	yOffset      int
-	canEnter     bool
-	showItem     bool
-	gameItem     gameitem.GameItem
+	state tileState
+}
+
+func (t Tile) ShouldRemove() bool {
+	return t.state.shouldRemove()
+}
+
+func (t *Tile) UnblockFire() {
+	t.state = t.state.unblockFire()
+}
+
+func (t Tile) IsBlocking() bool {
+	return true
+}
+
+func (t *Tile) Break() {
+	t.state = t.state.breakTile()
 }
 
 func (t Tile) IsBreakable() bool {
-	return false
+	return true
 }
 
 func (t Tile) Draw(batch graphics.Batch, x int, y int) {
-	bound := graphics.Bound{
-		X:      t.imageXOffset,
-		Y:      t.imageYOffset,
-		Width:  64,
-		Height: 80,
-	}
-	batch.DrawSprite(x+t.xOffset, y+t.yOffset, y, bound, 1)
-
-	if t.gameItem != gameitem.None && t.showItem {
-		batch.DrawSprite(x+t.xOffset+revealItemXOffset, y+t.yOffset+revealItemYOffset, y+revealItemZOffset, t.gameItem.GetBound(), 0.6)
-	}
+	t.state.draw(batch, x, y)
 }
 
 func (t Tile) CanEnter() bool {
-	return t.canEnter
+	return t.state.canEnter()
 }
 
-func (t *Tile) RevealItem() gameitem.GameItem {
-	t.showItem = true
-	return t.gameItem
+func (t *Tile) RevealItem() {
+	t.state.revealItem()
 }
 
-func (t *Tile) HideItem() gameitem.GameItem {
-	t.showItem = false
-	return t.gameItem
+func (t *Tile) HideItem() {
+	t.state.hideItem()
 }
 
 func (t *Tile) RemoveItem() gameitem.GameItem {
-	gameItem := t.gameItem
-	t.gameItem = gameitem.None
-	return gameItem
+	return t.state.removeItem()
 }
 
 func newYellow(gameItem gameitem.GameItem) Tile {
 	return Tile{
-		imageXOffset: 576,
-		imageYOffset: 304,
-		xOffset:      -4,
-		yOffset:      -2,
-		canEnter:     false,
-		gameItem:     gameItem,
+		state: &tileSolidState{
+			tileSharedState{
+				imageXOffset: 576,
+				imageYOffset: 304,
+				xOffset:      -4,
+				yOffset:      -2,
+				gameItem:     gameItem,
+			},
+		},
 	}
 }
 
 func newGreen(gameItem gameitem.GameItem) Tile {
 	return Tile{
-		imageXOffset: 576,
-		imageYOffset: 224,
-		xOffset:      -4,
-		yOffset:      -2,
-		canEnter:     false,
-		gameItem:     gameItem,
+		state: &tileSolidState{
+			tileSharedState{
+				imageXOffset: 576,
+				imageYOffset: 224,
+				xOffset:      -4,
+				yOffset:      -2,
+				gameItem:     gameItem,
+			},
+		},
 	}
 }
 
