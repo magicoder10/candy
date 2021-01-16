@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"candy/game/gameitem"
+	"candy/game/square"
 	"candy/graphics"
 
 	"golang.org/x/image/font/basicfont"
@@ -12,6 +13,10 @@ import (
 const boxCount = 10
 const reservedBoxesEnd = 2
 const boxWidth = 70
+const gameItemPadding = boxWidth - square.Width
+const usableItemBoxX = 244
+const itemCountXOffset = 33
+const itemCountYOffset = 10
 
 var backpackImageBound = graphics.Bound{
 	X:      0,
@@ -97,14 +102,17 @@ func NewBackPack(g graphics.Graphics, screenX int, screenY int) BackPack {
 	boxes := make([]*box, boxCount)
 	items := make(map[gameitem.GameItem]int)
 
-	boxes[0] = newBox(g, screenX+10, screenY+10, true)
+	x := screenX + gameItemPadding
+	y := screenY + gameItemPadding
+
+	boxes[0] = newBox(g, x, y, true)
 	boxes[0].gameItem = gameitem.Power
-	boxes[1] = newBox(g, screenX+10+boxWidth, screenY+10, true)
+	boxes[1] = newBox(g, x+boxWidth, y, true)
 	boxes[1].gameItem = gameitem.Speed
-	boxes[2] = newBox(g, screenX+10+boxWidth*2, screenY+10, true)
+	boxes[2] = newBox(g, x+boxWidth*2, y, true)
 	boxes[2].gameItem = gameitem.Candy
 	for i := 0; i < boxCount-3; i++ {
-		boxes[i+3] = newBox(g, screenX+244+i*boxWidth, screenY+10, false)
+		boxes[i+3] = newBox(g, screenX+usableItemBoxX+i*boxWidth, y, false)
 	}
 
 	items[gameitem.Power] = 0
@@ -123,7 +131,7 @@ func newBox(g graphics.Graphics, x int, y int, alwaysShowCount bool) *box {
 		x:               x,
 		y:               y,
 		gameItem:        gameitem.None,
-		text:            g.NewText(basicfont.Face7x13, x+33, y+10, 28, 18, 1.2, graphics.AlignCenter),
+		text:            g.NewText(basicfont.Face7x13, x+itemCountXOffset, y+itemCountYOffset, 28, 18, 1.2, graphics.AlignCenter),
 		alwaysShowCount: alwaysShowCount,
 	}
 }

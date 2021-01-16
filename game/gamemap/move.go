@@ -21,12 +21,16 @@ func (m moveChecker) CanMove(currX int, currY int, objectWidth int, objectHeight
 	if !m.inBound(currX, currY, objectWidth, objectHeight, dir, stepSize) {
 		return false
 	}
-	cornerCells := cell.GetCornerCells(currX-m.gridXOffset, currY-m.gridYOffset, objectWidth, objectHeight, square.Width, square.Width)
+
+	currX -= m.gridXOffset
+	currY -= m.gridYOffset
+
+	cornerCells := cell.GetCornerCells(currX, currY, objectWidth, objectHeight, square.Width, square.Width)
 	neighborCells := m.getNeighborCells(cornerCells, dir)
 	blockingCells := m.getBlockingCells(neighborCells)
 
 	for _, blockingCell := range blockingCells {
-		if isBlocked(blockingCell, currX-m.gridXOffset, currY-m.gridYOffset, objectWidth, objectHeight, dir, stepSize) {
+		if isBlocked(blockingCell, currX, currY, objectWidth, objectHeight, dir, stepSize) {
 			return false
 		}
 	}

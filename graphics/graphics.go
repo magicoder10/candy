@@ -10,11 +10,7 @@ import (
 type alignment int
 
 const (
-	AlignLeft alignment = iota
-	AlignRight
-	AlignTop
-	AlignDown
-	AlignCenter
+	AlignCenter alignment = iota
 )
 
 type Bound struct {
