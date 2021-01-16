@@ -22,7 +22,12 @@ func (c candyRangeCutter) CutRange(start cell.Cell, initialRange int, dir direct
 			return currRange - 1
 		}
 		sq := (*c.grid)[nc.Row][nc.Col]
-		if sq != nil && !sq.IsBreakable() {
+		if sq == nil || sq.CanEnter() {
+			continue
+		}
+		if sq.IsBreakable() {
+			return currRange
+		} else {
 			return currRange - 1
 		}
 	}
