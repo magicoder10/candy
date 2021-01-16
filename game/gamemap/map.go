@@ -124,12 +124,12 @@ func (m Map) propagateExplosion(onHitNextCell func(currCandy *candy.Candy, nextH
 
 func (m Map) collectBrokenSquares(cell cell.Cell, candy *candy.Candy) {
 	sq := (*m.grid)[cell.Row][cell.Col]
-	if sq != nil && sq.IsBreakable() {
+	if sq != nil && sq.IsBreakable() && !sq.IsBroken() {
 		sq.Break()
-
 		if _, ok := m.brokenSquares[candy]; !ok {
 			m.brokenSquares[candy] = make([]brokenSquare, 0)
 		}
+
 		m.brokenSquares[candy] = append(m.brokenSquares[candy],
 			brokenSquare{
 				cell:   cell,
@@ -236,8 +236,8 @@ func NewMap(assets assets.Assets, g graphics.Graphics, screenX int, screenY int)
 				continue
 			}
 			t := square.NewTile(colConfig, randomGameItem())
-			tiles = append(tiles, &t)
-			grid[row][col] = &t
+			tiles = append(tiles, t)
+			grid[row][col] = t
 		}
 	}
 

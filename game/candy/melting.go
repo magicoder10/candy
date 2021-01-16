@@ -7,7 +7,7 @@ import (
 	"candy/graphics"
 )
 
-const meltingTime = 7 * time.Second
+const meltingTime = 5 * time.Second
 
 var meltingImageDuration = (180 * time.Millisecond).Nanoseconds()
 

@@ -1,10 +1,10 @@
 package gamemap
 
 import (
+	"testing"
+
 	"candy/game/direction"
 	"candy/game/square"
-	"candy/graphics"
-	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -12,15 +12,8 @@ import (
 var _ square.Square = (*obstacle)(nil)
 
 type obstacle struct {
+	square.Tile
 	canEnter bool
-}
-
-func (o obstacle) Draw(batch graphics.Batch, x int, y int) {
-	return
-}
-
-func (o obstacle) IsBreakable() bool {
-	return false
 }
 
 func (o obstacle) CanEnter() bool {

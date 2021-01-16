@@ -11,6 +11,7 @@ type Square interface {
 	IsBreakable() bool
 	Break()
 	UnblockFire()
+	IsBroken() bool
 	ShouldRemove() bool
 	CanEnter() bool
 }

@@ -10,8 +10,6 @@ import (
 type state interface {
 	update(timeElapsed time.Duration) state
 	draw(batch graphics.Batch, x int, y int, z int)
-	getCenter() cell.Cell
-	setCenter(center cell.Cell)
 	cellsHit() []cell.Cell
 	exploding() bool
 	exploded() bool
@@ -25,14 +23,6 @@ type sharedState struct {
 	lag           int64
 	shouldExplode bool
 	rangeCutter   RangeCutter
-}
-
-func (s *sharedState) setCenter(center cell.Cell) {
-	s.center = center
-}
-
-func (s sharedState) getCenter() cell.Cell {
-	return s.center
 }
 
 func (s *sharedState) explode() {

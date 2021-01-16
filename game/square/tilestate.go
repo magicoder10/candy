@@ -13,6 +13,8 @@ type tileState interface {
 	breakTile() tileState
 	revealItem()
 	hideItem()
+	isBroken() bool
+	breakable() bool
 	removeItem() gameitem.GameItem
 }
 
@@ -45,8 +47,12 @@ func (t tileSharedState) canEnter() bool {
 	return false
 }
 
-func (t *tileSolidState) unblockFire() tileState {
-	return t
+func (t tileSharedState) breakable() bool {
+	return false
+}
+
+func (t tileSharedState) isBroken() bool {
+	return false
 }
 
 // tileSolidState
@@ -59,6 +65,14 @@ type tileSolidState struct {
 
 func (t tileSolidState) breakTile() tileState {
 	return &tileBrokenState{t.tileSharedState}
+}
+
+func (t *tileSolidState) unblockFire() tileState {
+	return t
+}
+
+func (t tileSolidState) breakable() bool {
+	return true
 }
 
 func (t tileSolidState) draw(batch graphics.Batch, x int, y int) {
@@ -102,6 +116,10 @@ func (t tileBrokenState) draw(batch graphics.Batch, x int, y int) {
 
 func (t tileBrokenState) unblockFire() tileState {
 	return &tileCollectItemState{t}
+}
+
+func (t tileBrokenState) isBroken() bool {
+	return true
 }
 
 // tileCollectItemState

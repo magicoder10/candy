@@ -15,6 +15,10 @@ type Candy struct {
 	state state
 }
 
+func (c Candy) IsBroken() bool {
+	return false
+}
+
 func (c Candy) ShouldRemove() bool {
 	return false
 }
@@ -53,14 +57,6 @@ func (c Candy) Exploding() bool {
 
 func (c Candy) CellsHit() []cell.Cell {
 	return c.state.cellsHit()
-}
-
-func (c *Candy) MoveTo(cell cell.Cell) {
-	c.state.setCenter(cell)
-}
-
-func (c Candy) GetCellOn() cell.Cell {
-	return c.state.getCenter()
 }
 
 func newCandy(powerLevel int, center cell.Cell, rangeCutter RangeCutter) Candy {
