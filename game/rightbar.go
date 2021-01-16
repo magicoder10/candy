@@ -17,19 +17,19 @@ var rightBarBackpackImageBound = graphics.Bound{
 	Height: 830,
 }
 
-type rightSideBar struct {
+type RightSideBar struct {
 	screenX          int
 	screenY          int
 	playerStatusList *playerStatusList
 }
 
-func (r rightSideBar) draw(batch graphics.Batch) {
+func (r RightSideBar) Draw(batch graphics.Batch) {
 	batch.DrawSprite(r.screenX, r.screenY, r.screenY, rightBarBackpackImageBound, 1)
 	r.playerStatusList.draw(batch)
 }
 
-func newRightSideBar(screenX int, screenY int, players []*player.Player) rightSideBar {
-	return rightSideBar{
+func NewRightSideBar(screenX int, screenY int, players []*player.Player) RightSideBar {
+	return RightSideBar{
 		screenX: screenX,
 		screenY: screenY,
 		playerStatusList: &playerStatusList{
