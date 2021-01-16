@@ -25,6 +25,7 @@ type Game struct {
 	backpack         *player.BackPack
 	currPlayer       int
 	players          []*player.Player
+	rightSideBar     rightSideBar
 }
 
 func (g Game) Draw() {
@@ -36,6 +37,7 @@ func (g Game) Draw() {
 	}
 
 	g.backpack.Draw(g.spriteSheetBatch)
+	g.rightSideBar.draw(g.spriteSheetBatch)
 
 	g.spriteSheetBatch.RenderBatch()
 	g.graphics.RenderTexts()
@@ -110,12 +112,14 @@ func NewGame(assets assets.Assets, g graphics.Graphics) Game {
 	}
 	backpack := player.NewBackPack(g, 0, 0)
 	backpack.AddItem(gameitem.FirstAidKit)
+	rightSideBar := newRightSideBar(gamemap.Width, 0, players)
 	gm := Game{
 		graphics:         g,
 		spriteSheetBatch: batch,
 		gameMap:          gameMap,
 		players:          players,
 		backpack:         &backpack,
+		rightSideBar:     rightSideBar,
 	}
 	gameMap.OnCandyExploding(gm.onCandyExploding)
 	return gm
