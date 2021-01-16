@@ -25,7 +25,7 @@ func (c candyRangeCutter) CutRange(start cell.Cell, initialRange int, dir direct
 		if sq == nil || sq.CanEnter() {
 			continue
 		}
-		if sq.IsBreakable() {
+		if sq.IsBroken() || sq.IsBreakable() {
 			return currRange
 		} else {
 			return currRange - 1

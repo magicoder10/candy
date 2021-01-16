@@ -17,6 +17,10 @@ type Tile struct {
 	state tileState
 }
 
+func (t Tile) IsBroken() bool {
+	return t.state.isBroken()
+}
+
 func (t Tile) ShouldRemove() bool {
 	return t.state.shouldRemove()
 }
@@ -25,16 +29,12 @@ func (t *Tile) UnblockFire() {
 	t.state = t.state.unblockFire()
 }
 
-func (t Tile) IsBlocking() bool {
-	return true
-}
-
 func (t *Tile) Break() {
 	t.state = t.state.breakTile()
 }
 
 func (t Tile) IsBreakable() bool {
-	return true
+	return t.state.breakable()
 }
 
 func (t Tile) Draw(batch graphics.Batch, x int, y int) {
@@ -85,16 +85,16 @@ func newGreen(gameItem gameitem.GameItem) Tile {
 	}
 }
 
-func NewTile(tileType rune, gameItem gameitem.GameItem) Tile {
+func NewTile(tileType rune, gameItem gameitem.GameItem) *Tile {
 	switch tileType {
 	case 'Y':
 		tile := newYellow(gameItem)
-		return tile
+		return &tile
 	case 'G':
 		tile := newGreen(gameItem)
-		return tile
+		return &tile
 	default:
 		tile := newGreen(gameItem)
-		return tile
+		return &tile
 	}
 }
