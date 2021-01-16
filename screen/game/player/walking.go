@@ -3,9 +3,9 @@ package player
 import (
 	"time"
 
-	"candy/game/direction"
-	"candy/game/square"
 	"candy/input"
+	"candy/screen/game/direction"
+	"candy/screen/game/square"
 )
 
 var nanoPerStep = (100 * time.Millisecond).Nanoseconds()

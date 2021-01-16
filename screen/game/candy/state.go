@@ -3,8 +3,8 @@ package candy
 import (
 	"time"
 
-	"candy/game/cell"
 	"candy/graphics"
+	"candy/screen/game/cell"
 )
 
 type state interface {

@@ -1,7 +1,7 @@
 package player
 
 import (
-	"candy/game/direction"
+	"candy/screen/game/direction"
 )
 
 type MoveChecker interface {

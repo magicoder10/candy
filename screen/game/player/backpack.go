@@ -3,9 +3,9 @@ package player
 import (
 	"fmt"
 
-	"candy/game/gameitem"
-	"candy/game/square"
 	"candy/graphics"
+	"candy/screen/game/gameitem"
+	"candy/screen/game/square"
 
 	"golang.org/x/image/font/basicfont"
 )

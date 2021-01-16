@@ -1,8 +1,8 @@
 package player
 
 import (
-	"candy/game/direction"
 	"candy/graphics"
+	"candy/screen/game/direction"
 )
 
 func draw(

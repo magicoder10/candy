@@ -1,7 +1,7 @@
 package gamemap
 
 import (
-	"candy/game/cell"
+	"candy/screen/game/cell"
 )
 
 func inGrid(cell cell.Cell, maxRow int, maxCol int) bool {

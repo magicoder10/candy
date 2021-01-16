@@ -4,9 +4,9 @@ import (
 	"errors"
 	"time"
 
-	"candy/game/cell"
-	"candy/game/square"
 	"candy/graphics"
+	"candy/screen/game/cell"
+	"candy/screen/game/square"
 )
 
 var _ square.Square = (*Candy)(nil)

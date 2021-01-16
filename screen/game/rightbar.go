@@ -1,8 +1,8 @@
 package game
 
 import (
-	"candy/game/player"
 	"candy/graphics"
+	"candy/screen/game/player"
 )
 
 const playerStatusBarLeft = 56

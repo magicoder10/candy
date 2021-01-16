@@ -2,8 +2,8 @@ package main
 
 import (
 	"candy/assets"
-	"candy/game"
 	"candy/graphics"
+	"candy/screen/game"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"

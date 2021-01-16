@@ -1,9 +1,9 @@
 package gamemap
 
 import (
-	"candy/game/direction"
-	"candy/game/square"
 	"candy/graphics"
+	"candy/screen/game/direction"
+	"candy/screen/game/square"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

@@ -1,10 +1,10 @@
 package gamemap
 
 import (
-	"candy/game/cell"
-	"candy/game/direction"
-	"candy/game/player"
-	"candy/game/square"
+	"candy/screen/game/cell"
+	"candy/screen/game/direction"
+	"candy/screen/game/player"
+	"candy/screen/game/square"
 )
 
 var _ player.MoveChecker = (*moveChecker)(nil)

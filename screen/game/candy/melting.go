@@ -3,8 +3,8 @@ package candy
 import (
 	"time"
 
-	"candy/game/cell"
 	"candy/graphics"
+	"candy/screen/game/cell"
 )
 
 const meltingTime = 7 * time.Second

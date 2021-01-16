@@ -1,8 +1,8 @@
 package candy
 
 import (
-	"candy/game/square"
 	"candy/graphics"
+	"candy/screen/game/square"
 )
 
 var explosionCenter = graphics.Bound{

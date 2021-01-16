@@ -1,8 +1,8 @@
 package candy
 
 import (
-	"candy/game/cell"
-	"candy/game/direction"
+	"candy/screen/game/cell"
+	"candy/screen/game/direction"
 )
 
 type RangeCutter interface {

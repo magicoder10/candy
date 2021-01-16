@@ -1,10 +1,10 @@
 package gamemap
 
 import (
-	"candy/game/candy"
-	"candy/game/cell"
-	"candy/game/direction"
-	"candy/game/square"
+	"candy/screen/game/candy"
+	"candy/screen/game/cell"
+	"candy/screen/game/direction"
+	"candy/screen/game/square"
 )
 
 var _ candy.RangeCutter = (*candyRangeCutter)(nil)

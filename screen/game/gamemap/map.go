@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"candy/assets"
-	"candy/game/candy"
-	"candy/game/cell"
-	"candy/game/gameitem"
-	"candy/game/player"
-	"candy/game/square"
 	"candy/graphics"
+	"candy/screen/game/candy"
+	"candy/screen/game/cell"
+	"candy/screen/game/gameitem"
+	"candy/screen/game/player"
+	"candy/screen/game/square"
 )
 
 const defaultRows = 12

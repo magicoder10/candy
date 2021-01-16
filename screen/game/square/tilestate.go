@@ -1,8 +1,8 @@
 package square
 
 import (
-	"candy/game/gameitem"
 	"candy/graphics"
+	"candy/screen/game/gameitem"
 )
 
 type tileState interface {

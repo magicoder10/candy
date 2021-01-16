@@ -4,14 +4,14 @@ import (
 	"time"
 
 	"candy/assets"
-	"candy/game/candy"
-	"candy/game/cell"
-	"candy/game/gameitem"
-	"candy/game/gamemap"
-	"candy/game/player"
-	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
+	"candy/screen/game/candy"
+	"candy/screen/game/cell"
+	"candy/screen/game/gameitem"
+	"candy/screen/game/gamemap"
+	"candy/screen/game/player"
+	"candy/screen/game/square"
 )
 
 var _ graphics.Sprite = (*Game)(nil)

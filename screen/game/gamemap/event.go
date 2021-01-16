@@ -1,7 +1,7 @@
 package gamemap
 
 import (
-	"candy/game/cell"
+	"candy/screen/game/cell"
 )
 
 type eventHandlers struct {

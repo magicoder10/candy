@@ -3,10 +3,10 @@ package candy
 import (
 	"time"
 
-	"candy/game/cell"
-	"candy/game/direction"
-	"candy/game/square"
 	"candy/graphics"
+	"candy/screen/game/cell"
+	"candy/screen/game/direction"
+	"candy/screen/game/square"
 )
 
 const explodingTime = 400 * time.Millisecond
