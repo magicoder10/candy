@@ -22,18 +22,15 @@ type state interface {
 }
 
 type sharedState struct {
-	currStep         int
-	direction        direction.Direction
-	playerWidth      int
-	playerHeight     int
-	x                int
-	y                int
-	moveChecker      MoveChecker
-	regionXOffset    int
-	regionYOffset    int
-	walkCycleXOffset int
-	walkCycleYOffset int
-
+	currStep     int
+	direction    direction.Direction
+	playerWidth  int
+	playerHeight int
+	x            int
+	y            int
+	moveChecker  MoveChecker
+	regionOffset regionOffset
+	character    character
 }
 
 func (s sharedState) update(timeElapsed time.Duration) {
@@ -49,13 +46,11 @@ func (s sharedState) trapped() state {
 }
 
 func (s sharedState) draw(batch graphics.Batch) {
-	bound := graphics.Bound{
-		X:      s.regionXOffset + s.walkCycleXOffset + s.currStep*spriteWidth,
-		Y:      s.regionYOffset + s.walkCycleYOffset + int(s.direction)*spriteHeight,
-		Width:  spriteWidth,
-		Height: spriteHeight,
-	}
-	batch.DrawSprite(s.x-square.Width/6, s.y, s.y, bound, float64(square.Width)/spriteWidth)
+	draw(batch,
+		s.regionOffset,
+		s.character,
+		s.x-square.Width/6, s.y, s.y, float64(square.Width)/spriteWidth,
+		s.direction, s.currStep)
 }
 
 func (s sharedState) getX() int {

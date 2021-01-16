@@ -11,6 +11,7 @@ const (
 	Speed
 	Power
 	Candy
+	FirstAidKit
 )
 
 var GameItems = []GameItem{
@@ -18,6 +19,7 @@ var GameItems = []GameItem{
 	Speed,
 	Power,
 	Candy,
+	FirstAidKit,
 }
 
 func (g GameItem) GetBound() graphics.Bound {
@@ -40,6 +42,13 @@ func (g GameItem) GetBound() graphics.Bound {
 		return graphics.Bound{
 			X:      761,
 			Y:      144,
+			Width:  60,
+			Height: 60,
+		}
+	case FirstAidKit:
+		return graphics.Bound{
+			X:      761,
+			Y:      84,
 			Width:  60,
 			Height: 60,
 		}

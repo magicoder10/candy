@@ -31,25 +31,22 @@ func (s standingState) handleInput(in input.Input) state {
 func newStandingStateOnSquare(
 	moveChecker MoveChecker,
 	playerWidth int, playerHeight int,
+	gridX int, gridY int,
 	row int, col int,
-	regionXOffset int,
-	regionYOffset int,
-	walkCycleXOffset int,
-	walkCycleYOffset int,
+	regionOffset regionOffset,
+	character character,
 ) standingState {
 	return standingState{
 		sharedState{
-			moveChecker:      moveChecker,
-			currStep:         1,
-			direction:        direction.Down,
-			playerWidth:      playerWidth,
-			playerHeight:     playerHeight,
-			x:                col*square.Width,
-			y:                row * square.Width,
-			regionXOffset:    regionXOffset,
-			regionYOffset:    regionYOffset,
-			walkCycleXOffset: walkCycleXOffset,
-			walkCycleYOffset: walkCycleYOffset,
+			moveChecker:  moveChecker,
+			currStep:     1,
+			direction:    direction.Down,
+			playerWidth:  playerWidth,
+			playerHeight: playerHeight,
+			x:            gridX + col*square.Width,
+			y:            gridY + row*square.Width,
+			regionOffset: regionOffset,
+			character:    character,
 		},
 	}
 }

@@ -15,16 +15,22 @@ const spriteColHeight = 4 * spriteHeight
 const bodyWidth = 2 * square.Width / 3
 const feetLength = square.Width / 4
 
-type Player struct {
-	// bottom left X of the whole section of walk cycles for all 8 players
-	regionXOffset int
-	// bottom right Y of the whole section of walk cycles for all 8 players
-	regionYOffset int
+type regionOffset struct {
+	x int
+	y int
+}
+
+type walkCycleOffset struct {
 	// bottom left X of the walk cycle for the current player
-	walkCycleXOffset int
+	x int
 	// bottom left Y of the walk cycle for the current player
-	walkCycleYOffset int
-	state            state
+	y int
+}
+
+type Player struct {
+	state        state
+	regionOffset regionOffset
+	character    character
 }
 
 func (p Player) Draw(batch graphics.Batch) {
@@ -67,55 +73,29 @@ func (p *Player) Trapped() {
 	p.state = p.state.trapped()
 }
 
-func newPlayer(
+func NewPlayer(
 	moveChecker MoveChecker,
-	walkCycleXOffset int,
-	walkCycleYOffset int,
+	character character,
+	gridX int,
+	gridY int,
 	row int,
 	col int,
 ) *Player {
 	return &Player{
-		regionXOffset:    0,
-		regionYOffset:    0,
-		walkCycleXOffset: walkCycleXOffset,
-		walkCycleYOffset: walkCycleYOffset,
+		regionOffset: regionOffset{
+			x: 0,
+			y: 0,
+		},
+		character: character,
 		state: newStandingStateOnSquare(
-			moveChecker, bodyWidth, feetLength, row, col,
-			0,
-			0,
-			walkCycleXOffset,
-			walkCycleYOffset,
+			moveChecker, bodyWidth, feetLength,
+			gridX, gridY,
+			row, col,
+			regionOffset{
+				x: 0,
+				y: 0,
+			},
+			character,
 		),
 	}
-}
-
-func NewBlackBoy(moveChecker MoveChecker, row int, col int) *Player {
-	return newPlayer(moveChecker, 0, spriteColHeight, row, col)
-}
-
-func NewBlackGirl(moveChecker MoveChecker, row int, col int) *Player {
-	return newPlayer(moveChecker, 0, 0, row, col)
-}
-
-func NewBrownBoy(moveChecker MoveChecker, row int, col int) *Player {
-	return newPlayer(moveChecker, spriteRowWidth, spriteColHeight, row, col)
-}
-
-func NewBrownGirl(moveChecker MoveChecker, row int, col int) *Player {
-	return newPlayer(moveChecker, spriteRowWidth, 0, row, col)
-}
-func NewYellowBoy(moveChecker MoveChecker, row int, col int) *Player {
-	return newPlayer(moveChecker, spriteRowWidth*2, spriteColHeight, row, col)
-}
-
-func NewYellowGirl(moveChecker MoveChecker, row int, col int) *Player {
-	return newPlayer(moveChecker, spriteRowWidth*2, 0, row, col)
-}
-
-func NewOrangeBoy(moveChecker MoveChecker, row int, col int) *Player {
-	return newPlayer(moveChecker, spriteRowWidth*3, spriteColHeight, row, col)
-}
-
-func NewOrangeGirl(moveChecker MoveChecker, row int, col int) *Player {
-	return newPlayer(moveChecker, spriteRowWidth*3, 0, row, col)
 }

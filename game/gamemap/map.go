@@ -18,6 +18,8 @@ const defaultRows = 12
 const defaultCols = 15
 
 type Map struct {
+	screenX           int
+	screenY           int
 	batch             graphics.Batch
 	maxRow            int
 	maxCol            int
@@ -38,7 +40,7 @@ func (m Map) DrawMap() {
 		Width:  900,
 		Height: 736,
 	}
-	m.batch.DrawSprite(0, 0, math.MaxInt32, bound, 1)
+	m.batch.DrawSprite(m.screenX, m.screenY, math.MaxInt32, bound, 1)
 	m.batch.RenderBatch()
 }
 
@@ -48,7 +50,9 @@ func (m Map) DrawGrid(batch graphics.Batch) {
 			if gridRow[col] == nil {
 				continue
 			}
-			gridRow[col].Draw(batch, m.gridXOffset+col*square.Width, m.gridYOffset+row*square.Width)
+			x := m.gridXOffset + col*square.Width
+			y := m.gridYOffset + row*square.Width
+			gridRow[col].Draw(batch, x, y)
 		}
 	}
 }
@@ -147,7 +151,15 @@ func (m *Map) OnCandyExploding(callback func(hitCell cell.Cell)) {
 	m.eventHandlers.onCandyExploding = callback
 }
 
-func NewMap(assets assets.Assets, g graphics.Graphics) *Map {
+func (m Map) GetGridXOffset() int {
+	return m.gridXOffset
+}
+
+func (m Map) GetGridYOffset() int {
+	return m.gridYOffset
+}
+
+func NewMap(assets assets.Assets, g graphics.Graphics, screenX int, screenY int) *Map {
 	rand.Seed(time.Now().UnixNano())
 	grid := make([][]square.Square, 0)
 
@@ -192,19 +204,24 @@ func NewMap(assets assets.Assets, g graphics.Graphics) *Map {
 		maxCol: maxCol,
 		grid:   &grid,
 	}
+	gridXOffset := screenX
+	gridYOffset := screenY
+
 	return &Map{
+		screenX:          screenX,
+		screenY:          screenY,
 		batch:            g.StartNewBatch(assets.GetImage("map/default.png")),
 		maxRow:           maxRow,
 		maxCol:           maxCol,
-		gridXOffset:      0,
-		gridYOffset:      0,
+		gridXOffset:      gridXOffset,
+		gridYOffset:      gridYOffset,
 		grid:             &grid,
 		tiles:            &tiles,
 		candies:          &candies,
 		candyRangeCutter: &cdRangeCutter,
 		playerMoveChecker: &moveChecker{
-			gridXOffset: 0,
-			gridYOffset: 0,
+			gridXOffset: gridXOffset,
+			gridYOffset: gridYOffset,
 			maxRow:      maxRow,
 			maxCol:      maxCol,
 			grid:        &grid,

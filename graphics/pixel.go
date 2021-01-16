@@ -1,14 +1,18 @@
 package graphics
 
 import (
-	"image"
-	"sort"
-
+	"bufio"
+	"bytes"
 	"candy/input"
+	"image"
+	"io/ioutil"
+	"sort"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
+	"github.com/faiface/pixel/text"
 	"golang.org/x/image/colornames"
+	"golang.org/x/image/font"
 )
 
 var _ Graphics = (*Pixel)(nil)
@@ -16,12 +20,48 @@ var _ Window = (*Pixel)(nil)
 
 type Pixel struct {
 	window *pixelgl.Window
+	texts  *[]*pixelText
 }
 
 // Graphics
 func (p *Pixel) StartNewBatch(spriteSheet image.Image) Batch {
 	pixelImg := pixel.PictureDataFromImage(spriteSheet)
 	return newPixelBatch(p.window, pixelImg)
+}
+
+func (p *Pixel) NewText(face font.Face, x int, y int, width int, height int, scale float64, alignment alignment) Text {
+	atlas := text.NewAtlas(face, text.ASCII)
+	buf := bytes.Buffer{}
+	return &pixelText{
+		buf:       bufio.NewReadWriter(bufio.NewReader(&buf), bufio.NewWriter(&buf)),
+		graphics:  p,
+		text:      text.New(pixel.V(float64(x), float64(y)), atlas),
+		width:     width,
+		height:    height,
+		scale:     scale,
+		alignment: alignment,
+	}
+}
+
+func (p *Pixel) RenderTexts() {
+	for _, t := range *p.texts {
+		t.buf.Flush()
+		buf, _ := ioutil.ReadAll(t.buf)
+		bound := t.text.BoundsOf(string(buf))
+		halfWidth := bound.W() * t.scale / 2.0
+		halfHeight := bound.H() * t.scale / 2.0
+
+		switch t.alignment {
+		case AlignCenter:
+			t.text.Dot.X += float64(t.width)/2 - halfWidth
+			t.text.Dot.Y += float64(t.height)/2 - halfHeight
+		}
+		t.text.Write(buf)
+		t.text.Draw(p.window, pixel.IM.Scaled(t.text.Orig, t.scale))
+		t.text.Clear()
+	}
+	texts := make([]*pixelText, 0)
+	p.texts = &texts
 }
 
 // Window
@@ -113,12 +153,14 @@ func NewPixel(config pixelgl.WindowConfig) (Pixel, error) {
 	if err != nil {
 		return Pixel{}, err
 	}
-	return Pixel{window: win}, nil
+	texts := make([]*pixelText, 0)
+	return Pixel{window: win, texts: &texts}, nil
 }
 
 var _ Batch = (*pixelBatch)(nil)
 
 type pixelBatch struct {
+	atlas        text.Atlas
 	window       *pixelgl.Window
 	spriteSheet  *pixel.PictureData
 	batch        *pixel.Batch
@@ -175,4 +217,24 @@ func prepareDrawing(x int, y int, image *pixel.PictureData, imageBound Bound, sc
 	scaledImgHeight := float64(imageBound.Height) * scale
 	pos := pixel.V(float64(x)+scaledImgWidth/2, float64(y)+scaledImgHeight/2)
 	return sprite, pixel.IM.Moved(pos).Scaled(pos, scale)
+}
+
+var _ Text = (*pixelText)(nil)
+
+type pixelText struct {
+	buf       *bufio.ReadWriter
+	graphics  *Pixel
+	text      *text.Text
+	width     int
+	height    int
+	scale     float64
+	alignment alignment
+}
+
+func (t pixelText) Write(p []byte) (int, error) {
+	return t.buf.Write(p)
+}
+
+func (t *pixelText) Draw() {
+	*t.graphics.texts = append(*t.graphics.texts, t)
 }

@@ -21,6 +21,10 @@ func (m moveChecker) CanMove(currX int, currY int, objectWidth int, objectHeight
 	if !m.inBound(currX, currY, objectWidth, objectHeight, dir, stepSize) {
 		return false
 	}
+
+	currX -= m.gridXOffset
+	currY -= m.gridYOffset
+
 	cornerCells := cell.GetCornerCells(currX, currY, objectWidth, objectHeight, square.Width, square.Width)
 	neighborCells := m.getNeighborCells(cornerCells, dir)
 	blockingCells := m.getBlockingCells(neighborCells)
