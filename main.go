@@ -17,7 +17,7 @@ func run() {
 	px, err := graphics.NewPixel(pixelgl.WindowConfig{
 		Title:       "Candy",
 		Icon:        nil,
-		Bounds:      pixel.R(0, 0, 900, 830),
+		Bounds:      pixel.R(0, 0, 1152, 830),
 		VSync:       true,
 		AlwaysOnTop: true,
 	})

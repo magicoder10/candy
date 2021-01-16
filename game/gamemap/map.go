@@ -17,6 +17,8 @@ import (
 const defaultRows = 12
 const defaultCols = 15
 
+const Width = 900
+
 type brokenSquare struct {
 	cell   cell.Cell
 	square square.Square

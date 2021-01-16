@@ -3,6 +3,7 @@ package player
 import (
 	"time"
 
+	"candy/game/direction"
 	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
@@ -35,6 +36,10 @@ type Player struct {
 
 func (p Player) Draw(batch graphics.Batch) {
 	p.state.draw(batch)
+}
+
+func (p Player) DrawStand(batch graphics.Batch, x int, y int, z int, scale float64) {
+	draw(batch, p.regionOffset, p.character, x, y, z, scale, direction.Down, 1)
 }
 
 func (p *Player) HandleInput(in input.Input) {
