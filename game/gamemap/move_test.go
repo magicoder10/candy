@@ -97,11 +97,11 @@ func Test_moveCheckerCanMove(t *testing.T) {
 			},
 		},
 		{
-			name: "Blockers in the direction of movement",
+			name: "Has obstacle in the direction of movement",
 			moveChecker: defaultMoveChecker,
 			testCases: []testCase{
 				{
-					name:            "move left facing blocker",
+					name:            "move left",
 					currX:           1 * square.Width,
 					currY:           0,
 					objectWidth:     square.Width,
@@ -112,7 +112,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 				},
 
 				{
-					name:            "move down facing blocker",
+					name:            "move down",
 					currX:           0,
 					currY:           3 * square.Width,
 					objectWidth:     square.Width,
@@ -122,7 +122,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					expectedCanMove: false,
 				},
 				{
-					name:            "move right facing blocker",
+					name:            "move right",
 					currX:           1 * square.Width,
 					currY:           2 * square.Width,
 					objectWidth:     square.Width,
@@ -132,7 +132,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					expectedCanMove: false,
 				},
 				{
-					name:            "move up facing blocker",
+					name:            "move up",
 					currX:           2 * square.Width,
 					currY:           0,
 					objectWidth:     10,
@@ -144,7 +144,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 			},
 		},
 		{
-			name: "Empty in the direction of movement",
+			name: "Has nothing in the direction of movement",
 			moveChecker : moveChecker{
 				gridXOffset: 0,
 				gridYOffset: 0,
