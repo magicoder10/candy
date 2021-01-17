@@ -21,7 +21,7 @@ func (o obstacle) CanEnter() bool {
 }
 
 func Test_moveCheckerCanMove(t *testing.T) {
-	checker := moveChecker{
+	blockchecker := moveChecker{
 		gridXOffset: 0,
 		gridYOffset: 0,
 		maxRow:      3,
@@ -31,6 +31,19 @@ func Test_moveCheckerCanMove(t *testing.T) {
 			{nil, nil, &obstacle{canEnter: false}, nil},
 			{&obstacle{canEnter: false}, nil, &obstacle{canEnter: false}, nil},
 			{nil, nil, nil, &obstacle{canEnter: false}},
+		},
+	}
+
+	nonblockchecker := moveChecker{
+		gridXOffset: 0,
+		gridYOffset: 0,
+		maxRow:      3,
+		maxCol:      3,
+		grid: &[][]square.Square{
+			{nil, nil, nil, nil},
+			{nil, nil, nil, nil},
+			{nil, nil, nil, nil},
+			{nil, nil, nil, nil},
 		},
 	}
 
@@ -61,7 +74,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					objectHeight:    10,
 					dir:             direction.Down,
 					stepSize:        2,
-					moveChecker:     checker,
+					moveChecker:     blockchecker,
 					expectedCanMove: false,
 				},
 				{
@@ -72,7 +85,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					objectHeight:    10,
 					dir:             direction.Up,
 					stepSize:        2,
-					moveChecker:     checker,
+					moveChecker:     blockchecker,
 					expectedCanMove: true,
 				},
 				{
@@ -83,7 +96,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					objectHeight:    10,
 					dir:             direction.Left,
 					stepSize:        2,
-					moveChecker:     checker,
+					moveChecker:     blockchecker,
 					expectedCanMove: false,
 				},
 				{
@@ -94,7 +107,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					objectHeight:    10,
 					dir:             direction.Right,
 					stepSize:        2,
-					moveChecker:     checker,
+					moveChecker:     blockchecker,
 					expectedCanMove: true,
 				},
 			},
@@ -110,7 +123,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					objectHeight:    square.Width,
 					dir:             direction.Left,
 					stepSize:        square.Width,
-					moveChecker:     checker,
+					moveChecker:     blockchecker,
 					expectedCanMove: false,
 				},
 
@@ -122,7 +135,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					objectHeight:    square.Width,
 					dir:             direction.Down,
 					stepSize:        square.Width,
-					moveChecker:     checker,
+					moveChecker:     blockchecker,
 					expectedCanMove: false,
 				},
 				{
@@ -133,7 +146,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					objectHeight:    square.Width,
 					dir:             direction.Right,
 					stepSize:        square.Width,
-					moveChecker:     checker,
+					moveChecker:     blockchecker,
 					expectedCanMove: false,
 				},
 				{
@@ -144,8 +157,59 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					objectHeight:    10,
 					dir:             direction.Up,
 					stepSize:        square.Width,
-					moveChecker:     checker,
+					moveChecker:     blockchecker,
 					expectedCanMove: false,
+				},
+			},
+		},
+
+		{
+			name: "No square in the direction of movement",
+			testCases: []testCase{
+				{
+					name:            "move left no blocker",
+					currX:           1 * square.Width,
+					currY:           0,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Left,
+					stepSize:        square.Width,
+					moveChecker:     nonblockchecker,
+					expectedCanMove: true,
+				},
+
+				{
+					name:            "move down no blocker",
+					currX:           0,
+					currY:           3 * square.Width,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Down,
+					stepSize:        square.Width,
+					moveChecker:     nonblockchecker,
+					expectedCanMove: true,
+				},
+				{
+					name:            "move right no blocker",
+					currX:           1 * square.Width,
+					currY:           2 * square.Width,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Right,
+					stepSize:        square.Width,
+					moveChecker:     nonblockchecker,
+					expectedCanMove: true,
+				},
+				{
+					name:            "move up no blocker",
+					currX:           2 * square.Width,
+					currY:           0,
+					objectWidth:     10,
+					objectHeight:    10,
+					dir:             direction.Up,
+					stepSize:        square.Width,
+					moveChecker:     nonblockchecker,
+					expectedCanMove: true,
 				},
 			},
 		},
