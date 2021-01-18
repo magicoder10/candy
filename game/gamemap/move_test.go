@@ -248,6 +248,53 @@ func Test_moveCheckerCanMove(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "Has non-blocking square in the direction of moving",
+			moveChecker:     defaultMoveChecker,
+			testCases: []testCase{
+				{
+					name:            "move left",
+					currX:           1 * square.Width,
+					currY:           1 * square.Width,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Left,
+					stepSize:        square.Width,
+					expectedCanMove: true,
+				},
+
+				{
+					name:            "move down",
+					currX:           1 * square.Width,
+					currY:           1 * square.Width,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Down,
+					stepSize:        square.Width,
+					expectedCanMove: true,
+				},
+				{
+					name:            "move right",
+					currX:           1 * square.Width,
+					currY:           0,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Right,
+					stepSize:        square.Width,
+					expectedCanMove: true,
+				},
+				{
+					name:            "move up",
+					currX:           1 * square.Width,
+					currY:           1 * square.Width,
+					objectWidth:     10,
+					objectHeight:    10,
+					dir:             direction.Up,
+					stepSize:        square.Width,
+					expectedCanMove: true,
+				},
+			},
+		},
 	}
 
 	for _, testSuite := range testSuites {
