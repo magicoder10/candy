@@ -202,11 +202,11 @@ func Test_moveCheckerCanMove(t *testing.T) {
 			},
 		},
 		{
-			name:        "Blockers around the player but not on moving direction",
+			name:        "Blockers around the player but not in moving direction",
 			moveChecker: defaultMoveChecker,
 			testCases: []testCase{
 				{
-					name:            "move up blocker in left side",
+					name:            "move up with blocker in left side",
 					currX:           1 * square.Width,
 					currY:           0,
 					objectWidth:     square.Width,
@@ -217,7 +217,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 				},
 
 				{
-					name:            "move right blocker in down side",
+					name:            "move right with blocker in down side",
 					currX:           0,
 					currY:           3 * square.Width,
 					objectWidth:     square.Width,
@@ -227,7 +227,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					expectedCanMove: true,
 				},
 				{
-					name:            "move down blocker in left and right side",
+					name:            "move down with blocker in left and right side",
 					currX:           1 * square.Width,
 					currY:           2 * square.Width,
 					objectWidth:     square.Width,
