@@ -46,12 +46,12 @@ func Test_moveCheckerCanMove(t *testing.T) {
 	}
 
 	testSuites := []struct {
-		name      string
+		name        string
 		moveChecker moveChecker
-		testCases []testCase
+		testCases   []testCase
 	}{
 		{
-			name: "Border",
+			name:        "Border",
 			moveChecker: defaultMoveChecker,
 			testCases: []testCase{
 				{
@@ -97,7 +97,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 			},
 		},
 		{
-			name: "Has obstacle in the direction of movement",
+			name:        "Has obstacle in the direction of movement",
 			moveChecker: defaultMoveChecker,
 			testCases: []testCase{
 				{
@@ -145,7 +145,7 @@ func Test_moveCheckerCanMove(t *testing.T) {
 		},
 		{
 			name: "Has nothing in the direction of movement",
-			moveChecker : moveChecker{
+			moveChecker: moveChecker{
 				gridXOffset: 0,
 				gridYOffset: 0,
 				maxRow:      3,
@@ -196,6 +196,53 @@ func Test_moveCheckerCanMove(t *testing.T) {
 					objectWidth:     10,
 					objectHeight:    10,
 					dir:             direction.Up,
+					stepSize:        square.Width,
+					expectedCanMove: true,
+				},
+			},
+		},
+		{
+			name:        "Blockers around the player but not on moving direction",
+			moveChecker: defaultMoveChecker,
+			testCases: []testCase{
+				{
+					name:            "move up blocker in left side",
+					currX:           1 * square.Width,
+					currY:           0,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Up,
+					stepSize:        square.Width,
+					expectedCanMove: true,
+				},
+
+				{
+					name:            "move right blocker in down side",
+					currX:           0,
+					currY:           3 * square.Width,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Right,
+					stepSize:        square.Width,
+					expectedCanMove: true,
+				},
+				{
+					name:            "move down blocker in left and right side",
+					currX:           1 * square.Width,
+					currY:           2 * square.Width,
+					objectWidth:     square.Width,
+					objectHeight:    square.Width,
+					dir:             direction.Down,
+					stepSize:        square.Width,
+					expectedCanMove: true,
+				},
+				{
+					name:            "move left facing blocker",
+					currX:           2 * square.Width,
+					currY:           0,
+					objectWidth:     10,
+					objectHeight:    10,
+					dir:             direction.Left,
 					stepSize:        square.Width,
 					expectedCanMove: true,
 				},
