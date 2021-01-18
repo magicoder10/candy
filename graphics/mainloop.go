@@ -6,6 +6,7 @@ import (
 
 func StartMainLoop(framesPerSeconds int64, sp Sprite, window Window, g Graphics) {
 	nanoPerUpdate := time.Second.Nanoseconds() / framesPerSeconds
+	updateTime := time.Duration(nanoPerUpdate)
 
 	prevTime := time.Now()
 	var lag int64
@@ -22,7 +23,7 @@ func StartMainLoop(framesPerSeconds int64, sp Sprite, window Window, g Graphics)
 		}
 
 		for lag >= nanoPerUpdate {
-			sp.Update(time.Duration(nanoPerUpdate))
+			sp.Update(updateTime)
 			lag -= nanoPerUpdate
 		}
 		g.Clear()
