@@ -23,6 +23,10 @@ type Pixel struct {
 	texts  *[]*pixelText
 }
 
+func (p *Pixel) SetCursorVisible(isVisible bool) {
+	p.window.SetCursorVisible(isVisible)
+}
+
 // Graphics
 func (p *Pixel) StartNewBatch(spriteSheet image.Image) Batch {
 	pixelImg := pixel.PictureDataFromImage(spriteSheet)
@@ -143,6 +147,12 @@ func (p Pixel) PollEvents() []input.Input {
 		inputs = append(inputs, input.Input{
 			Action: input.Release,
 			Device: input.SpaceKey,
+		})
+	}
+	if p.window.JustPressed(pixelgl.MouseButtonLeft) {
+		inputs = append(inputs, input.Input{
+			Action: input.SinglePress,
+			Device: input.MouseLeftButton,
 		})
 	}
 	return inputs

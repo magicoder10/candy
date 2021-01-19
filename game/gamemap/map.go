@@ -19,6 +19,13 @@ const defaultCols = 15
 
 const Width = 900
 
+var mapBound = graphics.Bound{
+	X:      0,
+	Y:      0,
+	Width:  900,
+	Height: 736,
+}
+
 type brokenSquare struct {
 	cell   cell.Cell
 	square square.Square
@@ -43,13 +50,7 @@ type Map struct {
 }
 
 func (m Map) DrawMap() {
-	bound := graphics.Bound{
-		X:      0,
-		Y:      0,
-		Width:  900,
-		Height: 736,
-	}
-	m.batch.DrawSprite(m.screenX, m.screenY, math.MaxInt32, bound, 1)
+	m.batch.DrawSprite(m.screenX, m.screenY, math.MaxInt32, mapBound, 1)
 	m.batch.RenderBatch()
 }
 

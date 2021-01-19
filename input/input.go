@@ -9,6 +9,7 @@ type action int
 
 const (
 	Press action = iota
+	SinglePress
 	Release
 )
 
@@ -21,4 +22,5 @@ const (
 	DownArrowKey
 	RKey
 	SpaceKey
+	MouseLeftButton
 )
