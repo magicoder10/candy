@@ -35,6 +35,7 @@ type Graphics interface {
 	NewText(face font.Face, x int, y int, width int, height int, scale float64, alignment alignment) Text
 	RenderTexts()
 	StartNewBatch(spriteSheet image.Image) Batch
+	SetCursorVisible(isVisible bool)
 }
 
 type spriteDrawn struct {

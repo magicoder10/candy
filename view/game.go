@@ -15,7 +15,7 @@ import (
 	"candy/input"
 )
 
-var _ graphics.Sprite = (*GameScreen)(nil)
+var _ view = (*GameScreen)(nil)
 
 const backpackHeight = 94
 

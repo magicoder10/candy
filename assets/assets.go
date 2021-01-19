@@ -10,6 +10,7 @@ import (
 var images = []string{
 	"map/default.png",
 	"sprite_sheet.png",
+	"screen/signin.png",
 }
 
 type Assets struct {

@@ -17,7 +17,7 @@ func run() {
 	px, err := graphics.NewPixel(pixelgl.WindowConfig{
 		Title:       "Candy",
 		Icon:        nil,
-		Bounds:      pixel.R(0, 0, 1152, 830),
+		Bounds:      pixel.R(0, 0, view.ScreenWidth, view.ScreenHeight),
 		VSync:       true,
 		AlwaysOnTop: true,
 	})
@@ -30,8 +30,9 @@ func run() {
 		panic(err)
 	}
 
-	gm := view.NewGameScreen(ass, &px)
-	gm.Start()
-
-	graphics.StartMainLoop(24, &gm, &px, &px)
+	app, err := view.NewApp(ass, &px)
+	if err != nil {
+		panic(err)
+	}
+	graphics.StartMainLoop(24, &app, &px, &px)
 }
