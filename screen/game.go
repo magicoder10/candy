@@ -1,4 +1,4 @@
-package view
+package screen
 
 import (
 	"time"
@@ -13,13 +13,14 @@ import (
 	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
+	"candy/view"
 )
 
-var _ view = (*GameScreen)(nil)
+var _ view.View = (*Game)(nil)
 
 const backpackHeight = 94
 
-type GameScreen struct {
+type Game struct {
 	graphics         graphics.Graphics
 	spriteSheetBatch graphics.Batch
 	gameMap          *gamemap.Map
@@ -29,7 +30,7 @@ type GameScreen struct {
 	rightSideBar     game.RightSideBar
 }
 
-func (g GameScreen) Draw() {
+func (g Game) Draw() {
 	g.gameMap.DrawMap()
 
 	g.gameMap.DrawGrid(g.spriteSheetBatch)
@@ -44,7 +45,7 @@ func (g GameScreen) Draw() {
 	g.graphics.RenderTexts()
 }
 
-func (g GameScreen) HandleInput(in input.Input) {
+func (g Game) HandleInput(in input.Input) {
 	g.players[g.currPlayer].HandleInput(in)
 
 	switch in.Action {
@@ -63,13 +64,13 @@ func (g GameScreen) HandleInput(in input.Input) {
 	}
 }
 
-func (g GameScreen) dropCandy() {
+func (g Game) dropCandy() {
 	currPlayer := g.players[g.currPlayer]
 	playerCell := g.getPlayerCell(*currPlayer)
 	g.gameMap.AddCandy(playerCell, candy.NewBuilder(currPlayer.GetPowerLevel()))
 }
 
-func (g GameScreen) Update(timeElapsed time.Duration) {
+func (g Game) Update(timeElapsed time.Duration) {
 	g.gameMap.Update(timeElapsed)
 
 	for _, ply := range g.players {
@@ -77,11 +78,11 @@ func (g GameScreen) Update(timeElapsed time.Duration) {
 	}
 }
 
-func (g *GameScreen) Start() {
+func (g *Game) Start() {
 	g.currPlayer = 0
 }
 
-func (g *GameScreen) onCandyExploding(cell cell.Cell) {
+func (g *Game) onCandyExploding(cell cell.Cell) {
 	for _, ply := range g.players {
 		playerCell := g.getPlayerCell(*ply)
 		if ply.IsNormal() && playerCell == cell {
@@ -90,14 +91,14 @@ func (g *GameScreen) onCandyExploding(cell cell.Cell) {
 	}
 }
 
-func (g GameScreen) getPlayerCell(player player.Player) cell.Cell {
+func (g Game) getPlayerCell(player player.Player) cell.Cell {
 	return cell.GetCellLocatedAt(
 		player.GetX()-g.gameMap.GetGridXOffset(), player.GetY()-g.gameMap.GetGridYOffset(), player.GetWidth(), player.GetHeight(),
 		square.Width, square.Width,
 	)
 }
 
-func NewGameScreen(assets assets.Assets, g graphics.Graphics) GameScreen {
+func NewGame(assets assets.Assets, g graphics.Graphics) Game {
 	gameMap := gamemap.NewMap(assets, g, 0, backpackHeight)
 	playerMoveChecker := gameMap.GetPlayerMoveChecker()
 	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
@@ -114,7 +115,7 @@ func NewGameScreen(assets assets.Assets, g graphics.Graphics) GameScreen {
 	backpack := game.NewBackPack(g, 0, 0)
 	backpack.AddItem(gameitem.FirstAidKit)
 	rightSideBar := game.NewRightSideBar(gamemap.Width, 0, players)
-	gm := GameScreen{
+	gm := Game{
 		graphics:         g,
 		spriteSheetBatch: batch,
 		gameMap:          gameMap,

@@ -1,4 +1,4 @@
-package view
+package screen
 
 import (
 	"time"
@@ -6,45 +6,45 @@ import (
 	"candy/assets"
 	"candy/graphics"
 	"candy/input"
-	"candy/router"
+	"candy/view"
 )
 
-var _ view = (*SignInScreen)(nil)
+var _ view.View = (*SignIn)(nil)
 
 var signInBackgroundBound = graphics.Bound{
 	X:      0,
 	Y:      0,
-	Width:  ScreenWidth,
-	Height: ScreenHeight,
+	Width:  Width,
+	Height: Height,
 }
 
-type SignInScreen struct {
+type SignIn struct {
 	batch  graphics.Batch
-	router *router.Router
+	router *view.Router
 }
 
-func (s SignInScreen) Draw() {
+func (s SignIn) Draw() {
 
 	s.batch.DrawSprite(0, 0, 1, signInBackgroundBound, 1)
 	s.batch.RenderBatch()
 }
 
-func (s SignInScreen) Update(timeElapsed time.Duration) {
+func (s SignIn) Update(timeElapsed time.Duration) {
 	return
 }
 
-func (s SignInScreen) HandleInput(in input.Input) {
+func (s SignIn) HandleInput(in input.Input) {
 	switch in.Action {
 	case input.SinglePress:
 		switch in.Device {
 		case input.MouseLeftButton:
-			s.router.Navigate("/game")
+			s.router.Navigate("/game", nil)
 		}
 	}
 }
 
-func NewSignInScreen(assets assets.Assets, g graphics.Graphics, router *router.Router) SignInScreen {
-	return SignInScreen{
+func NewSignIn(assets assets.Assets, g graphics.Graphics, router *view.Router) SignIn {
+	return SignIn{
 		batch:  g.StartNewBatch(assets.GetImage("screen/signin.png")),
 		router: router,
 	}

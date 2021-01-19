@@ -3,7 +3,7 @@ package main
 import (
 	"candy/assets"
 	"candy/graphics"
-	"candy/view"
+	"candy/screen"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -17,7 +17,7 @@ func run() {
 	px, err := graphics.NewPixel(pixelgl.WindowConfig{
 		Title:       "Candy",
 		Icon:        nil,
-		Bounds:      pixel.R(0, 0, view.ScreenWidth, view.ScreenHeight),
+		Bounds:      pixel.R(0, 0, screen.Width, screen.Height),
 		VSync:       true,
 		AlwaysOnTop: true,
 	})
@@ -30,7 +30,7 @@ func run() {
 		panic(err)
 	}
 
-	app, err := view.NewApp(ass, &px)
+	app, err := screen.NewApp(ass, &px)
 	if err != nil {
 		panic(err)
 	}
