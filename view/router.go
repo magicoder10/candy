@@ -1,4 +1,4 @@
-package router
+package view
 
 import (
 	"fmt"
@@ -6,8 +6,8 @@ import (
 )
 
 type Route struct {
-	Path   string
-	Object interface{}
+	Path          string
+	CreateFactory CreateFactory
 }
 
 type trieNode struct {
@@ -17,8 +17,8 @@ type trieNode struct {
 }
 
 type Router struct {
-	root      *trieNode
-	currRoute *Route
+	root     *trieNode
+	currView View
 }
 
 func (r *Router) AddRoute(route Route) error {
@@ -59,16 +59,16 @@ func (r *Router) AddRoutes(routes []Route) error {
 	return nil
 }
 
-func (r Router) CurrentRoute() *Route {
-	return r.currRoute
+func (r Router) CurrentView() View {
+	return r.currView
 }
 
-func (r *Router) Navigate(path string) error {
+func (r *Router) Navigate(path string, props interface{}) error {
 	rt, err := r.matchRoute(path)
 	if err != nil {
 		return err
 	}
-	r.currRoute = rt
+	r.currView = rt.CreateFactory(props)
 	return nil
 }
 

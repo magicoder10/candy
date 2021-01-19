@@ -6,8 +6,10 @@ import (
 	"candy/input"
 )
 
-type view interface {
+type View interface {
 	Draw()
 	Update(timeElapsed time.Duration)
 	HandleInput(in input.Input)
 }
+
+type CreateFactory func(props interface{}) View
