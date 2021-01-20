@@ -7,6 +7,7 @@ import (
 	"candy/assets"
 	"candy/graphics"
 	"candy/input"
+	"candy/pubsub"
 	"candy/view"
 )
 
@@ -18,6 +19,7 @@ var _ graphics.Sprite = (*App)(nil)
 type App struct {
 	assets assets.Assets
 	router *view.Router
+	pubSub *pubsub.PubSub
 }
 
 func (a App) Draw() {
@@ -45,6 +47,7 @@ func (a App) HandleInput(in input.Input) {
 }
 
 func (a *App) Launch() error {
+	a.pubSub.Start()
 	err := a.router.Navigate("/", nil)
 	if err != nil {
 		return err
@@ -55,10 +58,12 @@ func (a *App) Launch() error {
 
 func NewApp(assets assets.Assets, g graphics.Graphics) (App, error) {
 	rt := view.NewRouter()
+	pubSub := pubsub.NewPubSub()
 
 	routes := []view.Route{
 		{Path: "/game", CreateFactory: func(props interface{}) view.View {
-			return NewGame(assets, g)
+			gm := NewGame(assets, g, pubSub)
+			return gm
 		}},
 		{Path: "/", CreateFactory: func(props interface{}) view.View {
 			return NewSignIn(assets, g, rt)
@@ -67,6 +72,7 @@ func NewApp(assets assets.Assets, g graphics.Graphics) (App, error) {
 	err := rt.AddRoutes(routes)
 	return App{
 		assets: assets,
+		pubSub: pubSub,
 		router: rt,
 	}, err
 }

@@ -1,0 +1,89 @@
+package pubsub
+
+import (
+	"errors"
+	"sync"
+)
+
+type callback func(payload interface{})
+
+type Subscription struct {
+	pubSub   *PubSub
+	topic    topic
+	callback callback
+}
+
+func (s *Subscription) Unsubscribe() {
+	s.pubSub.mutex.Lock()
+	defer s.pubSub.mutex.Unlock()
+	subs := s.pubSub.subscriptions[s.topic]
+	newSubs := make([]*Subscription, 0)
+	for _, sub := range subs {
+		if sub != s {
+			continue
+		}
+		newSubs = append(newSubs, sub)
+	}
+	if len(newSubs) == 0 {
+		delete(s.pubSub.subscriptions, s.topic)
+	} else {
+		s.pubSub.subscriptions[s.topic] = newSubs
+	}
+}
+
+type PubSub struct {
+	started       bool
+	mutex         sync.Mutex
+	subscriptions map[topic][]*Subscription
+}
+
+func (p *PubSub) Subscribe(topic topic, callback callback) (*Subscription, error) {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+	sub := &Subscription{
+		pubSub:   p,
+		topic:    topic,
+		callback: callback,
+	}
+	p.subscriptions[topic] = append(p.subscriptions[topic], sub)
+	return sub, nil
+}
+
+func (p *PubSub) Publish(topic topic, payload interface{}) error {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+	if !p.started {
+		return errors.New("pubSub not started")
+	}
+
+	subs, ok := p.subscriptions[topic]
+	if !ok {
+		return nil
+	}
+
+	for _, sub := range subs {
+		go func(sub *Subscription) {
+			sub.callback(payload)
+		}(sub)
+	}
+	return nil
+}
+
+func (p *PubSub) Start() {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+	p.started = true
+}
+
+func (p *PubSub) Stop() {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+	p.started = false
+}
+
+func NewPubSub() *PubSub {
+	return &PubSub{
+		mutex:         sync.Mutex{},
+		subscriptions: make(map[topic][]*Subscription),
+	}
+}
