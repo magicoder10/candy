@@ -12,6 +12,7 @@ import (
 	"candy/game/player"
 	"candy/game/square"
 	"candy/graphics"
+	"candy/pubsub"
 )
 
 const defaultRows = 12
@@ -46,7 +47,7 @@ type Map struct {
 	brokenSquares     map[*candy.Candy][]brokenSquare
 	candyRangeCutter  candy.RangeCutter
 	playerMoveChecker player.MoveChecker
-	eventHandlers     eventHandlers
+	pubSub            *pubsub.PubSub
 }
 
 func (m Map) DrawMap() {
@@ -87,7 +88,7 @@ func (m *Map) Update(timeElapsed time.Duration) {
 	}
 	m.propagateExplosion(func(currCandy *candy.Candy, nextHitCell cell.Cell) {
 		m.collectBrokenSquares(nextHitCell, currCandy)
-		m.eventHandlers.onCandyExploding(nextHitCell)
+		m.pubSub.Publish(pubsub.OnCandyExploding, nextHitCell)
 	})
 	m.removeExplodedCandies()
 }
@@ -193,10 +194,6 @@ func randomGameItem() gameitem.GameItem {
 	return gameitem.GameItems[index]
 }
 
-func (m *Map) OnCandyExploding(callback func(hitCell cell.Cell)) {
-	m.eventHandlers.onCandyExploding = callback
-}
-
 func (m Map) GetGridXOffset() int {
 	return m.gridXOffset
 }
@@ -205,7 +202,7 @@ func (m Map) GetGridYOffset() int {
 	return m.gridYOffset
 }
 
-func NewMap(assets assets.Assets, g graphics.Graphics, screenX int, screenY int) *Map {
+func NewMap(assets assets.Assets, g graphics.Graphics, pubSub *pubsub.PubSub, screenX int, screenY int) *Map {
 	rand.Seed(time.Now().UnixNano())
 	grid := make([][]square.Square, 0)
 
@@ -273,5 +270,6 @@ func NewMap(assets assets.Assets, g graphics.Graphics, screenX int, screenY int)
 			grid:        &grid,
 		},
 		brokenSquares: make(map[*candy.Candy][]brokenSquare),
+		pubSub:        pubSub,
 	}
 }

@@ -13,6 +13,7 @@ import (
 	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
+	"candy/pubsub"
 	"candy/view"
 )
 
@@ -29,6 +30,7 @@ type Game struct {
 	currPlayer       int
 	players          []*player.Player
 	rightSideBar     game.RightSideBar
+	pubSub           *pubsub.PubSub
 }
 
 func (g Game) Draw() {
@@ -79,8 +81,10 @@ func (g Game) Update(timeElapsed time.Duration) {
 	}
 }
 
-func (g *Game) Start() {
-	g.currPlayer = 0
+func (g *Game) Init() {
+	go func() {
+		g.currPlayer = 0
+	}()
 }
 
 func (g *Game) onCandyExploding(cell cell.Cell) {
@@ -99,8 +103,8 @@ func (g Game) getPlayerCell(player player.Player) cell.Cell {
 	)
 }
 
-func NewGame(assets assets.Assets, g graphics.Graphics) Game {
-	gameMap := gamemap.NewMap(assets, g, 0, backpackHeight)
+func NewGame(assets assets.Assets, g graphics.Graphics, pubSub *pubsub.PubSub) *Game {
+	gameMap := gamemap.NewMap(assets, g, pubSub, 0, backpackHeight)
 	playerMoveChecker := gameMap.GetPlayerMoveChecker()
 	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
 	players := []*player.Player{
@@ -123,7 +127,12 @@ func NewGame(assets assets.Assets, g graphics.Graphics) Game {
 		players:          players,
 		backpack:         &backpack,
 		rightSideBar:     rightSideBar,
+		pubSub:           pubSub,
 	}
-	gameMap.OnCandyExploding(gm.onCandyExploding)
-	return gm
+
+	pubSub.Subscribe(pubsub.OnCandyExploding, func(payload interface{}) {
+		c := payload.(cell.Cell)
+		gm.onCandyExploding(c)
+	})
+	return &gm
 }
