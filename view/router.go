@@ -68,7 +68,11 @@ func (r *Router) Navigate(path string, props interface{}) error {
 	if err != nil {
 		return err
 	}
+	if r.currView != nil {
+		r.currView.Destroy()
+	}
 	r.currView = rt.CreateFactory(props)
+	r.currView.Init()
 	return nil
 }
 

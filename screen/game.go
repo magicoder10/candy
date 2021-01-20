@@ -21,6 +21,7 @@ var _ view.View = (*Game)(nil)
 const backpackHeight = 94
 
 type Game struct {
+	screen
 	graphics         graphics.Graphics
 	spriteSheetBatch graphics.Batch
 	gameMap          *gamemap.Map

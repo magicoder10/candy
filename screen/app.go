@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"candy/assets"
+	"candy/event"
 	"candy/graphics"
 	"candy/input"
 	"candy/view"
@@ -16,7 +17,9 @@ const Height = 830
 var _ graphics.Sprite = (*App)(nil)
 
 type App struct {
+	assets assets.Assets
 	router *view.Router
+	pubSub *event.PubSub
 }
 
 func (a App) Draw() {
@@ -43,8 +46,21 @@ func (a App) HandleInput(in input.Input) {
 	currView.HandleInput(in)
 }
 
+func (a *App) Launch() error {
+	a.pubSub.Start()
+
+	err := a.router.Navigate("/", nil)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Please click to get to next screen")
+	return nil
+}
+
 func NewApp(assets assets.Assets, g graphics.Graphics) (App, error) {
 	rt := view.NewRouter()
+	pubSub := event.NewPubSub()
+
 	routes := []view.Route{
 		{Path: "/game", CreateFactory: func(props interface{}) view.View {
 			return NewGame(assets, g)
@@ -54,15 +70,9 @@ func NewApp(assets assets.Assets, g graphics.Graphics) (App, error) {
 		}},
 	}
 	err := rt.AddRoutes(routes)
-	if err != nil {
-		return App{}, err
-	}
-	err = rt.Navigate("/", nil)
-	fmt.Println("Please click to get to next screen")
-	if err != nil {
-		return App{}, err
-	}
 	return App{
+		assets: assets,
+		pubSub: pubSub,
 		router: rt,
-	}, nil
+	}, err
 }
