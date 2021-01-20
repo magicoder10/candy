@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"candy/assets"
+	"candy/audio"
 	"candy/graphics"
 	"candy/input"
 	"candy/view"
@@ -19,12 +20,21 @@ var signInBackgroundBound = graphics.Bound{
 }
 
 type SignIn struct {
-	batch  graphics.Batch
-	router *view.Router
+	screen
+	backgroundMusic audio.Audio
+	batch           graphics.Batch
+	router          *view.Router
+}
+
+func (s SignIn) Init() {
+	s.backgroundMusic.Play()
+}
+
+func (s SignIn) Destroy() {
+	s.backgroundMusic.Stop()
 }
 
 func (s SignIn) Draw() {
-
 	s.batch.DrawSprite(0, 0, 1, signInBackgroundBound, 1)
 	s.batch.RenderBatch()
 }
@@ -45,7 +55,8 @@ func (s SignIn) HandleInput(in input.Input) {
 
 func NewSignIn(assets assets.Assets, g graphics.Graphics, router *view.Router) SignIn {
 	return SignIn{
-		batch:  g.StartNewBatch(assets.GetImage("screen/signin.png")),
-		router: router,
+		backgroundMusic: assets.GetAudio("screen/signin_bg.mp3"),
+		batch:           g.StartNewBatch(assets.GetImage("screen/signin.png")),
+		router:          router,
 	}
 }

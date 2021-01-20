@@ -34,5 +34,9 @@ func run() {
 	if err != nil {
 		panic(err)
 	}
+	err = app.Launch()
+	if err != nil {
+		panic(err)
+	}
 	graphics.StartMainLoop(24, &app, &px, &px)
 }

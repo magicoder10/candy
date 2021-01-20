@@ -3,10 +3,11 @@ package graphics
 import (
 	"bufio"
 	"bytes"
-	"candy/input"
 	"image"
 	"io/ioutil"
 	"sort"
+
+	"candy/input"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
