@@ -3,6 +3,8 @@ package pubsub
 import (
 	"errors"
 	"sync"
+
+	"candy/observability"
 )
 
 type callback func(payload interface{})
@@ -32,6 +34,7 @@ func (s *Subscription) Unsubscribe() {
 }
 
 type PubSub struct {
+	logger        *observability.Logger
 	started       bool
 	mutex         sync.Mutex
 	subscriptions map[topic][]*Subscription
@@ -73,16 +76,19 @@ func (p *PubSub) Start() {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 	p.started = true
+	p.logger.Infoln("PubSub started")
 }
 
 func (p *PubSub) Stop() {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 	p.started = false
+	p.logger.Infoln("PubSub stopped")
 }
 
-func NewPubSub() *PubSub {
+func NewPubSub(logger *observability.Logger) *PubSub {
 	return &PubSub{
+		logger:        logger,
 		mutex:         sync.Mutex{},
 		subscriptions: make(map[topic][]*Subscription),
 	}

@@ -13,6 +13,7 @@ import (
 	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
+	"candy/observability"
 	"candy/pubsub"
 	"candy/view"
 )
@@ -82,9 +83,8 @@ func (g Game) Update(timeElapsed time.Duration) {
 }
 
 func (g *Game) Init() {
-	go func() {
-		g.currPlayer = 0
-	}()
+	g.currPlayer = 0
+	g.screen.Init()
 }
 
 func (g *Game) onCandyExploding(cell cell.Cell) {
@@ -103,7 +103,11 @@ func (g Game) getPlayerCell(player player.Player) cell.Cell {
 	)
 }
 
-func NewGame(assets assets.Assets, g graphics.Graphics, pubSub *pubsub.PubSub) *Game {
+func NewGame(
+	logger *observability.Logger,
+	assets assets.Assets, g graphics.Graphics,
+	pubSub *pubsub.PubSub,
+) *Game {
 	gameMap := gamemap.NewMap(assets, g, pubSub, 0, backpackHeight)
 	playerMoveChecker := gameMap.GetPlayerMoveChecker()
 	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
@@ -121,6 +125,10 @@ func NewGame(assets assets.Assets, g graphics.Graphics, pubSub *pubsub.PubSub) *
 	backpack.AddItem(gameitem.FirstAidKit)
 	rightSideBar := game.NewRightSideBar(gamemap.Width, 0, players)
 	gm := Game{
+		screen: screen{
+			name:   "Game",
+			logger: logger,
+		},
 		graphics:         g,
 		spriteSheetBatch: batch,
 		gameMap:          gameMap,
