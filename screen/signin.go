@@ -7,6 +7,7 @@ import (
 	"candy/audio"
 	"candy/graphics"
 	"candy/input"
+	"candy/observability"
 	"candy/view"
 )
 
@@ -28,10 +29,12 @@ type SignIn struct {
 
 func (s SignIn) Init() {
 	s.backgroundMusic.Play()
+	s.screen.Init()
 }
 
 func (s SignIn) Destroy() {
 	s.backgroundMusic.Stop()
+	s.screen.Destroy()
 }
 
 func (s SignIn) Draw() {
@@ -53,8 +56,16 @@ func (s SignIn) HandleInput(in input.Input) {
 	}
 }
 
-func NewSignIn(assets assets.Assets, g graphics.Graphics, router *view.Router) SignIn {
+func NewSignIn(
+	logger *observability.Logger,
+	assets assets.Assets, g graphics.Graphics,
+	router *view.Router,
+) SignIn {
 	return SignIn{
+		screen: screen{
+			name:   "Sign In",
+			logger: logger,
+		},
 		backgroundMusic: assets.GetAudio("screen/signin_bg.mp3"),
 		batch:           g.StartNewBatch(assets.GetImage("screen/signin.png")),
 		router:          router,

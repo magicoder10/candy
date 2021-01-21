@@ -7,6 +7,7 @@ import (
 	"candy/assets"
 	"candy/graphics"
 	"candy/input"
+	"candy/observability"
 	"candy/pubsub"
 	"candy/view"
 )
@@ -17,6 +18,7 @@ const Height = 830
 var _ graphics.Sprite = (*App)(nil)
 
 type App struct {
+	logger *observability.Logger
 	assets assets.Assets
 	router *view.Router
 	pubSub *pubsub.PubSub
@@ -39,6 +41,7 @@ func (a App) Update(timeElapsed time.Duration) {
 }
 
 func (a App) HandleInput(in input.Input) {
+	a.logger.Debugf("User action: %s\n", in)
 	currView := a.router.CurrentView()
 	if currView == nil {
 		return
@@ -56,21 +59,22 @@ func (a *App) Launch() error {
 	return nil
 }
 
-func NewApp(assets assets.Assets, g graphics.Graphics) (App, error) {
-	rt := view.NewRouter()
-	pubSub := pubsub.NewPubSub()
+func NewApp(logger *observability.Logger, assets assets.Assets, g graphics.Graphics) (App, error) {
+	rt := view.NewRouter(logger)
+	pubSub := pubsub.NewPubSub(logger)
 
 	routes := []view.Route{
 		{Path: "/game", CreateFactory: func(props interface{}) view.View {
-			gm := NewGame(assets, g, pubSub)
+			gm := NewGame(logger, assets, g, pubSub)
 			return gm
 		}},
 		{Path: "/", CreateFactory: func(props interface{}) view.View {
-			return NewSignIn(assets, g, rt)
+			return NewSignIn(logger, assets, g, rt)
 		}},
 	}
 	err := rt.AddRoutes(routes)
 	return App{
+		logger: logger,
 		assets: assets,
 		pubSub: pubSub,
 		router: rt,

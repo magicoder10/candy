@@ -3,6 +3,8 @@ package view
 import (
 	"fmt"
 	"strings"
+
+	"candy/observability"
 )
 
 type Route struct {
@@ -17,6 +19,7 @@ type trieNode struct {
 }
 
 type Router struct {
+	logger   *observability.Logger
 	root     *trieNode
 	currView View
 }
@@ -71,8 +74,10 @@ func (r *Router) Navigate(path string, props interface{}) error {
 	if r.currView != nil {
 		r.currView.Destroy()
 	}
+
 	r.currView = rt.CreateFactory(props)
 	r.currView.Init()
+	r.logger.Infof("Navigate to %s\n", path)
 	return nil
 }
 
@@ -117,9 +122,10 @@ func isPathValid(path string) bool {
 	return true
 }
 
-func NewRouter() *Router {
+func NewRouter(logger *observability.Logger) *Router {
 	return &Router{
-		root: newTrieNode(),
+		logger: logger,
+		root:   newTrieNode(),
 	}
 }
 

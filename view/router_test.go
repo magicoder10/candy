@@ -3,6 +3,8 @@ package view
 import (
 	"testing"
 
+	"candy/observability"
+
 	"github.com/stretchr/testify/assert"
 )
 
@@ -36,7 +38,8 @@ func TestRouter_AddRoute(t *testing.T) {
 
 	for _, testCase := range testCases {
 		t.Run(testCase.name, func(t *testing.T) {
-			router := NewRouter()
+			logger := observability.NewLogger(observability.Info)
+			router := NewRouter(&logger)
 
 			var err error
 

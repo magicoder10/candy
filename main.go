@@ -3,6 +3,7 @@ package main
 import (
 	"candy/assets"
 	"candy/graphics"
+	"candy/observability"
 	"candy/screen"
 
 	"github.com/faiface/pixel"
@@ -30,7 +31,9 @@ func run() {
 		panic(err)
 	}
 
-	app, err := screen.NewApp(ass, &px)
+	logger := observability.NewLogger(observability.Debug)
+
+	app, err := screen.NewApp(&logger, ass, &px)
 	if err != nil {
 		panic(err)
 	}
