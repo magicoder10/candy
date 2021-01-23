@@ -233,7 +233,7 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: top occupies one cell",
+					name:        "top occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 3},
 						TopRight: Cell{Row: maxRow, Col: 3},
