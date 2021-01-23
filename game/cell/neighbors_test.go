@@ -120,7 +120,7 @@ func TestGetLeftNeighborCells(t *testing.T) {
 			name: "At Border",
 			testCases: []testCase{
 				{
-					name:        "Object is at border: left bottom",
+					name:        "left bottom",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 0},
 						TopRight: Cell{Row: 0, Col: 0},
@@ -181,7 +181,7 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right occupies one cell",
+					name:        "right occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 1, Col: maxCol},
 						TopRight: Cell{Row: 1, Col: maxCol},
@@ -449,7 +449,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: bottom occupies one cell",
+					name:        "bottom occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 1},
 						TopRight: Cell{Row: 0, Col: 1},
@@ -465,7 +465,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: bottom occupies two cells",
+					name:        "bottom occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 1},
 						TopRight: Cell{Row: 0, Col: 2},
@@ -481,7 +481,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right bottom",
+					name:        "right bottom",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: maxCol},
 						TopRight: Cell{Row: 0, Col: maxCol},
@@ -494,7 +494,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right occupies one cell",
+					name:        "right occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 1, Col: maxCol},
 						TopRight: Cell{Row: 1, Col: maxCol},
@@ -507,7 +507,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right occupies two cells",
+					name:        "right occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 3, Col: maxCol},
 						TopRight: Cell{Row: 3, Col: maxCol},
@@ -520,7 +520,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right top",
+					name:        "right top",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: maxCol},
 						TopRight: Cell{Row: maxRow, Col: maxCol},
@@ -533,7 +533,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: top occupies one cell",
+					name:        "top occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 3},
 						TopRight: Cell{Row: maxRow, Col: 3},
@@ -549,7 +549,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: top occupies two cells",
+					name:        "top occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 1},
 						TopRight: Cell{Row: maxRow, Col: 2},
@@ -565,7 +565,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: left top",
+					name:        "left top",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 0},
 						TopRight: Cell{Row: maxRow, Col: 0},
@@ -581,7 +581,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: left occupies one cell",
+					name:        "left occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 3, Col: 0},
 						TopRight: Cell{Row: 3, Col: 0},
@@ -597,7 +597,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: left occupies two cells",
+					name:        "left occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 3, Col: 0},
 						TopRight: Cell{Row: 3, Col: 0},
@@ -751,7 +751,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 			name: "At Border",
 			testCases: []testCase{
 				{
-					name:        "Object is at border: left bottom",
+					name:        "left bottom",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 0},
 						TopRight: Cell{Row: 0, Col: 0},
@@ -767,7 +767,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: bottom occupies one cell",
+					name:        "bottom occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 1},
 						TopRight: Cell{Row: 0, Col: 1},
@@ -783,7 +783,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: bottom occupies two cells",
+					name:        "bottom occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 1},
 						TopRight: Cell{Row: 0, Col: 2},
@@ -803,7 +803,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right bottom",
+					name:        "right bottom",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: maxCol},
 						TopRight: Cell{Row: 0, Col: maxCol},
@@ -819,7 +819,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right occupies one cell",
+					name:        "right occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 1, Col: maxCol},
 						TopRight: Cell{Row: 1, Col: maxCol},
@@ -835,7 +835,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right occupies two cells",
+					name:        "right occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 3, Col: maxCol},
 						TopRight: Cell{Row: 3, Col: maxCol},
@@ -851,7 +851,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right top",
+					name:        "right top",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: maxCol},
 						TopRight: Cell{Row: maxRow, Col: maxCol},
@@ -864,7 +864,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: top occupies one cell",
+					name:        "top occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 3},
 						TopRight: Cell{Row: maxRow, Col: 3},
@@ -877,7 +877,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: top occupies two cells",
+					name:        "top occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 1},
 						TopRight: Cell{Row: maxRow, Col: 2},
@@ -890,7 +890,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: left top",
+					name:        "left top",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 0},
 						TopRight: Cell{Row: maxRow, Col: 0},
@@ -903,7 +903,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: left occupies one cell",
+					name:        "left occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 3, Col: 0},
 						TopRight: Cell{Row: 3, Col: 0},
@@ -919,7 +919,7 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: left occupies two cells",
+					name:        "left occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 3, Col: 0},
 						TopRight: Cell{Row: 3, Col: 0},
@@ -1068,7 +1068,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 			name: "At Border",
 			testCases: []testCase{
 				{
-					name:        "Object is at border: left bottom",
+					name:        "left bottom",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 0},
 						TopRight: Cell{Row: 0, Col: 0},
@@ -1081,7 +1081,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: bottom occupies one cell",
+					name:        "bottom occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 1},
 						TopRight: Cell{Row: 0, Col: 1},
@@ -1094,7 +1094,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: bottom occupies two cells",
+					name:        "bottom occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 1},
 						TopRight: Cell{Row: 0, Col: 2},
@@ -1107,7 +1107,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right bottom",
+					name:        "right bottom",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: maxCol},
 						TopRight: Cell{Row: 0, Col: maxCol},
@@ -1120,7 +1120,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right occupies one cell",
+					name:        "right occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 1, Col: maxCol},
 						TopRight: Cell{Row: 1, Col: maxCol},
@@ -1136,7 +1136,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right occupies two cells",
+					name:        "right occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 3, Col: maxCol},
 						TopRight: Cell{Row: 3, Col: maxCol},
@@ -1152,7 +1152,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: right top",
+					name:        "right top",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: maxCol},
 						TopRight: Cell{Row: maxRow, Col: maxCol},
@@ -1168,7 +1168,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: top occupies one cell",
+					name:        "top occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 3},
 						TopRight: Cell{Row: maxRow, Col: 3},
@@ -1184,7 +1184,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: top occupies two cells",
+					name:        "top occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 1},
 						TopRight: Cell{Row: maxRow, Col: 2},
@@ -1204,7 +1204,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: left top",
+					name:        "left top",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: maxRow, Col: 0},
 						TopRight: Cell{Row: maxRow, Col: 0},
@@ -1220,7 +1220,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: left occupies one cell",
+					name:        "left occupies one cell",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 3, Col: 0},
 						TopRight: Cell{Row: 3, Col: 0},
@@ -1236,7 +1236,7 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "Object is at border: left occupies two cells",
+					name:        "left occupies two cells",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 3, Col: 0},
 						TopRight: Cell{Row: 3, Col: 0},
