@@ -291,7 +291,6 @@ func TestGetLeftNeighborCellsCells(t *testing.T) {
 
 			},
 		},
-
 	}
 
 	for _, testCase := range testCases {
@@ -364,7 +363,6 @@ func TestGetRightNeighborCellsCells(t *testing.T) {
 				},
 			},
 		},
-
 		{
 			name:        "Object occupies four cells",
 			cornerCells: CornerCells{
@@ -385,7 +383,6 @@ func TestGetRightNeighborCellsCells(t *testing.T) {
 				},
 			},
 		},
-
 		{
 			name:        "Object is big and occupies 6 cells",
 			cornerCells: CornerCells{
@@ -590,7 +587,6 @@ func TestGetRightNeighborCellsCells(t *testing.T) {
 				},
 			},
 		},
-
 	}
 
 	for _, testCase := range testCases {
@@ -663,7 +659,6 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 				},
 			},
 		},
-
 		{
 			name:        "Object occupies four cells",
 			cornerCells: CornerCells{
@@ -684,7 +679,6 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 				},
 			},
 		},
-
 		{
 			name:        "Object is big and occupies 6 cells",
 			cornerCells: CornerCells{
@@ -709,7 +703,6 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 				},
 			},
 		},
-
 		{
 			name:        "Object is at border: left bottom",
 			cornerCells: CornerCells{
@@ -894,7 +887,6 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 				},
 			},
 		},
-
 	}
 
 	for _, testCase := range testCases {
@@ -1010,7 +1002,6 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 				},
 			},
 		},
-
 		{
 			name:        "Object is at border: left bottom",
 			cornerCells: CornerCells{
@@ -1195,7 +1186,6 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 				},
 			},
 		},
-
 	}
 
 	for _, testCase := range testCases {
