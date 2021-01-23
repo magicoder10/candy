@@ -433,7 +433,7 @@ func TestGetRightNeighborCells(t *testing.T) {
 			name: "At Border",
 			testCases: []testCase{
 				{
-					name:        "Object is at border: left bottom",
+					name:        "left bottom",
 					cornerCells: CornerCells{
 						TopLeft: Cell{Row: 0, Col: 0},
 						TopRight: Cell{Row: 0, Col: 0},
