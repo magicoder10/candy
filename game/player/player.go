@@ -1,6 +1,7 @@
 package player
 
 import (
+	"candy/game/marker"
 	"time"
 
 	"candy/game/direction"
@@ -15,6 +16,7 @@ const spriteRowWidth = 3 * spriteWidth
 const spriteColHeight = 4 * spriteHeight
 const bodyWidth = 2 * square.Width / 3
 const feetLength = square.Width / 4
+
 
 type regionOffset struct {
 	x int
@@ -32,10 +34,18 @@ type Player struct {
 	state        state
 	regionOffset regionOffset
 	character    character
+	marker       *marker.Marker
 }
 
 func (p Player) Draw(batch graphics.Batch) {
 	p.state.draw(batch)
+	if p.marker != nil {
+		markerX := p.state.getX() + p.state.getWidth() / 2 - p.marker.GetWidth() / 2
+		// TODO: player.state.getHeight() should rename to getDepth()
+		// TODO: square.Width need to be replaced with new getHeight()
+		markerY := p.state.getY() + square.Width + marker.YOffset
+		p.marker.Draw(batch, markerX, markerY, p.state.getY())
+	}
 }
 
 func (p Player) DrawStand(batch graphics.Batch, x int, y int, z int, scale float64) {
@@ -48,6 +58,9 @@ func (p *Player) HandleInput(in input.Input) {
 
 func (p Player) Update(timeElapsed time.Duration) {
 	p.state.update(timeElapsed)
+	if p.marker != nil {
+		p.marker.Update(timeElapsed)
+	}
 }
 
 func (p Player) GetX() int {
@@ -78,6 +91,11 @@ func (p *Player) Trapped() {
 	p.state = p.state.trapped()
 }
 
+func (p *Player) SetIsTeammate(isTeammate bool) {
+	mk := marker.NewMarker(isTeammate)
+	p.marker = &mk
+}
+
 func NewPlayer(
 	moveChecker MoveChecker,
 	character character,
@@ -104,3 +122,5 @@ func NewPlayer(
 		),
 	}
 }
+
+
