@@ -14,8 +14,10 @@ const spriteWidth = 48
 const spriteHeight = 48
 const spriteRowWidth = 3 * spriteWidth
 const spriteColHeight = 4 * spriteHeight
-const bodyWidth = (2 * square.Width - 10)/ 3
+const bodyWidth = (2*square.Width - 10) / 3
 const feetLength = square.Width / 4
+
+const jellyZOffset = -1
 
 type regionOffset struct {
 	x int
@@ -39,11 +41,11 @@ type Player struct {
 func (p Player) Draw(batch graphics.Batch) {
 	p.state.draw(batch)
 	if p.marker != nil {
-		markerX := p.state.getX() + p.state.getWidth() / 2 - p.marker.GetWidth() / 2
+		markerX := p.state.getX() + p.state.getWidth()/2 - p.marker.GetWidth()/2
 		// TODO: player.state.getHeight() should rename to getDepth()
 		// TODO: square.Width need to be replaced with new getHeight()
 		markerY := p.state.getY() + square.Width + marker.YOffset
-		p.marker.Draw(batch, markerX, markerY, p.state.getY())
+		p.marker.Draw(batch, markerX, markerY, p.state.getY()+jellyZOffset-1)
 	}
 }
 

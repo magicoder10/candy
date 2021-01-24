@@ -1,8 +1,9 @@
 package cell
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 const maxRow = 11
@@ -16,101 +17,101 @@ func TestGetLeftNeighborCells(t *testing.T) {
 		expectedCells []Cell
 	}
 	testSuites := []struct {
-		name        string
-		testCases   []testCase
+		name      string
+		testCases []testCase
 	}{
 		{
 			name: "Within Border",
 			testCases: []testCase{
 				{
-					name:        "Object corners overlap with grid corners",
+					name: "Object corners overlap with grid corners",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: 1},
-						TopRight: Cell{Row: 1, Col: 1},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 1, Col: 1},
+						TopRight:    Cell{Row: 1, Col: 1},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 1},
 					},
 					minCol: 0,
 					expectedCells: []Cell{
 						{
-							Row:1,
-							Col:0,
+							Row: 1,
+							Col: 0,
 						},
 					},
 				},
 				{
-					name:        "Object occupies two horizontal cells",
+					name: "Object occupies two horizontal cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: 1},
-						TopRight: Cell{Row: 1, Col: 2},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 1, Col: 1},
+						TopRight:    Cell{Row: 1, Col: 2},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 2},
 					},
 					minCol: 0,
 					expectedCells: []Cell{
 						{
-							Row:1,
-							Col:0,
+							Row: 1,
+							Col: 0,
 						},
 					},
 				},
 				{
-					name:        "Object occupies two vertical cells",
+					name: "Object occupies two vertical cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 1},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 1},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 1},
 					},
 					minCol: 0,
 					expectedCells: []Cell{
 						{
-							Row:1,
-							Col:0,
+							Row: 1,
+							Col: 0,
 						},
 						{
-							Row:2,
-							Col:0,
+							Row: 2,
+							Col: 0,
 						},
 					},
 				},
 				{
-					name:        "Object occupies four cells",
+					name: "Object occupies four cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 2},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 2},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 2},
 					},
 					minCol: 0,
 					expectedCells: []Cell{
 						{
-							Row:1,
-							Col:0,
+							Row: 1,
+							Col: 0,
 						},
 						{
-							Row:2,
-							Col:0,
+							Row: 2,
+							Col: 0,
 						},
 					},
 				},
 				{
-					name:        "Object is big and occupies 6 cells",
+					name: "Object is big and occupies 6 cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 3},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 3},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 3},
 					},
 					minCol: 0,
 					expectedCells: []Cell{
 						{
-							Row:1,
-							Col:0,
+							Row: 1,
+							Col: 0,
 						},
 						{
-							Row:2,
-							Col:0,
+							Row: 2,
+							Col: 0,
 						},
 					},
 				},
@@ -120,24 +121,22 @@ func TestGetLeftNeighborCells(t *testing.T) {
 			name: "At Border",
 			testCases: []testCase{
 				{
-					name:        "left bottom",
+					name: "left bottom",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 0},
-						TopRight: Cell{Row: 0, Col: 0},
-						BottomLeft: Cell{Row: 0, Col: 0},
+						TopLeft:     Cell{Row: 0, Col: 0},
+						TopRight:    Cell{Row: 0, Col: 0},
+						BottomLeft:  Cell{Row: 0, Col: 0},
 						BottomRight: Cell{Row: 0, Col: 0},
 					},
-					minCol: 0,
-					expectedCells: []Cell{
-
-					},
+					minCol:        0,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "bottom occupies one cell",
+					name: "bottom occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 1},
-						TopRight: Cell{Row: 0, Col: 1},
-						BottomLeft: Cell{Row: 0, Col: 1},
+						TopLeft:     Cell{Row: 0, Col: 1},
+						TopRight:    Cell{Row: 0, Col: 1},
+						BottomLeft:  Cell{Row: 0, Col: 1},
 						BottomRight: Cell{Row: 0, Col: 1},
 					},
 					minCol: 0,
@@ -149,11 +148,11 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "bottom occupies two cells",
+					name: "bottom occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 1},
-						TopRight: Cell{Row: 0, Col: 2},
-						BottomLeft: Cell{Row: 0, Col: 1},
+						TopLeft:     Cell{Row: 0, Col: 1},
+						TopRight:    Cell{Row: 0, Col: 2},
+						BottomLeft:  Cell{Row: 0, Col: 1},
 						BottomRight: Cell{Row: 0, Col: 2},
 					},
 					minCol: 0,
@@ -165,11 +164,11 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right bottom",
+					name: "right bottom",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: maxCol},
-						TopRight: Cell{Row: 0, Col: maxCol},
-						BottomLeft: Cell{Row: 0, Col: maxCol},
+						TopLeft:     Cell{Row: 0, Col: maxCol},
+						TopRight:    Cell{Row: 0, Col: maxCol},
+						BottomLeft:  Cell{Row: 0, Col: maxCol},
 						BottomRight: Cell{Row: 0, Col: maxCol},
 					},
 					minCol: 0,
@@ -181,11 +180,11 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right occupies one cell",
+					name: "right occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: maxCol},
-						TopRight: Cell{Row: 1, Col: maxCol},
-						BottomLeft: Cell{Row: 1, Col: maxCol},
+						TopLeft:     Cell{Row: 1, Col: maxCol},
+						TopRight:    Cell{Row: 1, Col: maxCol},
+						BottomLeft:  Cell{Row: 1, Col: maxCol},
 						BottomRight: Cell{Row: 1, Col: maxCol},
 					},
 					minCol: 0,
@@ -197,11 +196,11 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right occupies two cells",
+					name: "right occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: maxCol},
-						TopRight: Cell{Row: 3, Col: maxCol},
-						BottomLeft: Cell{Row: 2, Col: maxCol},
+						TopLeft:     Cell{Row: 3, Col: maxCol},
+						TopRight:    Cell{Row: 3, Col: maxCol},
+						BottomLeft:  Cell{Row: 2, Col: maxCol},
 						BottomRight: Cell{Row: 2, Col: maxCol},
 					},
 					minCol: 0,
@@ -217,11 +216,11 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right top",
+					name: "right top",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: maxCol},
-						TopRight: Cell{Row: maxRow, Col: maxCol},
-						BottomLeft: Cell{Row: maxRow, Col: maxCol},
+						TopLeft:     Cell{Row: maxRow, Col: maxCol},
+						TopRight:    Cell{Row: maxRow, Col: maxCol},
+						BottomLeft:  Cell{Row: maxRow, Col: maxCol},
 						BottomRight: Cell{Row: maxRow, Col: maxCol},
 					},
 					minCol: 0,
@@ -233,11 +232,11 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "top occupies one cell",
+					name: "top occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 3},
-						TopRight: Cell{Row: maxRow, Col: 3},
-						BottomLeft: Cell{Row: maxRow, Col: 3},
+						TopLeft:     Cell{Row: maxRow, Col: 3},
+						TopRight:    Cell{Row: maxRow, Col: 3},
+						BottomLeft:  Cell{Row: maxRow, Col: 3},
 						BottomRight: Cell{Row: maxRow, Col: 3},
 					},
 					minCol: 0,
@@ -249,11 +248,11 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "top occupies two cells",
+					name: "top occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 1},
-						TopRight: Cell{Row: maxRow, Col: 2},
-						BottomLeft: Cell{Row: maxRow, Col: 1},
+						TopLeft:     Cell{Row: maxRow, Col: 1},
+						TopRight:    Cell{Row: maxRow, Col: 2},
+						BottomLeft:  Cell{Row: maxRow, Col: 1},
 						BottomRight: Cell{Row: maxRow, Col: 2},
 					},
 					minCol: 0,
@@ -265,43 +264,37 @@ func TestGetLeftNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "left top",
+					name: "left top",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 0},
-						TopRight: Cell{Row: maxRow, Col: 0},
-						BottomLeft: Cell{Row: maxRow, Col: 0},
+						TopLeft:     Cell{Row: maxRow, Col: 0},
+						TopRight:    Cell{Row: maxRow, Col: 0},
+						BottomLeft:  Cell{Row: maxRow, Col: 0},
 						BottomRight: Cell{Row: maxRow, Col: 0},
 					},
-					minCol: 0,
-					expectedCells: []Cell{
-
-					},
+					minCol:        0,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "left occupies one cell",
+					name: "left occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: 0},
-						TopRight: Cell{Row: 3, Col: 0},
-						BottomLeft: Cell{Row: 3, Col: 0},
+						TopLeft:     Cell{Row: 3, Col: 0},
+						TopRight:    Cell{Row: 3, Col: 0},
+						BottomLeft:  Cell{Row: 3, Col: 0},
 						BottomRight: Cell{Row: 3, Col: 0},
 					},
-					minCol: 0,
-					expectedCells: []Cell{
-
-					},
+					minCol:        0,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "left occupies two cells",
+					name: "left occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: 0},
-						TopRight: Cell{Row: 3, Col: 0},
-						BottomLeft: Cell{Row: 2, Col: 0},
+						TopLeft:     Cell{Row: 3, Col: 0},
+						TopRight:    Cell{Row: 3, Col: 0},
+						BottomLeft:  Cell{Row: 2, Col: 0},
 						BottomRight: Cell{Row: 2, Col: 0},
 					},
-					minCol: 0,
-					expectedCells: []Cell{
-
-					},
+					minCol:        0,
+					expectedCells: []Cell{},
 				},
 			},
 		},
@@ -320,7 +313,6 @@ func TestGetLeftNeighborCells(t *testing.T) {
 	}
 }
 
-
 func TestGetRightNeighborCells(t *testing.T) {
 	type testCase struct {
 		name          string
@@ -329,101 +321,101 @@ func TestGetRightNeighborCells(t *testing.T) {
 		expectedCells []Cell
 	}
 	testSuites := []struct {
-		name        string
-		testCases   []testCase
+		name      string
+		testCases []testCase
 	}{
 		{
 			name: "Within Border",
 			testCases: []testCase{
 				{
-					name:        "Object corners overlap with grid corners",
+					name: "Object corners overlap with grid corners",
 					cornerCells: CornerCells{
-					TopLeft: Cell{Row: 1, Col: 1},
-					TopRight: Cell{Row: 1, Col: 1},
-					BottomLeft: Cell{Row: 1, Col: 1},
-					BottomRight: Cell{Row: 1, Col: 1},
-				},
-					maxCol: maxCol,
-					expectedCells: []Cell{
-				{
-					Row:1,
-					Col:2,
-				},
-				},
-				},
-				{
-					name:        "Object occupies two horizontal cells",
-					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: 1},
-						TopRight: Cell{Row: 1, Col: 2},
-						BottomLeft: Cell{Row: 1, Col: 1},
-						BottomRight: Cell{Row: 1, Col: 2},
-					},
-					maxCol: maxCol,
-					expectedCells: []Cell{
-						{
-							Row:1,
-							Col:3,
-						},
-					},
-				},
-				{
-					name:        "Object occupies two vertical cells",
-					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 1},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 1, Col: 1},
+						TopRight:    Cell{Row: 1, Col: 1},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 1},
 					},
 					maxCol: maxCol,
 					expectedCells: []Cell{
 						{
-							Row:1,
-							Col:2,
-						},
-						{
-							Row:2,
-							Col:2,
+							Row: 1,
+							Col: 2,
 						},
 					},
 				},
 				{
-					name:        "Object occupies four cells",
+					name: "Object occupies two horizontal cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 2},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 1, Col: 1},
+						TopRight:    Cell{Row: 1, Col: 2},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 2},
 					},
 					maxCol: maxCol,
 					expectedCells: []Cell{
 						{
-							Row:1,
-							Col:3,
-						},
-						{
-							Row:2,
-							Col:3,
+							Row: 1,
+							Col: 3,
 						},
 					},
 				},
 				{
-					name:        "Object is big and occupies 6 cells",
+					name: "Object occupies two vertical cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 3},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 1},
+						BottomLeft:  Cell{Row: 1, Col: 1},
+						BottomRight: Cell{Row: 1, Col: 1},
+					},
+					maxCol: maxCol,
+					expectedCells: []Cell{
+						{
+							Row: 1,
+							Col: 2,
+						},
+						{
+							Row: 2,
+							Col: 2,
+						},
+					},
+				},
+				{
+					name: "Object occupies four cells",
+					cornerCells: CornerCells{
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 2},
+						BottomLeft:  Cell{Row: 1, Col: 1},
+						BottomRight: Cell{Row: 1, Col: 2},
+					},
+					maxCol: maxCol,
+					expectedCells: []Cell{
+						{
+							Row: 1,
+							Col: 3,
+						},
+						{
+							Row: 2,
+							Col: 3,
+						},
+					},
+				},
+				{
+					name: "Object is big and occupies 6 cells",
+					cornerCells: CornerCells{
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 3},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 3},
 					},
 					maxCol: maxCol,
 					expectedCells: []Cell{
 						{
-							Row:1,
-							Col:4,
+							Row: 1,
+							Col: 4,
 						},
 						{
-							Row:2,
-							Col:4,
+							Row: 2,
+							Col: 4,
 						},
 					},
 				},
@@ -433,11 +425,11 @@ func TestGetRightNeighborCells(t *testing.T) {
 			name: "At Border",
 			testCases: []testCase{
 				{
-					name:        "left bottom",
+					name: "left bottom",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 0},
-						TopRight: Cell{Row: 0, Col: 0},
-						BottomLeft: Cell{Row: 0, Col: 0},
+						TopLeft:     Cell{Row: 0, Col: 0},
+						TopRight:    Cell{Row: 0, Col: 0},
+						BottomLeft:  Cell{Row: 0, Col: 0},
 						BottomRight: Cell{Row: 0, Col: 0},
 					},
 					maxCol: maxCol,
@@ -449,11 +441,11 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "bottom occupies one cell",
+					name: "bottom occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 1},
-						TopRight: Cell{Row: 0, Col: 1},
-						BottomLeft: Cell{Row: 0, Col: 1},
+						TopLeft:     Cell{Row: 0, Col: 1},
+						TopRight:    Cell{Row: 0, Col: 1},
+						BottomLeft:  Cell{Row: 0, Col: 1},
 						BottomRight: Cell{Row: 0, Col: 1},
 					},
 					maxCol: maxCol,
@@ -465,11 +457,11 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "bottom occupies two cells",
+					name: "bottom occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 1},
-						TopRight: Cell{Row: 0, Col: 2},
-						BottomLeft: Cell{Row: 0, Col: 1},
+						TopLeft:     Cell{Row: 0, Col: 1},
+						TopRight:    Cell{Row: 0, Col: 2},
+						BottomLeft:  Cell{Row: 0, Col: 1},
 						BottomRight: Cell{Row: 0, Col: 2},
 					},
 					maxCol: maxCol,
@@ -481,63 +473,55 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right bottom",
+					name: "right bottom",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: maxCol},
-						TopRight: Cell{Row: 0, Col: maxCol},
-						BottomLeft: Cell{Row: 0, Col: maxCol},
+						TopLeft:     Cell{Row: 0, Col: maxCol},
+						TopRight:    Cell{Row: 0, Col: maxCol},
+						BottomLeft:  Cell{Row: 0, Col: maxCol},
 						BottomRight: Cell{Row: 0, Col: maxCol},
 					},
-					maxCol: maxCol,
-					expectedCells: []Cell{
-
-					},
+					maxCol:        maxCol,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "right occupies one cell",
+					name: "right occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: maxCol},
-						TopRight: Cell{Row: 1, Col: maxCol},
-						BottomLeft: Cell{Row: 1, Col: maxCol},
+						TopLeft:     Cell{Row: 1, Col: maxCol},
+						TopRight:    Cell{Row: 1, Col: maxCol},
+						BottomLeft:  Cell{Row: 1, Col: maxCol},
 						BottomRight: Cell{Row: 1, Col: maxCol},
 					},
-					maxCol: maxCol,
-					expectedCells: []Cell{
-
-					},
+					maxCol:        maxCol,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "right occupies two cells",
+					name: "right occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: maxCol},
-						TopRight: Cell{Row: 3, Col: maxCol},
-						BottomLeft: Cell{Row: 2, Col: maxCol},
+						TopLeft:     Cell{Row: 3, Col: maxCol},
+						TopRight:    Cell{Row: 3, Col: maxCol},
+						BottomLeft:  Cell{Row: 2, Col: maxCol},
 						BottomRight: Cell{Row: 2, Col: maxCol},
 					},
-					maxCol: maxCol,
-					expectedCells: []Cell{
-
-					},
+					maxCol:        maxCol,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "right top",
+					name: "right top",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: maxCol},
-						TopRight: Cell{Row: maxRow, Col: maxCol},
-						BottomLeft: Cell{Row: maxRow, Col: maxCol},
+						TopLeft:     Cell{Row: maxRow, Col: maxCol},
+						TopRight:    Cell{Row: maxRow, Col: maxCol},
+						BottomLeft:  Cell{Row: maxRow, Col: maxCol},
 						BottomRight: Cell{Row: maxRow, Col: maxCol},
 					},
-					maxCol: maxCol,
-					expectedCells: []Cell{
-
-					},
+					maxCol:        maxCol,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "top occupies one cell",
+					name: "top occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 3},
-						TopRight: Cell{Row: maxRow, Col: 3},
-						BottomLeft: Cell{Row: maxRow, Col: 3},
+						TopLeft:     Cell{Row: maxRow, Col: 3},
+						TopRight:    Cell{Row: maxRow, Col: 3},
+						BottomLeft:  Cell{Row: maxRow, Col: 3},
 						BottomRight: Cell{Row: maxRow, Col: 3},
 					},
 					maxCol: maxCol,
@@ -549,11 +533,11 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "top occupies two cells",
+					name: "top occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 1},
-						TopRight: Cell{Row: maxRow, Col: 2},
-						BottomLeft: Cell{Row: maxRow, Col: 1},
+						TopLeft:     Cell{Row: maxRow, Col: 1},
+						TopRight:    Cell{Row: maxRow, Col: 2},
+						BottomLeft:  Cell{Row: maxRow, Col: 1},
 						BottomRight: Cell{Row: maxRow, Col: 2},
 					},
 					maxCol: maxCol,
@@ -565,11 +549,11 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "left top",
+					name: "left top",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 0},
-						TopRight: Cell{Row: maxRow, Col: 0},
-						BottomLeft: Cell{Row: maxRow, Col: 0},
+						TopLeft:     Cell{Row: maxRow, Col: 0},
+						TopRight:    Cell{Row: maxRow, Col: 0},
+						BottomLeft:  Cell{Row: maxRow, Col: 0},
 						BottomRight: Cell{Row: maxRow, Col: 0},
 					},
 					maxCol: maxCol,
@@ -581,11 +565,11 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "left occupies one cell",
+					name: "left occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: 0},
-						TopRight: Cell{Row: 3, Col: 0},
-						BottomLeft: Cell{Row: 3, Col: 0},
+						TopLeft:     Cell{Row: 3, Col: 0},
+						TopRight:    Cell{Row: 3, Col: 0},
+						BottomLeft:  Cell{Row: 3, Col: 0},
 						BottomRight: Cell{Row: 3, Col: 0},
 					},
 					maxCol: maxCol,
@@ -597,11 +581,11 @@ func TestGetRightNeighborCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "left occupies two cells",
+					name: "left occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: 0},
-						TopRight: Cell{Row: 3, Col: 0},
-						BottomLeft: Cell{Row: 2, Col: 0},
+						TopLeft:     Cell{Row: 3, Col: 0},
+						TopRight:    Cell{Row: 3, Col: 0},
+						BottomLeft:  Cell{Row: 2, Col: 0},
 						BottomRight: Cell{Row: 2, Col: 0},
 					},
 					maxCol: maxCol,
@@ -634,7 +618,6 @@ func TestGetRightNeighborCells(t *testing.T) {
 	}
 }
 
-
 func TestGetTopNeighborCellsCells(t *testing.T) {
 	type testCase struct {
 		name          string
@@ -643,105 +626,105 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 		expectedCells []Cell
 	}
 	testSuites := []struct {
-		name        string
-		testCases   []testCase
+		name      string
+		testCases []testCase
 	}{
 		{
 			name: "Within Border",
 			testCases: []testCase{
 				{
-					name:        "Object corners overlap with grid corners",
+					name: "Object corners overlap with grid corners",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: 1},
-						TopRight: Cell{Row: 1, Col: 1},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 1, Col: 1},
+						TopRight:    Cell{Row: 1, Col: 1},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 1},
 					},
 					maxRow: maxRow,
 					expectedCells: []Cell{
 						{
-							Row:2,
-							Col:1,
+							Row: 2,
+							Col: 1,
 						},
 					},
 				},
 				{
-					name:        "Object occupies two horizontal cells",
+					name: "Object occupies two horizontal cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: 1},
-						TopRight: Cell{Row: 1, Col: 2},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 1, Col: 1},
+						TopRight:    Cell{Row: 1, Col: 2},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 2},
 					},
 					maxRow: maxRow,
 					expectedCells: []Cell{
 						{
-							Row:2,
-							Col:1,
+							Row: 2,
+							Col: 1,
 						},
 						{
-							Row:2,
-							Col:2,
+							Row: 2,
+							Col: 2,
 						},
 					},
 				},
 				{
-					name:        "Object occupies two vertical cells",
+					name: "Object occupies two vertical cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 1},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 1},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 1},
 					},
 					maxRow: maxRow,
 					expectedCells: []Cell{
 						{
-							Row:3,
-							Col:1,
+							Row: 3,
+							Col: 1,
 						},
 					},
 				},
 				{
-					name:        "Object occupies four cells",
+					name: "Object occupies four cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 2},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 2},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 2},
 					},
 					maxRow: maxRow,
 					expectedCells: []Cell{
 						{
-							Row:3,
-							Col:1,
+							Row: 3,
+							Col: 1,
 						},
 						{
-							Row:3,
-							Col:2,
+							Row: 3,
+							Col: 2,
 						},
 					},
 				},
 				{
-					name:        "Object is big and occupies 6 cells",
+					name: "Object is big and occupies 6 cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 3},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 3},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 3},
 					},
 					maxRow: maxRow,
 					expectedCells: []Cell{
 						{
-							Row:3,
-							Col:1,
+							Row: 3,
+							Col: 1,
 						},
 						{
-							Row:3,
-							Col:2,
+							Row: 3,
+							Col: 2,
 						},
 						{
-							Row:3,
-							Col:3,
+							Row: 3,
+							Col: 3,
 						},
 					},
 				},
@@ -751,11 +734,11 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 			name: "At Border",
 			testCases: []testCase{
 				{
-					name:        "left bottom",
+					name: "left bottom",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 0},
-						TopRight: Cell{Row: 0, Col: 0},
-						BottomLeft: Cell{Row: 0, Col: 0},
+						TopLeft:     Cell{Row: 0, Col: 0},
+						TopRight:    Cell{Row: 0, Col: 0},
+						BottomLeft:  Cell{Row: 0, Col: 0},
 						BottomRight: Cell{Row: 0, Col: 0},
 					},
 					maxRow: maxRow,
@@ -767,11 +750,11 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "bottom occupies one cell",
+					name: "bottom occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 1},
-						TopRight: Cell{Row: 0, Col: 1},
-						BottomLeft: Cell{Row: 0, Col: 1},
+						TopLeft:     Cell{Row: 0, Col: 1},
+						TopRight:    Cell{Row: 0, Col: 1},
+						BottomLeft:  Cell{Row: 0, Col: 1},
 						BottomRight: Cell{Row: 0, Col: 1},
 					},
 					maxRow: maxRow,
@@ -783,11 +766,11 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "bottom occupies two cells",
+					name: "bottom occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 1},
-						TopRight: Cell{Row: 0, Col: 2},
-						BottomLeft: Cell{Row: 0, Col: 1},
+						TopLeft:     Cell{Row: 0, Col: 1},
+						TopRight:    Cell{Row: 0, Col: 2},
+						BottomLeft:  Cell{Row: 0, Col: 1},
 						BottomRight: Cell{Row: 0, Col: 2},
 					},
 					maxRow: maxRow,
@@ -803,11 +786,11 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right bottom",
+					name: "right bottom",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: maxCol},
-						TopRight: Cell{Row: 0, Col: maxCol},
-						BottomLeft: Cell{Row: 0, Col: maxCol},
+						TopLeft:     Cell{Row: 0, Col: maxCol},
+						TopRight:    Cell{Row: 0, Col: maxCol},
+						BottomLeft:  Cell{Row: 0, Col: maxCol},
 						BottomRight: Cell{Row: 0, Col: maxCol},
 					},
 					maxRow: maxRow,
@@ -819,11 +802,11 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right occupies one cell",
+					name: "right occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: maxCol},
-						TopRight: Cell{Row: 1, Col: maxCol},
-						BottomLeft: Cell{Row: 1, Col: maxCol},
+						TopLeft:     Cell{Row: 1, Col: maxCol},
+						TopRight:    Cell{Row: 1, Col: maxCol},
+						BottomLeft:  Cell{Row: 1, Col: maxCol},
 						BottomRight: Cell{Row: 1, Col: maxCol},
 					},
 					maxRow: maxRow,
@@ -835,11 +818,11 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right occupies two cells",
+					name: "right occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: maxCol},
-						TopRight: Cell{Row: 3, Col: maxCol},
-						BottomLeft: Cell{Row: 2, Col: maxCol},
+						TopLeft:     Cell{Row: 3, Col: maxCol},
+						TopRight:    Cell{Row: 3, Col: maxCol},
+						BottomLeft:  Cell{Row: 2, Col: maxCol},
 						BottomRight: Cell{Row: 2, Col: maxCol},
 					},
 					maxRow: maxRow,
@@ -851,63 +834,55 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right top",
+					name: "right top",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: maxCol},
-						TopRight: Cell{Row: maxRow, Col: maxCol},
-						BottomLeft: Cell{Row: maxRow, Col: maxCol},
+						TopLeft:     Cell{Row: maxRow, Col: maxCol},
+						TopRight:    Cell{Row: maxRow, Col: maxCol},
+						BottomLeft:  Cell{Row: maxRow, Col: maxCol},
 						BottomRight: Cell{Row: maxRow, Col: maxCol},
 					},
-					maxRow: maxRow,
-					expectedCells: []Cell{
-
-					},
+					maxRow:        maxRow,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "top occupies one cell",
+					name: "top occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 3},
-						TopRight: Cell{Row: maxRow, Col: 3},
-						BottomLeft: Cell{Row: maxRow, Col: 3},
+						TopLeft:     Cell{Row: maxRow, Col: 3},
+						TopRight:    Cell{Row: maxRow, Col: 3},
+						BottomLeft:  Cell{Row: maxRow, Col: 3},
 						BottomRight: Cell{Row: maxRow, Col: 3},
 					},
-					maxRow: maxRow,
-					expectedCells: []Cell{
-
-					},
+					maxRow:        maxRow,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "top occupies two cells",
+					name: "top occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 1},
-						TopRight: Cell{Row: maxRow, Col: 2},
-						BottomLeft: Cell{Row: maxRow, Col: 1},
+						TopLeft:     Cell{Row: maxRow, Col: 1},
+						TopRight:    Cell{Row: maxRow, Col: 2},
+						BottomLeft:  Cell{Row: maxRow, Col: 1},
 						BottomRight: Cell{Row: maxRow, Col: 2},
 					},
-					maxRow: maxRow,
-					expectedCells: []Cell{
-
-					},
+					maxRow:        maxRow,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "left top",
+					name: "left top",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 0},
-						TopRight: Cell{Row: maxRow, Col: 0},
-						BottomLeft: Cell{Row: maxRow, Col: 0},
+						TopLeft:     Cell{Row: maxRow, Col: 0},
+						TopRight:    Cell{Row: maxRow, Col: 0},
+						BottomLeft:  Cell{Row: maxRow, Col: 0},
 						BottomRight: Cell{Row: maxRow, Col: 0},
 					},
-					maxRow: maxRow,
-					expectedCells: []Cell{
-
-					},
+					maxRow:        maxRow,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "left occupies one cell",
+					name: "left occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: 0},
-						TopRight: Cell{Row: 3, Col: 0},
-						BottomLeft: Cell{Row: 3, Col: 0},
+						TopLeft:     Cell{Row: 3, Col: 0},
+						TopRight:    Cell{Row: 3, Col: 0},
+						BottomLeft:  Cell{Row: 3, Col: 0},
 						BottomRight: Cell{Row: 3, Col: 0},
 					},
 					maxRow: maxRow,
@@ -919,11 +894,11 @@ func TestGetTopNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "left occupies two cells",
+					name: "left occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: 0},
-						TopRight: Cell{Row: 3, Col: 0},
-						BottomLeft: Cell{Row: 2, Col: 0},
+						TopLeft:     Cell{Row: 3, Col: 0},
+						TopRight:    Cell{Row: 3, Col: 0},
+						BottomLeft:  Cell{Row: 2, Col: 0},
 						BottomRight: Cell{Row: 2, Col: 0},
 					},
 					maxRow: maxRow,
@@ -960,105 +935,105 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 		expectedCells []Cell
 	}
 	testSuites := []struct {
-		name        string
-		testCases   []testCase
+		name      string
+		testCases []testCase
 	}{
 		{
 			name: "Within Border",
 			testCases: []testCase{
 				{
-					name:        "Object corners overlap with grid corners",
+					name: "Object corners overlap with grid corners",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: 1},
-						TopRight: Cell{Row: 1, Col: 1},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 1, Col: 1},
+						TopRight:    Cell{Row: 1, Col: 1},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 1},
 					},
 					minRow: 0,
 					expectedCells: []Cell{
 						{
-							Row:0,
-							Col:1,
+							Row: 0,
+							Col: 1,
 						},
 					},
 				},
 				{
-					name:        "Object occupies two horizontal cells",
+					name: "Object occupies two horizontal cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: 1},
-						TopRight: Cell{Row: 1, Col: 2},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 1, Col: 1},
+						TopRight:    Cell{Row: 1, Col: 2},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 2},
 					},
 					minRow: 0,
 					expectedCells: []Cell{
 						{
-							Row:0,
-							Col:1,
+							Row: 0,
+							Col: 1,
 						},
 						{
-							Row:0,
-							Col:2,
+							Row: 0,
+							Col: 2,
 						},
 					},
 				},
 				{
-					name:        "Object occupies two vertical cells",
+					name: "Object occupies two vertical cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 1},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 1},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 1},
 					},
 					minRow: 0,
 					expectedCells: []Cell{
 						{
-							Row:0,
-							Col:1,
+							Row: 0,
+							Col: 1,
 						},
 					},
 				},
 				{
-					name:        "Object occupies four cells",
+					name: "Object occupies four cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 2},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 2},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 2},
 					},
 					minRow: 0,
 					expectedCells: []Cell{
 						{
-							Row:0,
-							Col:1,
+							Row: 0,
+							Col: 1,
 						},
 						{
-							Row:0,
-							Col:2,
+							Row: 0,
+							Col: 2,
 						},
 					},
 				},
 				{
-					name:        "Object is big and occupies 6 cells",
+					name: "Object is big and occupies 6 cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 2, Col: 1},
-						TopRight: Cell{Row: 2, Col: 3},
-						BottomLeft: Cell{Row: 1, Col: 1},
+						TopLeft:     Cell{Row: 2, Col: 1},
+						TopRight:    Cell{Row: 2, Col: 3},
+						BottomLeft:  Cell{Row: 1, Col: 1},
 						BottomRight: Cell{Row: 1, Col: 3},
 					},
 					minRow: 0,
 					expectedCells: []Cell{
 						{
-							Row:0,
-							Col:1,
+							Row: 0,
+							Col: 1,
 						},
 						{
-							Row:0,
-							Col:2,
+							Row: 0,
+							Col: 2,
 						},
 						{
-							Row:0,
-							Col:3,
+							Row: 0,
+							Col: 3,
 						},
 					},
 				},
@@ -1068,63 +1043,55 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 			name: "At Border",
 			testCases: []testCase{
 				{
-					name:        "left bottom",
+					name: "left bottom",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 0},
-						TopRight: Cell{Row: 0, Col: 0},
-						BottomLeft: Cell{Row: 0, Col: 0},
+						TopLeft:     Cell{Row: 0, Col: 0},
+						TopRight:    Cell{Row: 0, Col: 0},
+						BottomLeft:  Cell{Row: 0, Col: 0},
 						BottomRight: Cell{Row: 0, Col: 0},
 					},
-					minRow: 0,
-					expectedCells: []Cell{
-
-					},
+					minRow:        0,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "bottom occupies one cell",
+					name: "bottom occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 1},
-						TopRight: Cell{Row: 0, Col: 1},
-						BottomLeft: Cell{Row: 0, Col: 1},
+						TopLeft:     Cell{Row: 0, Col: 1},
+						TopRight:    Cell{Row: 0, Col: 1},
+						BottomLeft:  Cell{Row: 0, Col: 1},
 						BottomRight: Cell{Row: 0, Col: 1},
 					},
-					minRow: 0,
-					expectedCells: []Cell{
-
-					},
+					minRow:        0,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "bottom occupies two cells",
+					name: "bottom occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: 1},
-						TopRight: Cell{Row: 0, Col: 2},
-						BottomLeft: Cell{Row: 0, Col: 1},
+						TopLeft:     Cell{Row: 0, Col: 1},
+						TopRight:    Cell{Row: 0, Col: 2},
+						BottomLeft:  Cell{Row: 0, Col: 1},
 						BottomRight: Cell{Row: 0, Col: 2},
 					},
-					minRow: 0,
-					expectedCells: []Cell{
-
-					},
+					minRow:        0,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "right bottom",
+					name: "right bottom",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 0, Col: maxCol},
-						TopRight: Cell{Row: 0, Col: maxCol},
-						BottomLeft: Cell{Row: 0, Col: maxCol},
+						TopLeft:     Cell{Row: 0, Col: maxCol},
+						TopRight:    Cell{Row: 0, Col: maxCol},
+						BottomLeft:  Cell{Row: 0, Col: maxCol},
 						BottomRight: Cell{Row: 0, Col: maxCol},
 					},
-					minRow: 0,
-					expectedCells: []Cell{
-
-					},
+					minRow:        0,
+					expectedCells: []Cell{},
 				},
 				{
-					name:        "right occupies one cell",
+					name: "right occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 1, Col: maxCol},
-						TopRight: Cell{Row: 1, Col: maxCol},
-						BottomLeft: Cell{Row: 1, Col: maxCol},
+						TopLeft:     Cell{Row: 1, Col: maxCol},
+						TopRight:    Cell{Row: 1, Col: maxCol},
+						BottomLeft:  Cell{Row: 1, Col: maxCol},
 						BottomRight: Cell{Row: 1, Col: maxCol},
 					},
 					minRow: 0,
@@ -1136,11 +1103,11 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right occupies two cells",
+					name: "right occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: maxCol},
-						TopRight: Cell{Row: 3, Col: maxCol},
-						BottomLeft: Cell{Row: 2, Col: maxCol},
+						TopLeft:     Cell{Row: 3, Col: maxCol},
+						TopRight:    Cell{Row: 3, Col: maxCol},
+						BottomLeft:  Cell{Row: 2, Col: maxCol},
 						BottomRight: Cell{Row: 2, Col: maxCol},
 					},
 					minRow: 0,
@@ -1152,11 +1119,11 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "right top",
+					name: "right top",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: maxCol},
-						TopRight: Cell{Row: maxRow, Col: maxCol},
-						BottomLeft: Cell{Row: maxRow, Col: maxCol},
+						TopLeft:     Cell{Row: maxRow, Col: maxCol},
+						TopRight:    Cell{Row: maxRow, Col: maxCol},
+						BottomLeft:  Cell{Row: maxRow, Col: maxCol},
 						BottomRight: Cell{Row: maxRow, Col: maxCol},
 					},
 					minRow: 0,
@@ -1168,11 +1135,11 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "top occupies one cell",
+					name: "top occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 3},
-						TopRight: Cell{Row: maxRow, Col: 3},
-						BottomLeft: Cell{Row: maxRow, Col: 3},
+						TopLeft:     Cell{Row: maxRow, Col: 3},
+						TopRight:    Cell{Row: maxRow, Col: 3},
+						BottomLeft:  Cell{Row: maxRow, Col: 3},
 						BottomRight: Cell{Row: maxRow, Col: 3},
 					},
 					minRow: 0,
@@ -1184,11 +1151,11 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "top occupies two cells",
+					name: "top occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 1},
-						TopRight: Cell{Row: maxRow, Col: 2},
-						BottomLeft: Cell{Row: maxRow, Col: 1},
+						TopLeft:     Cell{Row: maxRow, Col: 1},
+						TopRight:    Cell{Row: maxRow, Col: 2},
+						BottomLeft:  Cell{Row: maxRow, Col: 1},
 						BottomRight: Cell{Row: maxRow, Col: 2},
 					},
 					minRow: 0,
@@ -1204,11 +1171,11 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "left top",
+					name: "left top",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: maxRow, Col: 0},
-						TopRight: Cell{Row: maxRow, Col: 0},
-						BottomLeft: Cell{Row: maxRow, Col: 0},
+						TopLeft:     Cell{Row: maxRow, Col: 0},
+						TopRight:    Cell{Row: maxRow, Col: 0},
+						BottomLeft:  Cell{Row: maxRow, Col: 0},
 						BottomRight: Cell{Row: maxRow, Col: 0},
 					},
 					minRow: 0,
@@ -1220,11 +1187,11 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "left occupies one cell",
+					name: "left occupies one cell",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: 0},
-						TopRight: Cell{Row: 3, Col: 0},
-						BottomLeft: Cell{Row: 3, Col: 0},
+						TopLeft:     Cell{Row: 3, Col: 0},
+						TopRight:    Cell{Row: 3, Col: 0},
+						BottomLeft:  Cell{Row: 3, Col: 0},
 						BottomRight: Cell{Row: 3, Col: 0},
 					},
 					minRow: 0,
@@ -1236,11 +1203,11 @@ func TestGetBottomNeighborCellsCells(t *testing.T) {
 					},
 				},
 				{
-					name:        "left occupies two cells",
+					name: "left occupies two cells",
 					cornerCells: CornerCells{
-						TopLeft: Cell{Row: 3, Col: 0},
-						TopRight: Cell{Row: 3, Col: 0},
-						BottomLeft: Cell{Row: 2, Col: 0},
+						TopLeft:     Cell{Row: 3, Col: 0},
+						TopRight:    Cell{Row: 3, Col: 0},
+						BottomLeft:  Cell{Row: 2, Col: 0},
 						BottomRight: Cell{Row: 2, Col: 0},
 					},
 					minRow: 0,

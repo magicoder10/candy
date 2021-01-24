@@ -1,10 +1,10 @@
 package player
 
 import (
+	"candy/game/square"
 	"time"
 
 	"candy/game/direction"
-	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
 )
@@ -42,7 +42,7 @@ func (s sharedState) isNormal() bool {
 }
 
 func (s sharedState) trapped() state {
-	return trappedState{sharedState: s}
+	return newTrapState(s)
 }
 
 func (s sharedState) draw(batch graphics.Batch) {
