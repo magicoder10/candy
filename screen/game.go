@@ -84,7 +84,7 @@ func (g Game) Update(timeElapsed time.Duration) {
 
 func (g *Game) Init() {
 	g.currPlayerIndex = 0
-	g.players[g.currPlayerIndex].SetIsTeammate(false)
+	g.players[g.currPlayerIndex].ShowMarker(false)
 	g.screen.Init()
 }
 
