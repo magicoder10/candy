@@ -84,8 +84,6 @@ func (g Game) Update(timeElapsed time.Duration) {
 
 func (g *Game) Init() {
 	g.currPlayerIndex = 0
-	//teammateIndices := []int {}
-	//for
 	g.players[g.currPlayerIndex].SetIsTeammate(false)
 	g.screen.Init()
 }
