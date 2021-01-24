@@ -60,7 +60,6 @@ func (e explodingState) exploding() bool {
 
 func (e explodingState) cellsHit() []cell.Cell {
 	cells := make([]cell.Cell, 0)
-
 	e.hitRanges(func(dir explodeDirection, currRange int) {
 		nextRow := e.center.Row + currRange*dir.cell.Row
 		nextCol := e.center.Col + currRange*dir.cell.Col

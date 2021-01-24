@@ -86,10 +86,12 @@ func (m *Map) Update(timeElapsed time.Duration) {
 	for _, c := range *m.candies {
 		c.Update(timeElapsed)
 	}
-	m.propagateExplosion(func(currCandy *candy.Candy, nextHitCell cell.Cell) {
+
+	onHitNextCell := func(currCandy *candy.Candy, nextHitCell cell.Cell) {
 		m.collectBrokenSquares(nextHitCell, currCandy)
 		m.pubSub.Publish(pubsub.OnCandyExploding, nextHitCell)
-	})
+	}
+	m.propagateExplosion(onHitNextCell)
 	m.removeExplodedCandies()
 }
 
@@ -101,6 +103,7 @@ func (m Map) propagateExplosion(onHitNextCell func(currCandy *candy.Candy, nextH
 		if c.Exploding() {
 			visited[candyCell] = struct{}{}
 			queue = append(queue, candyCell)
+			onHitNextCell(c, candyCell)
 		}
 	}
 
