@@ -4,6 +4,7 @@ import (
 	"candy/game/direction"
 	"candy/game/square"
 	"candy/input"
+	"candy/pubsub"
 )
 
 var _ state = (*standingState)(nil)
@@ -13,7 +14,8 @@ type standingState struct {
 }
 
 func (s standingState) handleInput(in input.Input) state {
-	if in.Action == input.Press {
+	switch  in.Action {
+	case  input.Press:
 		switch in.Device {
 		case input.UpArrowKey:
 			return newWalkingStateFromStanding(s.sharedState, 0, direction.Up)
@@ -23,6 +25,11 @@ func (s standingState) handleInput(in input.Input) state {
 			return newWalkingStateFromStanding(s.sharedState, 0, direction.Left)
 		case input.RightArrowKey:
 			return newWalkingStateFromStanding(s.sharedState, 0, direction.Right)
+		}
+	case input.SinglePress:
+		switch in.Device {
+		case input.SpaceKey:
+		s.dropCandy()
 		}
 	}
 	return s
@@ -35,6 +42,7 @@ func newStandingStateOnSquare(
 	row int, col int,
 	regionOffset regionOffset,
 	character character,
+	pubSub *pubsub.PubSub,
 ) standingState {
 	return standingState{
 		sharedState{
@@ -47,6 +55,7 @@ func newStandingStateOnSquare(
 			y:            gridY + row*square.Width,
 			regionOffset: regionOffset,
 			character:    character,
+			pubSub: pubSub,
 		},
 	}
 }

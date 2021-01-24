@@ -29,12 +29,13 @@ func (w *walkingState) update(timeElapsed time.Duration) {
 }
 
 func (w walkingState) handleInput(in input.Input) state {
-	if in.Action == input.Release {
+	switch in.Action {
+	case input.Release:
 		switch in.Device {
 		case input.UpArrowKey, input.DownArrowKey, input.LeftArrowKey, input.RightArrowKey:
 			return newStandingState(w.sharedState)
 		}
-	} else if in.Action == input.Press {
+	case input.Press:
 		switch in.Device {
 		case input.UpArrowKey:
 			return w.nextWalking(direction.Up)
@@ -44,6 +45,11 @@ func (w walkingState) handleInput(in input.Input) state {
 			return w.nextWalking(direction.Left)
 		case input.RightArrowKey:
 			return w.nextWalking(direction.Right)
+		}
+	case input.SinglePress:
+		switch in.Device {
+		case input.SpaceKey:
+			w.dropCandy()
 		}
 	}
 	return &w

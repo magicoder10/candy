@@ -57,8 +57,6 @@ func (g Game) HandleInput(in input.Input) {
 		switch in.Device {
 		case input.RKey:
 			g.gameMap.HideItems()
-		case input.SpaceKey:
-			g.dropCandy()
 		}
 	case input.Press:
 		switch in.Device {
@@ -68,9 +66,16 @@ func (g Game) HandleInput(in input.Input) {
 	}
 }
 
-func (g Game) dropCandy() {
+func (g Game) getObjectCell(objectX int, objectY int, objectWidth int, objectHeight int) cell.Cell {
+	return cell.GetCellLocatedAt(
+		objectX-g.gameMap.GetGridXOffset(), objectY-g.gameMap.GetGridYOffset(), objectWidth, objectHeight,
+		square.Width, square.Width,
+	)
+}
+
+func (g Game) dropCandy(payload pubsub.OnDropCandyPayload) {
+	playerCell := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
 	currPlayer := g.players[g.currPlayerIndex]
-	playerCell := g.getPlayerCell(*currPlayer)
 	g.gameMap.AddCandy(playerCell, candy.NewBuilder(currPlayer.GetPowerLevel()))
 }
 
@@ -113,14 +118,14 @@ func NewGame(
 	playerMoveChecker := gameMap.GetPlayerMoveChecker()
 	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
 	players := []*player.Player{
-		player.NewPlayer(playerMoveChecker, player.BlackBoy, 0, backpackHeight, 1, 2),
-		player.NewPlayer(playerMoveChecker, player.BlackGirl, 0, backpackHeight, 1, 3),
-		player.NewPlayer(playerMoveChecker, player.BrownBoy, 0, backpackHeight, 1, 4),
-		player.NewPlayer(playerMoveChecker, player.BrownGirl, 0, backpackHeight, 1, 5),
-		player.NewPlayer(playerMoveChecker, player.YellowBoy, 0, backpackHeight, 1, 6),
-		player.NewPlayer(playerMoveChecker, player.YellowGirl, 0, backpackHeight, 1, 7),
-		player.NewPlayer(playerMoveChecker, player.OrangeBoy, 0, backpackHeight, 1, 8),
-		player.NewPlayer(playerMoveChecker, player.OrangeGirl, 0, backpackHeight, 1, 9),
+		player.NewPlayer(playerMoveChecker, player.BlackBoy, 0, backpackHeight, 1, 2, pubSub),
+		player.NewPlayer(playerMoveChecker, player.BlackGirl, 0, backpackHeight, 1, 3, pubSub),
+		player.NewPlayer(playerMoveChecker, player.BrownBoy, 0, backpackHeight, 1, 4, pubSub),
+		player.NewPlayer(playerMoveChecker, player.BrownGirl, 0, backpackHeight, 1, 5, pubSub),
+		player.NewPlayer(playerMoveChecker, player.YellowBoy, 0, backpackHeight, 1, 6, pubSub),
+		player.NewPlayer(playerMoveChecker, player.YellowGirl, 0, backpackHeight, 1, 7, pubSub),
+		player.NewPlayer(playerMoveChecker, player.OrangeBoy, 0, backpackHeight, 1, 8, pubSub),
+		player.NewPlayer(playerMoveChecker, player.OrangeGirl, 0, backpackHeight, 1, 9, pubSub),
 	}
 	backpack := game.NewBackPack(g, 0, 0)
 	backpack.AddItem(gameitem.FirstAidKit)
@@ -142,6 +147,10 @@ func NewGame(
 	pubSub.Subscribe(pubsub.OnCandyExploding, func(payload interface{}) {
 		c := payload.(cell.Cell)
 		gm.onCandyExploding(c)
+	})
+	pubSub.Subscribe(pubsub.OnDropCandy, func(payload interface{}) {
+		pl := payload.(pubsub.OnDropCandyPayload)
+		gm.dropCandy(pl)
 	})
 	return &gm
 }

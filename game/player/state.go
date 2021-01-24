@@ -2,6 +2,7 @@ package player
 
 import (
 	"candy/game/square"
+	"candy/pubsub"
 	"time"
 
 	"candy/game/direction"
@@ -31,6 +32,7 @@ type sharedState struct {
 	moveChecker  MoveChecker
 	regionOffset regionOffset
 	character    character
+	pubSub 		*pubsub.PubSub
 }
 
 func (s sharedState) update(timeElapsed time.Duration) {
@@ -67,4 +69,13 @@ func (s sharedState) getWidth() int {
 
 func (s sharedState) getHeight() int {
 	return s.playerHeight
+}
+
+func (s sharedState) dropCandy() {
+	s.pubSub.Publish(pubsub.OnDropCandy, pubsub.OnDropCandyPayload{
+		X:     s.x,
+		Y:      s.y,
+		Width:  s.playerWidth,
+		Height: s.playerHeight,
+	})
 }

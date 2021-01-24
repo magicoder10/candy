@@ -2,6 +2,7 @@ package player
 
 import (
 	"candy/game/marker"
+	"candy/pubsub"
 	"time"
 
 	"candy/game/direction"
@@ -104,6 +105,7 @@ func NewPlayer(
 	gridY int,
 	row int,
 	col int,
+	pubSub *pubsub.PubSub,
 ) *Player {
 	return &Player{
 		regionOffset: regionOffset{
@@ -120,6 +122,7 @@ func NewPlayer(
 				y: 0,
 			},
 			character,
+			pubSub,
 		),
 	}
 }
