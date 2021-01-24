@@ -14,7 +14,7 @@ const spriteWidth = 48
 const spriteHeight = 48
 const spriteRowWidth = 3 * spriteWidth
 const spriteColHeight = 4 * spriteHeight
-const bodyWidth = 2 * square.Width / 3
+const bodyWidth = (2 * square.Width - 10)/ 3
 const feetLength = square.Width / 4
 
 type regionOffset struct {
