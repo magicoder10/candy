@@ -17,7 +17,6 @@ const spriteColHeight = 4 * spriteHeight
 const bodyWidth = 2 * square.Width / 3
 const feetLength = square.Width / 4
 
-
 type regionOffset struct {
 	x int
 	y int
@@ -122,5 +121,4 @@ func NewPlayer(
 		),
 	}
 }
-
 
