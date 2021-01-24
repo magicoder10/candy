@@ -5,17 +5,16 @@ import (
 	"time"
 )
 
-
 var JellyImageDuration = (180 * time.Millisecond).Nanoseconds()
 
 type Jelly struct {
-	lag int64
-	width int
+	lag        int64
+	width      int
 	imageIndex int
-	imageSet []graphics.Bound
+	imageSet   []graphics.Bound
 }
 
-func (j Jelly) getWidth()  int {
+func (j Jelly) getWidth() int {
 	return j.width
 }
 func (j Jelly) draw(batch graphics.Batch, x int, y int, z int) {
@@ -35,7 +34,7 @@ func newJelly() Jelly {
 		lag:        0,
 		width:      60,
 		imageIndex: 0,
-		imageSet:   []graphics.Bound{
+		imageSet: []graphics.Bound{
 			{
 				X:      900,
 				Y:      1134,
@@ -75,6 +74,3 @@ func newJelly() Jelly {
 		},
 	}
 }
-
-
-
