@@ -28,7 +28,7 @@ type Game struct {
 	spriteSheetBatch graphics.Batch
 	gameMap          *gamemap.Map
 	backpack         *game.BackPack
-	currPlayer       int
+	currPlayerIndex  int
 	players          []*player.Player
 	rightSideBar     game.RightSideBar
 	pubSub           *pubsub.PubSub
@@ -50,7 +50,7 @@ func (g Game) Draw() {
 }
 
 func (g Game) HandleInput(in input.Input) {
-	g.players[g.currPlayer].HandleInput(in)
+	g.players[g.currPlayerIndex].HandleInput(in)
 
 	switch in.Action {
 	case input.Release:
@@ -69,7 +69,7 @@ func (g Game) HandleInput(in input.Input) {
 }
 
 func (g Game) dropCandy() {
-	currPlayer := g.players[g.currPlayer]
+	currPlayer := g.players[g.currPlayerIndex]
 	playerCell := g.getPlayerCell(*currPlayer)
 	g.gameMap.AddCandy(playerCell, candy.NewBuilder(currPlayer.GetPowerLevel()))
 }
@@ -83,7 +83,8 @@ func (g Game) Update(timeElapsed time.Duration) {
 }
 
 func (g *Game) Init() {
-	g.currPlayer = 0
+	g.currPlayerIndex = 0
+	g.players[g.currPlayerIndex].ShowMarker(false)
 	g.screen.Init()
 }
 
