@@ -9,4 +9,5 @@ require (
 	github.com/hajimehoshi/oto v0.7.1 // indirect
 	github.com/stretchr/testify v1.3.0
 	golang.org/x/image v0.0.0-20200927104501-e162460cd6b5
+	golang.org/x/tools v0.1.0 // indirect
 )

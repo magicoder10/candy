@@ -35,7 +35,7 @@ var countImageBound = graphics.Bound{
 type box struct {
 	x               int
 	y               int
-	gameItem        gameitem.GameItem
+	gameItem        gameitem.Type
 	text            graphics.Text
 	alwaysShowCount bool
 }
@@ -55,32 +55,38 @@ type BackPack struct {
 	screenX int
 	screenY int
 	boxes   []*box
-	items   map[gameitem.GameItem]int
+	items   map[gameitem.Type]int
 }
 
 func (b *BackPack) AddItem(gameItem gameitem.GameItem) {
-	if _, ok := b.items[gameItem]; !ok {
+	if gameItem.GetType() == gameitem.NoneType {
+		return
+	}
+	if _, ok := b.items[gameItem.GetType()]; !ok {
 		// Find the first empty box
 		index := 0
-		for index < len(b.boxes) && b.boxes[index].gameItem != gameitem.None {
+		for index < len(b.boxes) && b.boxes[index].gameItem != gameitem.NoneType {
 			index++
 		}
 		// No empty box
 		if index == len(b.boxes) {
 			return
 		}
-		b.boxes[index].gameItem = gameItem
+		b.boxes[index].gameItem = gameItem.GetType()
 	}
-	b.items[gameItem]++
+	b.items[gameItem.GetType()]++
+	if gameItem.GetType().CanAutoUse() {
+		gameItem.Use()
+	}
 }
 
-func (b *BackPack) TakeItem(boxIndex int) gameitem.GameItem {
+func (b *BackPack) TakeItem(boxIndex int) gameitem.Type {
 	box := b.boxes[boxIndex]
-	if box.gameItem != gameitem.None {
+	if box.gameItem != gameitem.NoneType {
 		b.items[box.gameItem]--
 
 		if boxIndex > reservedBoxesEnd && b.items[box.gameItem] == 0 {
-			b.boxes[boxIndex].gameItem = gameitem.None
+			b.boxes[boxIndex].gameItem = gameitem.NoneType
 			delete(b.items, box.gameItem)
 		}
 	}
@@ -100,24 +106,24 @@ func (b BackPack) drawBox(batch graphics.Batch, index int) {
 
 func NewBackPack(g graphics.Graphics, screenX int, screenY int) BackPack {
 	boxes := make([]*box, boxCount)
-	items := make(map[gameitem.GameItem]int)
+	items := make(map[gameitem.Type]int)
 
 	x := screenX + gameItemPadding
 	y := screenY + gameItemPadding
 
 	boxes[0] = newBox(g, x, y, true)
-	boxes[0].gameItem = gameitem.Power
+	boxes[0].gameItem = gameitem.PowerType
 	boxes[1] = newBox(g, x+boxWidth, y, true)
-	boxes[1].gameItem = gameitem.Speed
+	boxes[1].gameItem = gameitem.SpeedType
 	boxes[2] = newBox(g, x+boxWidth*2, y, true)
-	boxes[2].gameItem = gameitem.Candy
+	boxes[2].gameItem = gameitem.CandyType
 	for i := 0; i < boxCount-3; i++ {
 		boxes[i+3] = newBox(g, screenX+usableItemBoxX+i*boxWidth, y, false)
 	}
 
-	items[gameitem.Power] = 0
-	items[gameitem.Speed] = 0
-	items[gameitem.Candy] = 0
+	items[gameitem.PowerType] = 0
+	items[gameitem.SpeedType] = 0
+	items[gameitem.CandyType] = 0
 	return BackPack{
 		screenX: screenX,
 		screenY: screenY,
@@ -130,7 +136,7 @@ func newBox(g graphics.Graphics, x int, y int, alwaysShowCount bool) *box {
 	return &box{
 		x:               x,
 		y:               y,
-		gameItem:        gameitem.None,
+		gameItem:        gameitem.NoneType,
 		text:            g.NewText(basicfont.Face7x13, x+itemCountXOffset, y+itemCountYOffset, 28, 18, 1.2, graphics.AlignCenter),
 		alwaysShowCount: alwaysShowCount,
 	}

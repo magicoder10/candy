@@ -1,6 +1,7 @@
 package candy
 
 import (
+	"candy/game/gameitem"
 	"errors"
 	"time"
 
@@ -13,6 +14,14 @@ var _ square.Square = (*Candy)(nil)
 
 type Candy struct {
 	state state
+}
+
+func (c Candy) HasRevealedItem() bool {
+	return false
+}
+
+func (c Candy) RetrieveGameItem() gameitem.Type {
+	return gameitem.NoneType
 }
 
 func (c Candy) IsBroken() bool {

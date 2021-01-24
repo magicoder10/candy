@@ -2,6 +2,7 @@ package player
 
 import (
 	"candy/game/marker"
+	"candy/pubsub"
 	"time"
 
 	"candy/game/direction"
@@ -14,7 +15,7 @@ const spriteWidth = 48
 const spriteHeight = 48
 const spriteRowWidth = 3 * spriteWidth
 const spriteColHeight = 4 * spriteHeight
-const bodyWidth = (2 * square.Width - 10)/ 3
+const bodyWidth = (2*square.Width - 10) / 3
 const feetLength = square.Width / 4
 
 type regionOffset struct {
@@ -34,12 +35,13 @@ type Player struct {
 	regionOffset regionOffset
 	character    character
 	marker       *marker.Marker
+	powerLevel   int
 }
 
 func (p Player) Draw(batch graphics.Batch) {
 	p.state.draw(batch)
 	if p.marker != nil {
-		markerX := p.state.getX() + p.state.getWidth() / 2 - p.marker.GetWidth() / 2
+		markerX := p.state.getX() + p.state.getWidth()/2 - p.marker.GetWidth()/2
 		// TODO: player.state.getHeight() should rename to getDepth()
 		// TODO: square.Width need to be replaced with new getHeight()
 		markerY := p.state.getY() + square.Width + marker.YOffset
@@ -79,7 +81,7 @@ func (p Player) GetHeight() int {
 }
 
 func (p Player) GetPowerLevel() int {
-	return 3
+	return p.powerLevel
 }
 
 func (p Player) IsNormal() bool {
@@ -95,6 +97,10 @@ func (p *Player) ShowMarker(isTeammate bool) {
 	p.marker = &mk
 }
 
+func (p *Player) IncrementPower() {
+	p.powerLevel++
+}
+
 func NewPlayer(
 	moveChecker MoveChecker,
 	character character,
@@ -102,6 +108,7 @@ func NewPlayer(
 	gridY int,
 	row int,
 	col int,
+	pubSub *pubsub.PubSub,
 ) *Player {
 	return &Player{
 		regionOffset: regionOffset{
@@ -118,6 +125,8 @@ func NewPlayer(
 				y: 0,
 			},
 			character,
+			pubSub,
 		),
+		powerLevel: 1,
 	}
 }

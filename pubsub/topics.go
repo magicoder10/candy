@@ -4,5 +4,13 @@ type topic int
 
 const (
 	OnCandyExploding topic = iota
-	OnGameStarted
+	OnPlayerWalking
+	IncrementPlayerPower
 )
+
+type OnPlayerWalkingPayload struct {
+	X      int
+	Y      int
+	Width  int
+	Height int
+}

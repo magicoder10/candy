@@ -6,16 +6,17 @@ import (
 )
 
 const YOffset = 5
+
 var markerImageDuration = (180 * time.Millisecond).Nanoseconds()
 
 type Marker struct {
-	lag int64
-	width int
+	lag        int64
+	width      int
 	imageIndex int
-	imageSet []graphics.Bound
+	imageSet   []graphics.Bound
 }
 
-func (m Marker) GetWidth()  int {
+func (m Marker) GetWidth() int {
 	return m.width
 }
 func (m Marker) Draw(batch graphics.Batch, x int, y int, z int) {
@@ -35,7 +36,7 @@ func newCurrentPlayer() Marker {
 		lag:        0,
 		width:      14,
 		imageIndex: 0,
-		imageSet:   []graphics.Bound{
+		imageSet: []graphics.Bound{
 			{
 				X:      960,
 				Y:      1032,
@@ -64,11 +65,7 @@ func newCurrentPlayer() Marker {
 	}
 }
 
-
 // TODO: isTeammate is added to support teammate marker in the future```
 func NewMarker(isTeammate bool) Marker {
 	return newCurrentPlayer()
 }
-
-
-

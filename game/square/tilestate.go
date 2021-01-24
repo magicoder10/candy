@@ -15,7 +15,8 @@ type tileState interface {
 	hideItem()
 	isBroken() bool
 	breakable() bool
-	removeItem() gameitem.GameItem
+	removeItem() gameitem.Type
+	hasItem() bool
 }
 
 type tileSharedState struct {
@@ -24,7 +25,11 @@ type tileSharedState struct {
 	imageXOffset int
 	imageYOffset int
 	showItem     bool
-	gameItem     gameitem.GameItem
+	gameItemType gameitem.Type
+}
+
+func (t *tileSharedState) hasItem() bool {
+	return false
 }
 
 func (t *tileSharedState) revealItem() {
@@ -35,8 +40,8 @@ func (t *tileSharedState) hideItem() {
 	t.showItem = false
 }
 
-func (t *tileSharedState) removeItem() gameitem.GameItem {
-	return gameitem.None
+func (t *tileSharedState) removeItem() gameitem.Type {
+	return gameitem.NoneType
 }
 
 func (t tileSharedState) shouldRemove() bool {
@@ -86,10 +91,10 @@ func (t tileSolidState) draw(batch graphics.Batch, x int, y int) {
 	newY := y + t.yOffset
 	batch.DrawSprite(newX, newY, y, bound, 1)
 
-	if t.gameItem != gameitem.None && t.showItem {
+	if t.gameItemType != gameitem.NoneType && t.showItem {
 		batch.DrawSprite(
 			newX+revealItemXOffset, newY+revealItemYOffset, y+revealItemZOffset,
-			t.gameItem.GetBound(), 0.6)
+			t.gameItemType.GetBound(), 0.6)
 	}
 }
 
@@ -106,12 +111,12 @@ func (t tileBrokenState) breakTile() tileState {
 }
 
 func (t tileBrokenState) draw(batch graphics.Batch, x int, y int) {
-	if t.gameItem == gameitem.None {
+	if t.gameItemType == gameitem.NoneType {
 		return
 	}
 	batch.DrawSprite(
 		x+t.xOffset+brokenTileXOffset, y+t.yOffset+brokenTileYOffset, y,
-		t.gameItem.GetBound(), 1)
+		t.gameItemType.GetBound(), 1)
 }
 
 func (t tileBrokenState) unblockFire() tileState {
@@ -130,14 +135,18 @@ type tileCollectItemState struct {
 	tileBrokenState
 }
 
-func (t tileCollectItemState) shouldRemove() bool {
-	return t.gameItem == gameitem.None
+func (t *tileCollectItemState) hasItem() bool {
+	return t.gameItemType != gameitem.NoneType
 }
 
-func (t tileCollectItemState) removeItem() gameitem.GameItem {
-	gameItem := t.gameItem
-	t.gameItem = gameitem.None
-	return gameItem
+func (t tileCollectItemState) shouldRemove() bool {
+	return t.gameItemType == gameitem.NoneType
+}
+
+func (t tileCollectItemState) removeItem() gameitem.Type {
+	gameItemType := t.gameItemType
+	t.gameItemType = gameitem.NoneType
+	return gameItemType
 }
 
 func (t tileCollectItemState) canEnter() bool {

@@ -1,6 +1,7 @@
 package player
 
 import (
+	"candy/pubsub"
 	"time"
 
 	"candy/game/direction"
@@ -31,6 +32,7 @@ type sharedState struct {
 	moveChecker  MoveChecker
 	regionOffset regionOffset
 	character    character
+	pubSub       *pubsub.PubSub
 }
 
 func (s sharedState) update(timeElapsed time.Duration) {
