@@ -14,7 +14,7 @@ const spriteWidth = 48
 const spriteHeight = 48
 const spriteRowWidth = 3 * spriteWidth
 const spriteColHeight = 4 * spriteHeight
-const bodyWidth = 2 * square.Width / 3
+const bodyWidth = (2 * square.Width - 10)/ 3
 const feetLength = square.Width / 4
 
 const jellyZOffset = -1
@@ -92,7 +92,7 @@ func (p *Player) Trapped() {
 	p.state = p.state.trapped()
 }
 
-func (p *Player) SetIsTeammate(isTeammate bool) {
+func (p *Player) ShowMarker(isTeammate bool) {
 	mk := marker.NewMarker(isTeammate)
 	p.marker = &mk
 }
