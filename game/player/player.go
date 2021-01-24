@@ -90,7 +90,7 @@ func (p *Player) Trapped() {
 	p.state = p.state.trapped()
 }
 
-func (p *Player) SetIsTeammate(isTeammate bool) {
+func (p *Player) ShowMarker(isTeammate bool) {
 	mk := marker.NewMarker(isTeammate)
 	p.marker = &mk
 }
@@ -121,4 +121,3 @@ func NewPlayer(
 		),
 	}
 }
-
