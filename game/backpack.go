@@ -112,7 +112,7 @@ func NewBackPack(g graphics.Graphics, screenX int, screenY int) BackPack {
 	y := screenY + gameItemPadding
 
 	boxes[0] = newBox(g, x, y, true)
-	boxes[0].gameItem = gameitem.PowerType
+	boxes[0].gameItemType = gameitem.PowerType
 	boxes[1] = newBox(g, x+boxWidth, y, true)
 	boxes[1].gameItemType = gameitem.SpeedType
 	boxes[2] = newBox(g, x+boxWidth*2, y, true)
