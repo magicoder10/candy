@@ -136,7 +136,7 @@ func newBox(g graphics.Graphics, x int, y int, alwaysShowCount bool) *box {
 	return &box{
 		x:               x,
 		y:               y,
-		gameItem:        gameitem.NoneType,
+		gameItemType:        gameitem.NoneType,
 		text:            g.NewText(basicfont.Face7x13, x+itemCountXOffset, y+itemCountYOffset, 28, 18, 1.2, graphics.AlignCenter),
 		alwaysShowCount: alwaysShowCount,
 	}
