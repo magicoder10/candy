@@ -66,7 +66,6 @@ func newCurrentPlayer() Marker {
 }
 
 // TODO: isTeammate is added to support teammate marker in the future
-
 func NewMarker(isTeammate bool) Marker {
 	return newCurrentPlayer()
 }
