@@ -66,13 +66,6 @@ func (g Game) HandleInput(in input.Input) {
 	}
 }
 
-func (g Game) getObjectCell(objectX int, objectY int, objectWidth int, objectHeight int) cell.Cell {
-	return cell.GetCellLocatedAt(
-		objectX-g.gameMap.GetGridXOffset(), objectY-g.gameMap.GetGridYOffset(), objectWidth, objectHeight,
-		square.Width, square.Width,
-	)
-}
-
 func (g Game) dropCandy(payload pubsub.OnDropCandyPayload) {
 	playerCell := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
 	currPlayer := g.players[g.currPlayerIndex]
@@ -167,7 +160,7 @@ func NewGame(
 	pubSub.Subscribe(pubsub.OnDropCandy, func(payload interface{}) {
 		pl := payload.(pubsub.OnDropCandyPayload)
 		gm.dropCandy(pl)
-  })
+	})
 	pubSub.Subscribe(pubsub.OnPlayerWalking, func(payload interface{}) {
 		p := payload.(pubsub.OnPlayerWalkingPayload)
 		gm.onPlayerWalking(p)

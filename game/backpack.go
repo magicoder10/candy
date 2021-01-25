@@ -35,13 +35,13 @@ var countImageBound = graphics.Bound{
 type box struct {
 	x               int
 	y               int
-	gameItemType        gameitem.Type
+	gameItemType    gameitem.Type
 	text            graphics.Text
 	alwaysShowCount bool
 }
 
 func (b *box) draw(batch graphics.Batch, count int) {
-	batch.DrawSprite(b.x+5, b.y+5, 0, b.gameItem.GetBound(), 1)
+	batch.DrawSprite(b.x+5, b.y+5, 0, b.gameItemType.GetBound(), 1)
 
 	if count > 0 || b.alwaysShowCount {
 		batch.DrawSprite(b.x+34, b.y+8, 0, countImageBound, 1)
@@ -83,14 +83,14 @@ func (b *BackPack) AddItem(gameItem gameitem.GameItem) {
 func (b *BackPack) TakeItem(boxIndex int) gameitem.Type {
 	box := b.boxes[boxIndex]
 	if box.gameItemType != gameitem.NoneType {
-		b.items[box.gameItem]--
+		b.items[box.gameItemType]--
 
-		if boxIndex > reservedBoxesEnd && b.items[box.gameItem] == 0 {
+		if boxIndex > reservedBoxesEnd && b.items[box.gameItemType] == 0 {
 			b.boxes[boxIndex].gameItemType = gameitem.NoneType
-			delete(b.items, box.gameItem)
+			delete(b.items, box.gameItemType)
 		}
 	}
-	return box.gameItem
+	return box.gameItemType
 }
 
 func (b BackPack) Draw(batch graphics.Batch) {
@@ -101,7 +101,7 @@ func (b BackPack) Draw(batch graphics.Batch) {
 }
 
 func (b BackPack) drawBox(batch graphics.Batch, index int) {
-	b.boxes[index].draw(batch, b.items[b.boxes[index].gameItem])
+	b.boxes[index].draw(batch, b.items[b.boxes[index].gameItemType])
 }
 
 func NewBackPack(g graphics.Graphics, screenX int, screenY int) BackPack {
@@ -136,7 +136,7 @@ func newBox(g graphics.Graphics, x int, y int, alwaysShowCount bool) *box {
 	return &box{
 		x:               x,
 		y:               y,
-		gameItemType:        gameitem.NoneType,
+		gameItemType:    gameitem.NoneType,
 		text:            g.NewText(basicfont.Face7x13, x+itemCountXOffset, y+itemCountYOffset, 28, 18, 1.2, graphics.AlignCenter),
 		alwaysShowCount: alwaysShowCount,
 	}
