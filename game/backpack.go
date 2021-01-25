@@ -114,7 +114,7 @@ func NewBackPack(g graphics.Graphics, screenX int, screenY int) BackPack {
 	boxes[0] = newBox(g, x, y, true)
 	boxes[0].gameItem = gameitem.PowerType
 	boxes[1] = newBox(g, x+boxWidth, y, true)
-	boxes[1].gameItem = gameitem.SpeedType
+	boxes[1].gameItemType = gameitem.SpeedType
 	boxes[2] = newBox(g, x+boxWidth*2, y, true)
 	boxes[2].gameItem = gameitem.CandyType
 	for i := 0; i < boxCount-3; i++ {
