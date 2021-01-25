@@ -1,14 +1,14 @@
 package player
 
 import (
-	"candy/game/marker"
-	"candy/pubsub"
 	"time"
 
 	"candy/game/direction"
+	"candy/game/marker"
 	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
+	"candy/pubsub"
 )
 
 const spriteWidth = 48

@@ -1,11 +1,11 @@
 package candy
 
 import (
-	"candy/game/gameitem"
 	"errors"
 	"time"
 
 	"candy/game/cell"
+	"candy/game/gameitem"
 	"candy/game/square"
 	"candy/graphics"
 )

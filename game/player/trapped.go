@@ -1,10 +1,11 @@
 package player
 
 import (
+	"time"
+
 	"candy/game/direction"
 	"candy/graphics"
 	"candy/input"
-	"time"
 )
 
 var _ state = (*trappedState)(nil)
