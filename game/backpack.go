@@ -82,7 +82,7 @@ func (b *BackPack) AddItem(gameItem gameitem.GameItem) {
 
 func (b *BackPack) TakeItem(boxIndex int) gameitem.Type {
 	box := b.boxes[boxIndex]
-	if box.gameItem != gameitem.NoneType {
+	if box.gameItemType != gameitem.NoneType {
 		b.items[box.gameItem]--
 
 		if boxIndex > reservedBoxesEnd && b.items[box.gameItem] == 0 {
