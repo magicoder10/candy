@@ -120,6 +120,30 @@ func (p Pixel) PollEvents() []input.Input {
 			Device: input.SpaceKey,
 		})
 	}
+	if p.window.JustPressed(pixelgl.Key1) {
+		inputs = append(inputs, input.Input{
+			Action: input.SinglePress,
+			Device: input.Key1,
+		})
+	}
+	if p.window.JustPressed(pixelgl.Key2) {
+		inputs = append(inputs, input.Input{
+			Action: input.SinglePress,
+			Device: input.Key2,
+		})
+	}
+	if p.window.JustPressed(pixelgl.Key3) {
+		inputs = append(inputs, input.Input{
+			Action: input.SinglePress,
+			Device: input.Key3,
+		})
+	}
+	if p.window.JustPressed(pixelgl.Key4) {
+		inputs = append(inputs, input.Input{
+			Action: input.SinglePress,
+			Device: input.Key4,
+		})
+	}
 	if p.window.JustReleased(pixelgl.KeyLeft) {
 		inputs = append(inputs, input.Input{
 			Action: input.Release,

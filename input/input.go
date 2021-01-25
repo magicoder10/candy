@@ -33,6 +33,10 @@ var deviceNames = map[device]string{
 	UpArrowKey:      "UpArrowKey",
 	DownArrowKey:    "DownArrowKey",
 	RKey:            "RKey",
+	Key1:            "Key1",
+	Key2:            "key2",
+	Key3:            "key3",
+	Key4:            "key4",
 	SpaceKey:        "SpaceKey",
 	MouseLeftButton: "MouseLeftButton",
 }
@@ -47,4 +51,8 @@ const (
 	RKey
 	SpaceKey
 	MouseLeftButton
+	Key1
+	Key2
+	Key3
+	Key4
 )

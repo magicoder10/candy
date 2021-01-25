@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"sync"
 
 	"candy/game/gameitem"
 	"candy/game/square"
@@ -52,10 +53,11 @@ func (b *box) draw(batch graphics.Batch, count int) {
 }
 
 type BackPack struct {
-	screenX int
-	screenY int
-	boxes   []*box
-	items   map[gameitem.Type]int
+	screenX    int
+	screenY    int
+	boxes      []*box
+	items      map[gameitem.Type]int
+	boxesMutex *sync.Mutex
 }
 
 func (b *BackPack) AddItem(gameItem gameitem.GameItem) {
@@ -82,7 +84,7 @@ func (b *BackPack) AddItem(gameItem gameitem.GameItem) {
 
 func (b *BackPack) TakeItem(boxIndex int) gameitem.Type {
 	box := b.boxes[boxIndex]
-	if box.gameItemType != gameitem.NoneType {
+	if box.gameItemType != gameitem.NoneType && b.items[box.gameItemType] > 0 {
 		b.items[box.gameItemType]--
 
 		if boxIndex > reservedBoxesEnd && b.items[box.gameItemType] == 0 {
@@ -101,6 +103,8 @@ func (b BackPack) Draw(batch graphics.Batch) {
 }
 
 func (b BackPack) drawBox(batch graphics.Batch, index int) {
+	b.boxesMutex.Lock()
+	defer b.boxesMutex.Unlock()
 	b.boxes[index].draw(batch, b.items[b.boxes[index].gameItemType])
 }
 
@@ -125,10 +129,11 @@ func NewBackPack(g graphics.Graphics, screenX int, screenY int) BackPack {
 	items[gameitem.SpeedType] = 0
 	items[gameitem.CandyType] = 0
 	return BackPack{
-		screenX: screenX,
-		screenY: screenY,
-		boxes:   boxes,
-		items:   items,
+		screenX:    screenX,
+		screenY:    screenY,
+		boxes:      boxes,
+		items:      items,
+		boxesMutex: &sync.Mutex{},
 	}
 }
 
