@@ -72,7 +72,7 @@ func (b *BackPack) AddItem(gameItem gameitem.GameItem) {
 		if index == len(b.boxes) {
 			return
 		}
-		b.boxes[index].gameItem = gameItem.GetType()
+		b.boxes[index].gameItemType = gameItem.GetType()
 	}
 	b.items[gameItem.GetType()]++
 	if gameItem.GetType().CanAutoUse() {
