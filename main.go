@@ -20,7 +20,7 @@ func run() {
 		Icon:        nil,
 		Bounds:      pixel.R(0, 0, screen.Width, screen.Height),
 		VSync:       true,
-		AlwaysOnTop: true,
+		AlwaysOnTop: false,
 	})
 	if err != nil {
 		panic(err)
