@@ -2,6 +2,7 @@ package assets
 
 import (
 	"image"
+	_ "image/jpeg"
 	_ "image/png"
 	"os"
 	"path/filepath"
@@ -10,7 +11,7 @@ import (
 	"candy/audio"
 )
 
-var imageExtensions = map[string]struct{}{"png": {}}
+var imageExtensions = map[string]struct{}{"jpg": {}, "png": {}}
 var audioExtensions = map[string]struct{}{"mp3": {}, "wav": {}}
 
 type Assets struct {
