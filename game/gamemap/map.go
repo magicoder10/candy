@@ -3,6 +3,7 @@ package gamemap
 import (
 	"math"
 	"math/rand"
+	"sync"
 	"time"
 
 	"candy/assets"
@@ -43,6 +44,7 @@ type Map struct {
 	grid        *[][]square.Square
 	// this is only used for debugging
 	tiles             *[]*square.Tile
+	candiesMutex      *sync.Mutex
 	candies           *map[cell.Cell]*candy.Candy
 	brokenSquares     map[*candy.Candy][]brokenSquare
 	candyRangeCutter  candy.RangeCutter
@@ -83,6 +85,8 @@ func (m Map) HideItems() {
 }
 
 func (m *Map) Update(timeElapsed time.Duration) {
+	m.candiesMutex.Lock()
+	defer m.candiesMutex.Unlock()
 	for _, c := range *m.candies {
 		c.Update(timeElapsed)
 	}
@@ -174,6 +178,9 @@ func (m Map) GetPlayerMoveChecker() player.MoveChecker {
 }
 
 func (m *Map) AddCandy(cell cell.Cell, candyBuilder candy.Builder) bool {
+	m.candiesMutex.Lock()
+	defer m.candiesMutex.Unlock()
+
 	if cell.Row < 0 || cell.Row > m.maxRow || cell.Col < 0 || cell.Col > m.maxCol {
 		return false
 	}
@@ -206,6 +213,9 @@ func (m Map) GetGridYOffset() int {
 }
 
 func (m Map) HasRevealedItem(c cell.Cell) bool {
+	if c.Row >= len(*m.grid) || (len(*m.grid) > 0 && c.Col >= len((*m.grid)[0])) {
+		return false
+	}
 	sq := (*m.grid)[c.Row][c.Col]
 	if sq == nil {
 		return false
@@ -277,6 +287,7 @@ func NewMap(assets assets.Assets, g graphics.Graphics, pubSub *pubsub.PubSub, sc
 		gridYOffset:      gridYOffset,
 		grid:             &grid,
 		tiles:            &tiles,
+		candiesMutex:     &sync.Mutex{},
 		candies:          &candies,
 		candyRangeCutter: &cdRangeCutter,
 		playerMoveChecker: &moveChecker{

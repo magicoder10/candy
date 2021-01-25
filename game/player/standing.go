@@ -14,8 +14,8 @@ type standingState struct {
 }
 
 func (s standingState) handleInput(in input.Input) state {
-	switch  in.Action {
-	case  input.Press:
+	switch in.Action {
+	case input.Press:
 		switch in.Device {
 		case input.UpArrowKey:
 			return newWalkingStateFromStanding(s.sharedState, 0, direction.Up)
@@ -29,7 +29,7 @@ func (s standingState) handleInput(in input.Input) state {
 	case input.SinglePress:
 		switch in.Device {
 		case input.SpaceKey:
-		s.dropCandy()
+			s.dropCandy()
 		}
 	}
 	return s

@@ -1,13 +1,12 @@
 package player
 
 import (
-	"candy/pubsub"
-	"candy/game/square"
-	"candy/pubsub"
-	"time"
 	"candy/game/direction"
+	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
+	"candy/pubsub"
+	"time"
 )
 
 type state interface {
@@ -73,7 +72,7 @@ func (s sharedState) getHeight() int {
 
 func (s sharedState) dropCandy() {
 	s.pubSub.Publish(pubsub.OnDropCandy, pubsub.OnDropCandyPayload{
-		X:     s.x,
+		X:      s.x,
 		Y:      s.y,
 		Width:  s.playerWidth,
 		Height: s.playerHeight,
