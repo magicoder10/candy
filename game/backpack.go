@@ -116,7 +116,7 @@ func NewBackPack(g graphics.Graphics, screenX int, screenY int) BackPack {
 	boxes[1] = newBox(g, x+boxWidth, y, true)
 	boxes[1].gameItemType = gameitem.SpeedType
 	boxes[2] = newBox(g, x+boxWidth*2, y, true)
-	boxes[2].gameItem = gameitem.CandyType
+	boxes[2].gameItemType = gameitem.CandyType
 	for i := 0; i < boxCount-3; i++ {
 		boxes[i+3] = newBox(g, screenX+usableItemBoxX+i*boxWidth, y, false)
 	}
