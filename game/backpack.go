@@ -86,7 +86,7 @@ func (b *BackPack) TakeItem(boxIndex int) gameitem.Type {
 		b.items[box.gameItem]--
 
 		if boxIndex > reservedBoxesEnd && b.items[box.gameItem] == 0 {
-			b.boxes[boxIndex].gameItem = gameitem.NoneType
+			b.boxes[boxIndex].gameItemType = gameitem.NoneType
 			delete(b.items, box.gameItem)
 		}
 	}
