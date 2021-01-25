@@ -65,7 +65,7 @@ func (b *BackPack) AddItem(gameItem gameitem.GameItem) {
 	if _, ok := b.items[gameItem.GetType()]; !ok {
 		// Find the first empty box
 		index := 0
-		for index < len(b.boxes) && b.boxes[index].gameItem != gameitem.NoneType {
+		for index < len(b.boxes) && b.boxes[index].gameItemType != gameitem.NoneType {
 			index++
 		}
 		// No empty box
