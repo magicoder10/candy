@@ -115,7 +115,6 @@ func (g Game) onPlayerWalking(payload pubsub.OnPlayerWalkingPayload) {
 		item := gameitem.WithPubSub(gameItemType, g.pubSub)
 		g.backpack.AddItem(item)
 	}
-
 }
 
 func (g Game) incrementPlayerPower() {
