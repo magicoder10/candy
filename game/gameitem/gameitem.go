@@ -147,6 +147,5 @@ func WithPubSub(itemType Type, pubSub *pubsub.PubSub) GameItem {
 	case FirstAidKitType:
 		return FirstAidKit{}
 	}
-
 	return None{}
 }
