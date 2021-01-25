@@ -17,7 +17,7 @@ func TestCandyRangeCutter_CutRangeBySolidTile(t *testing.T) {
 		maxCol: 4,
 		grid: &[][]square.Square{
 			{nil, nil, nil, nil},
-			{square.NewTile('Y', gameitem.Power), nil, nil, nil},
+			{square.NewTile('Y', gameitem.PowerType), nil, nil, nil},
 			{nil, nil, nil, nil},
 			{nil, nil, nil, nil},
 		},
@@ -47,7 +47,7 @@ func TestCandyRangeCutter_CutRangeBySolidTile(t *testing.T) {
 }
 
 func TestCandyRangeCutter_CutRangeByBrokenTile(t *testing.T) {
-	tile := square.NewTile('Y', gameitem.Power)
+	tile := square.NewTile('Y', gameitem.PowerType)
 	rangeCutter := candyRangeCutter{
 		maxRow: 4,
 		maxCol: 4,
@@ -65,7 +65,7 @@ func TestCandyRangeCutter_CutRangeByBrokenTile(t *testing.T) {
 }
 
 func TestCandyRangeCutter_CutRangeByGameItem(t *testing.T) {
-	tile := square.NewTile('Y', gameitem.Power)
+	tile := square.NewTile('Y', gameitem.PowerType)
 	rangeCutter := candyRangeCutter{
 		maxRow: 4,
 		maxCol: 4,
