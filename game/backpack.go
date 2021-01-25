@@ -35,7 +35,7 @@ var countImageBound = graphics.Bound{
 type box struct {
 	x               int
 	y               int
-	gameItem        gameitem.Type
+	gameItemType        gameitem.Type
 	text            graphics.Text
 	alwaysShowCount bool
 }
