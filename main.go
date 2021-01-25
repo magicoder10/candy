@@ -31,7 +31,7 @@ func run() {
 		panic(err)
 	}
 
-	logger := observability.NewLogger(observability.Debug)
+	logger := observability.NewLogger(observability.Info)
 
 	app, err := screen.NewApp(&logger, ass, &px)
 	if err != nil {

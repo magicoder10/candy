@@ -37,6 +37,7 @@ type Player struct {
 	regionOffset regionOffset
 	character    character
 	marker       *marker.Marker
+	powerLevel   int
 }
 
 func (p Player) Draw(batch graphics.Batch) {
@@ -82,7 +83,7 @@ func (p Player) GetHeight() int {
 }
 
 func (p Player) GetPowerLevel() int {
-	return 3
+	return p.powerLevel
 }
 
 func (p Player) IsNormal() bool {
@@ -96,6 +97,10 @@ func (p *Player) Trapped() {
 func (p *Player) ShowMarker(isTeammate bool) {
 	mk := marker.NewMarker(isTeammate)
 	p.marker = &mk
+}
+
+func (p *Player) IncrementPower() {
+	p.powerLevel++
 }
 
 func NewPlayer(
@@ -124,5 +129,6 @@ func NewPlayer(
 			character,
 			pubSub,
 		),
+		powerLevel: 1,
 	}
 }

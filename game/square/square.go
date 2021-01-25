@@ -1,6 +1,7 @@
 package square
 
 import (
+	"candy/game/gameitem"
 	"candy/graphics"
 )
 
@@ -14,4 +15,6 @@ type Square interface {
 	IsBroken() bool
 	ShouldRemove() bool
 	CanEnter() bool
+	HasRevealedItem() bool
+	RetrieveGameItem() gameitem.Type
 }

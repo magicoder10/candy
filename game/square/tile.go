@@ -17,6 +17,14 @@ type Tile struct {
 	state tileState
 }
 
+func (t Tile) HasRevealedItem() bool {
+	return t.state.hasItem()
+}
+
+func (t *Tile) RetrieveGameItem() gameitem.Type {
+	return t.state.removeItem()
+}
+
 func (t Tile) IsBroken() bool {
 	return t.state.isBroken()
 }
@@ -53,11 +61,11 @@ func (t *Tile) HideItem() {
 	t.state.hideItem()
 }
 
-func (t *Tile) RemoveItem() gameitem.GameItem {
+func (t *Tile) RemoveItem() gameitem.Type {
 	return t.state.removeItem()
 }
 
-func newYellow(gameItem gameitem.GameItem) Tile {
+func newYellow(gameItemType gameitem.Type) Tile {
 	return Tile{
 		state: &tileSolidState{
 			tileSharedState{
@@ -65,13 +73,13 @@ func newYellow(gameItem gameitem.GameItem) Tile {
 				imageYOffset: 304,
 				xOffset:      -4,
 				yOffset:      -2,
-				gameItem:     gameItem,
+				gameItemType: gameItemType,
 			},
 		},
 	}
 }
 
-func newGreen(gameItem gameitem.GameItem) Tile {
+func newGreen(gameItemType gameitem.Type) Tile {
 	return Tile{
 		state: &tileSolidState{
 			tileSharedState{
@@ -79,22 +87,22 @@ func newGreen(gameItem gameitem.GameItem) Tile {
 				imageYOffset: 224,
 				xOffset:      -4,
 				yOffset:      -2,
-				gameItem:     gameItem,
+				gameItemType: gameItemType,
 			},
 		},
 	}
 }
 
-func NewTile(tileType rune, gameItem gameitem.GameItem) *Tile {
+func NewTile(tileType rune, gameItemType gameitem.Type) *Tile {
 	switch tileType {
 	case 'Y':
-		tile := newYellow(gameItem)
+		tile := newYellow(gameItemType)
 		return &tile
 	case 'G':
-		tile := newGreen(gameItem)
+		tile := newGreen(gameItemType)
 		return &tile
 	default:
-		tile := newGreen(gameItem)
+		tile := newGreen(gameItemType)
 		return &tile
 	}
 }
