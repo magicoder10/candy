@@ -47,25 +47,11 @@ type sharedComponent struct {
 }
 
 func (s sharedComponent) HandleInput(in input.Input) {
-	for _, child := range s.children {
-		child.HandleInput(in)
-	}
-	s.selfHandleInput(in)
-}
-
-func (s sharedComponent) selfHandleInput(in input.Input) {
-
+	return
 }
 
 func (s sharedComponent) Update(timeElapsed time.Duration) {
-	for _, child := range s.children {
-		child.Update(timeElapsed)
-	}
-	s.selfUpdate(timeElapsed)
-}
-
-func (s sharedComponent) selfUpdate(timeElapsed time.Duration) {
-
+	return
 }
 
 func (s sharedComponent) getChildren() []Component {
