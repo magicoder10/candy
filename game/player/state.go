@@ -1,12 +1,13 @@
 package player
 
 import (
+	"time"
+
 	"candy/game/direction"
 	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
 	"candy/pubsub"
-	"time"
 )
 
 type state interface {

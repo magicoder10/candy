@@ -1,8 +1,9 @@
 package marker
 
 import (
-	"candy/graphics"
 	"time"
+
+	"candy/graphics"
 )
 
 const YOffset = 5

@@ -1,12 +1,12 @@
 package player
 
 import (
-	"candy/pubsub"
 	"time"
 
 	"candy/game/direction"
 	"candy/game/square"
 	"candy/input"
+	"candy/pubsub"
 )
 
 var nanoPerStep = (100 * time.Millisecond).Nanoseconds()

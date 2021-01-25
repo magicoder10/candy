@@ -9,10 +9,11 @@ import (
 	"candy/graphics"
 )
 
-const explodingTime = 400 * time.Millisecond
-const animationDelay = 500 * time.Millisecond
+const explodingTimeShort = 250 * time.Millisecond
+const explodingTimeMedium = 500 * time.Millisecond
+const explodingTimeLong = 750 * time.Millisecond
 
-var explodingTimeNano = explodingTime.Nanoseconds()
+const animationDelay = 300 * time.Millisecond
 
 type explodeDirection struct {
 	cell      cell.Cell
@@ -51,7 +52,8 @@ var _ state = (*explodingState)(nil)
 
 type explodingState struct {
 	sharedState
-	hitRange int
+	explodingTimeNano int64
+	hitRange          int
 }
 
 func (e explodingState) exploding() bool {
@@ -75,7 +77,7 @@ func (e *explodingState) update(timeElapsed time.Duration) state {
 	}
 	e.lag += timeElapsed.Nanoseconds()
 
-	rangeIncreaseDuration := explodingTimeNano / int64(e.powerLevel)
+	rangeIncreaseDuration := e.explodingTimeNano / int64(e.powerLevel)
 	for e.hitRange < e.powerLevel && e.lag > rangeIncreaseDuration {
 		e.hitRange += 1
 		e.lag -= rangeIncreaseDuration
@@ -125,6 +127,21 @@ func (e explodingState) hitRanges(processRange func(dir explodeDirection, currRa
 }
 
 func newExplodingState(sharedState sharedState) *explodingState {
+	explodingTime := getExplodingTime(sharedState.powerLevel)
 	sharedState.remainingTime = explodingTime + animationDelay
-	return &explodingState{sharedState: sharedState, hitRange: 0}
+	return &explodingState{
+		sharedState:       sharedState,
+		hitRange:          0,
+		explodingTimeNano: explodingTime.Nanoseconds(),
+	}
+}
+
+func getExplodingTime(powerLevel int) time.Duration {
+	if powerLevel <= 3 {
+		return explodingTimeShort
+	} else if powerLevel <= 6 {
+		return explodingTimeMedium
+	} else {
+		return explodingTimeLong
+	}
 }
