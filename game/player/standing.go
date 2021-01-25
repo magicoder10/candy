@@ -4,6 +4,7 @@ import (
 	"candy/game/direction"
 	"candy/game/square"
 	"candy/input"
+	"candy/pubsub"
 )
 
 var _ state = (*standingState)(nil)
@@ -35,6 +36,7 @@ func newStandingStateOnSquare(
 	row int, col int,
 	regionOffset regionOffset,
 	character character,
+	pubSub *pubsub.PubSub,
 ) standingState {
 	return standingState{
 		sharedState{
@@ -47,6 +49,7 @@ func newStandingStateOnSquare(
 			y:            gridY + row*square.Width,
 			regionOffset: regionOffset,
 			character:    character,
+			pubSub:       pubSub,
 		},
 	}
 }

@@ -192,9 +192,9 @@ func (m *Map) AddCandy(cell cell.Cell, candyBuilder candy.Builder) bool {
 	return true
 }
 
-func randomGameItem() gameitem.GameItem {
-	index := rand.Intn(len(gameitem.GameItems))
-	return gameitem.GameItems[index]
+func randomGameItem() gameitem.Type {
+	index := rand.Intn(len(gameitem.Types))
+	return gameitem.Types[index]
 }
 
 func (m Map) GetGridXOffset() int {
@@ -203,6 +203,20 @@ func (m Map) GetGridXOffset() int {
 
 func (m Map) GetGridYOffset() int {
 	return m.gridYOffset
+}
+
+func (m Map) HasRevealedItem(c cell.Cell) bool {
+	sq := (*m.grid)[c.Row][c.Col]
+	if sq == nil {
+		return false
+	}
+	return sq.HasRevealedItem()
+}
+
+func (m Map) RetrieveGameItem(c cell.Cell) gameitem.Type {
+	gameItemType := (*m.grid)[c.Row][c.Col].RetrieveGameItem()
+	(*m.grid)[c.Row][c.Col] = nil
+	return gameItemType
 }
 
 func NewMap(assets assets.Assets, g graphics.Graphics, pubSub *pubsub.PubSub, screenX int, screenY int) *Map {

@@ -2,6 +2,7 @@ package player
 
 import (
 	"candy/game/marker"
+	"candy/pubsub"
 	"time"
 
 	"candy/game/direction"
@@ -36,6 +37,7 @@ type Player struct {
 	regionOffset regionOffset
 	character    character
 	marker       *marker.Marker
+	powerLevel   int
 }
 
 func (p Player) Draw(batch graphics.Batch) {
@@ -81,7 +83,7 @@ func (p Player) GetHeight() int {
 }
 
 func (p Player) GetPowerLevel() int {
-	return 3
+	return p.powerLevel
 }
 
 func (p Player) IsNormal() bool {
@@ -97,6 +99,10 @@ func (p *Player) ShowMarker(isTeammate bool) {
 	p.marker = &mk
 }
 
+func (p *Player) IncrementPower() {
+	p.powerLevel++
+}
+
 func NewPlayer(
 	moveChecker MoveChecker,
 	character character,
@@ -104,6 +110,7 @@ func NewPlayer(
 	gridY int,
 	row int,
 	col int,
+	pubSub *pubsub.PubSub,
 ) *Player {
 	return &Player{
 		regionOffset: regionOffset{
@@ -120,6 +127,8 @@ func NewPlayer(
 				y: 0,
 			},
 			character,
+			pubSub,
 		),
+		powerLevel: 1,
 	}
 }

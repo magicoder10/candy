@@ -1,6 +1,7 @@
 package player
 
 import (
+	"candy/pubsub"
 	"time"
 
 	"candy/game/direction"
@@ -87,6 +88,12 @@ func nextStep(currStep int, steps int) int {
 func newWalkingState(shared sharedState, lag int64, direction direction.Direction) *walkingState {
 	// Check change of direction
 	shared.direction = direction
+	shared.pubSub.Publish(pubsub.OnPlayerWalking, pubsub.OnPlayerWalkingPayload{
+		X:      shared.x,
+		Y:      shared.y,
+		Width:  shared.playerWidth,
+		Height: shared.playerHeight,
+	})
 	return &walkingState{
 		sharedState: shared,
 		lag:         lag,
