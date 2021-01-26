@@ -34,9 +34,9 @@ var deviceNames = map[device]string{
 	DownArrowKey:    "DownArrowKey",
 	RKey:            "RKey",
 	Key1:            "Key1",
-	Key2:            "key2",
-	Key3:            "key3",
-	Key4:            "key4",
+	Key2:            "Key2",
+	Key3:            "Key3",
+	Key4:            "Key4",
 	SpaceKey:        "SpaceKey",
 	MouseLeftButton: "MouseLeftButton",
 }

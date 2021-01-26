@@ -51,23 +51,13 @@ func (g Game) Draw() {
 
 func (g Game) HandleInput(in input.Input) {
 	g.players[g.currPlayerIndex].HandleInput(in)
+	g.backpack.HandleInput(in)
 
 	switch in.Action {
 	case input.Release:
 		switch in.Device {
 		case input.RKey:
 			g.gameMap.HideItems()
-		}
-	case input.SinglePress:
-		switch in.Device {
-		case input.Key1:
-			g.backpack.TakeItem(1)
-		case input.Key2:
-			g.backpack.TakeItem(2)
-		case input.Key3:
-			g.backpack.TakeItem(3)
-		case input.Key4:
-			g.backpack.TakeItem(4)
 		}
 	case input.Press:
 		switch in.Device {

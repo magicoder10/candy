@@ -1,12 +1,12 @@
 package game
 
 import (
-	"fmt"
 	"sync"
 
 	"candy/game/gameitem"
 	"candy/game/square"
 	"candy/graphics"
+	"candy/input"
 
 	"golang.org/x/image/font/basicfont"
 )
@@ -18,6 +18,7 @@ const gameItemPadding = boxWidth - square.Width
 const usableItemBoxX = 244
 const itemCountXOffset = 33
 const itemCountYOffset = 10
+const boxIndexOffset = 2
 
 var backpackImageBound = graphics.Bound{
 	X:      0,
@@ -46,8 +47,6 @@ func (b *box) draw(batch graphics.Batch, count int) {
 
 	if count > 0 || b.alwaysShowCount {
 		batch.DrawSprite(b.x+34, b.y+8, 0, countImageBound, 1)
-
-		fmt.Fprintf(b.text, "%d", count)
 		b.text.Draw()
 	}
 }
@@ -93,6 +92,22 @@ func (b *BackPack) TakeItem(boxIndex int) gameitem.Type {
 		}
 	}
 	return box.gameItemType
+}
+
+func (b BackPack) HandleInput(in input.Input) {
+	switch in.Action {
+	case input.SinglePress:
+		switch in.Device {
+		case input.Key1:
+			b.TakeItem(boxIndexOffset + 1)
+		case input.Key2:
+			b.TakeItem(boxIndexOffset + 2)
+		case input.Key3:
+			b.TakeItem(boxIndexOffset + 3)
+		case input.Key4:
+			b.TakeItem(boxIndexOffset + 4)
+		}
+	}
 }
 
 func (b BackPack) Draw(batch graphics.Batch) {
