@@ -26,6 +26,11 @@ go run main.go [game_id]
 // go run main.go 5f7e7c8e-ffe5-428f-9880-7afa23609c0b
 ```
 
+### Join remote game server
+
+1. Start remote servers
+2. Update `.env` to include the host name & port of the remote servers
+
 ### Start the game
 The game will automatically start for all players when the creator clicks on the sign in screen.
 

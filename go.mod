@@ -8,6 +8,7 @@ require (
 	github.com/golang/protobuf v1.4.3
 	// Must use this newer version of oto to supress warnings
 	github.com/hajimehoshi/oto v0.7.1 // indirect
+	github.com/joho/godotenv v1.3.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/image v0.0.0-20200927104501-e162460cd6b5

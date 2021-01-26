@@ -6,6 +6,7 @@ import (
 
 	"candy/assets"
 	"candy/client"
+	"candy/env"
 	"candy/graphics"
 	"candy/input"
 	"candy/observability"
@@ -16,6 +17,13 @@ import (
 
 const Width = 1152
 const Height = 830
+
+type serverConfig struct {
+	PubSubServerHOST string `env:"PUBSUB_SERVER_HOST" default:"localhost"`
+	PubSubPORT       int    `env:"PUBSUB_SERVER_PORT" default:"8000"`
+	GameServerHOST   string `env:"GAME_SERVER_HOST" default:"localhost"`
+	GameServerPort   int    `env:"GAME_SERVER_PORT" default:"8000"`
+}
 
 var _ graphics.Sprite = (*App)(nil)
 
@@ -54,13 +62,19 @@ func (a App) HandleInput(in input.Input) {
 }
 
 func (a *App) Launch() error {
+	config := serverConfig{}
+	err := env.ParseConfigFromEnv(&config)
+	if err != nil {
+		panic(err)
+	}
+
 	a.pubSub.Start()
-	err := a.remotePubSub.Start("localhost", 8081)
+	err = a.remotePubSub.Start(config.PubSubServerHOST, config.PubSubPORT)
 	if err != nil {
 		return err
 	}
 
-	err = a.gameClient.Start("localhost", 8082)
+	err = a.gameClient.Start(config.GameServerHOST, config.GameServerPort)
 	if err != nil {
 		return err
 	}

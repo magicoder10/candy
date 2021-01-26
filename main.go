@@ -2,6 +2,7 @@ package main
 
 import (
 	"candy/assets"
+	"candy/env"
 	"candy/graphics"
 	"candy/observability"
 	"candy/screen"
@@ -15,6 +16,8 @@ func main() {
 }
 
 func run() {
+	env.AutoLoad()
+
 	px, err := graphics.NewPixel(pixelgl.WindowConfig{
 		Title:       "Candy",
 		Icon:        nil,
