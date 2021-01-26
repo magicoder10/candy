@@ -5,10 +5,12 @@ import (
 	"time"
 
 	"candy/assets"
+	"candy/client"
 	"candy/graphics"
 	"candy/input"
 	"candy/observability"
 	"candy/pubsub"
+	"candy/server/gamestate"
 	"candy/view"
 )
 
@@ -18,10 +20,12 @@ const Height = 830
 var _ graphics.Sprite = (*App)(nil)
 
 type App struct {
-	logger *observability.Logger
-	assets assets.Assets
-	router *view.Router
-	pubSub *pubsub.PubSub
+	logger       *observability.Logger
+	assets       assets.Assets
+	router       *view.Router
+	pubSub       *pubsub.PubSub
+	remotePubSub *pubsub.Remote
+	gameClient   *client.Client
 }
 
 func (a App) Draw() {
@@ -51,7 +55,17 @@ func (a App) HandleInput(in input.Input) {
 
 func (a *App) Launch() error {
 	a.pubSub.Start()
-	err := a.router.Navigate("/", nil)
+	err := a.remotePubSub.Start("localhost", 8081)
+	if err != nil {
+		return err
+	}
+
+	err = a.gameClient.Start("localhost", 8082)
+	if err != nil {
+		return err
+	}
+
+	err = a.router.Navigate("/", nil)
 	if err != nil {
 		return err
 	}
@@ -62,21 +76,35 @@ func (a *App) Launch() error {
 func NewApp(logger *observability.Logger, assets assets.Assets, g graphics.Graphics) (App, error) {
 	rt := view.NewRouter(logger)
 	pubSub := pubsub.NewPubSub(logger)
+	remotePubSub := pubsub.NewRemote(logger)
+	gameClient := client.New(logger)
 
 	routes := []view.Route{
 		{Path: "/game", CreateFactory: func(props interface{}) view.View {
-			gm := NewGame(logger, assets, g, pubSub)
+			parsedProps := props.(gameRouteProps)
+			gm := NewGame(
+				logger, assets, g, pubSub, remotePubSub,
+				parsedProps.gameID, parsedProps.gameSetup, parsedProps.playerID,
+			)
 			return gm
 		}},
 		{Path: "/", CreateFactory: func(props interface{}) view.View {
-			return NewSignIn(logger, assets, g, rt)
+			return NewSignIn(logger, assets, g, rt, remotePubSub, gameClient)
 		}},
 	}
 	err := rt.AddRoutes(routes)
 	return App{
-		logger: logger,
-		assets: assets,
-		pubSub: pubSub,
-		router: rt,
+		logger:       logger,
+		assets:       assets,
+		pubSub:       pubSub,
+		remotePubSub: remotePubSub,
+		gameClient:   gameClient,
+		router:       rt,
 	}, err
+}
+
+type gameRouteProps struct {
+	gameSetup gamestate.Setup
+	gameID    string
+	playerID  string
 }

@@ -1,46 +1,69 @@
 package player
 
+import (
+	"candy/server/gamestate"
+)
+
 type character struct {
 	walkCycleOffset walkCycleOffset
 }
 
-var BlackBoy = character{
+var blackBoy = character{
 	walkCycleOffset: walkCycleOffset{
 		x: 0,
 		y: spriteColHeight,
 	}}
-var BlackGirl = character{
+var blackGirl = character{
 	walkCycleOffset: walkCycleOffset{
 		x: 0,
 		y: 0,
 	}}
-var BrownBoy = character{
+var brownBoy = character{
 	walkCycleOffset: walkCycleOffset{
 		x: spriteRowWidth,
 		y: spriteColHeight,
 	}}
-var BrownGirl = character{
+var brownGirl = character{
 	walkCycleOffset: walkCycleOffset{
 		x: spriteRowWidth,
 		y: 0,
 	}}
-var YellowBoy = character{
+var yellowBoy = character{
 	walkCycleOffset: walkCycleOffset{
 		x: spriteRowWidth * 2,
 		y: spriteColHeight,
 	}}
-var YellowGirl = character{
+var yellowGirl = character{
 	walkCycleOffset: walkCycleOffset{
 		x: spriteRowWidth * 2,
 		y: 0,
 	}}
-var OrangeBoy = character{
+var orangeBoy = character{
 	walkCycleOffset: walkCycleOffset{
 		x: spriteRowWidth * 3,
 		y: spriteColHeight,
 	}}
-var OrangeGirl = character{
+var orangeGirl = character{
 	walkCycleOffset: walkCycleOffset{
 		x: spriteRowWidth * 3,
 		y: 0,
 	}}
+
+var characterMap = map[gamestate.Character]character{
+	gamestate.BlackBoy:   blackBoy,
+	gamestate.BlackGirl:  blackGirl,
+	gamestate.BrownBoy:   brownBoy,
+	gamestate.BrownGirl:  brownGirl,
+	gamestate.YellowBoy:  yellowBoy,
+	gamestate.YellowGirl: yellowGirl,
+	gamestate.OrangeBoy:  orangeBoy,
+	gamestate.OrangeGirl: orangeGirl,
+}
+
+func NewCharacter(character gamestate.Character) character {
+	val, ok := characterMap[character]
+	if !ok {
+		return blackBoy
+	}
+	return val
+}

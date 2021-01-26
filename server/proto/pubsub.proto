@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/protobuf/empty.proto";
+
+service PubSub {
+    rpc Subscribe (SubscribeRequest) returns (stream SubscribeResponse);
+    rpc Publish (PublishRequest) returns (google.protobuf.Empty);
+}
+
+message SubscribeRequest {
+    string topic = 1;
+}
+
+message SubscribeResponse {
+    bytes payload = 1;
+}
+
+message PublishRequest {
+    string topic = 1;
+    bytes payload = 2;
+}

@@ -28,7 +28,12 @@ func (r RightSideBar) Draw(batch graphics.Batch) {
 	r.playerStatusList.draw(batch)
 }
 
-func NewRightSideBar(screenX int, screenY int, players []*player.Player) RightSideBar {
+func NewRightSideBar(screenX int, screenY int, players map[string]*player.Player) RightSideBar {
+	orderedPlayers := make([]*player.Player, 0)
+	for _, ply := range players {
+		orderedPlayers = append(orderedPlayers, ply)
+	}
+
 	return RightSideBar{
 		screenX: screenX,
 		screenY: screenY,
@@ -36,7 +41,7 @@ func NewRightSideBar(screenX int, screenY int, players []*player.Player) RightSi
 			screenX: screenX + playerStatusBarLeft,
 			screenY: screenY + playerStatusBarBottom,
 			z:       screenY,
-			players: players,
+			players: orderedPlayers,
 		},
 	}
 }
