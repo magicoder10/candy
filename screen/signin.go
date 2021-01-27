@@ -52,7 +52,7 @@ func (s *SignIn) Init() {
 		}
 		s.isCreator = true
 		s.logger.Infof("Created game:%s\n", s.gameID)
-		s.logger.Infof("Invite others to your game: \n go run main.go %s\n", s.gameID)
+		s.logger.Infof("Invite others to your game: \n go run client.go %s\n", s.gameID)
 		s.logger.Infoln("Click on sign in screen to start the game")
 	} else {
 		s.gameID = args[0]

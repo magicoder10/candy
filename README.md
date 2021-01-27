@@ -10,17 +10,17 @@ Simple 2D multi-player online game.
 
 ### Start server
 ```bash
-go run server/main/main.go
+go run servers.go
 ```
 
 ### Create a game
 ```bash
-go run main.go
+go run client.go
 ```
 
 ### Join a game created
 ```bash
-go run main.go [game_id]
+go run client.go [game_id]
 
 // eg.
 // go run main.go 5f7e7c8e-ffe5-428f-9880-7afa23609c0b
