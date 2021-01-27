@@ -12,8 +12,6 @@ import (
 
 func main() {
 	logger := observability.NewLogger(observability.Info)
-	pubSub := pubsub.NewPubSub(&logger)
-	pubSub.Start()
 
 	pubSubRemote := pubsub.NewRemote(&logger)
 	pubSubServer := server.NewPubSub(&logger)
