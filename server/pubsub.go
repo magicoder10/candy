@@ -63,6 +63,10 @@ func (p *PubSub) Start(port int) error {
 	return nil
 }
 
+func (p *PubSub) StartPubSub() {
+	p.pubSub.Start()
+}
+
 func NewPubSub(logger *observability.Logger) PubSub {
 	return PubSub{
 		GRPCServer: GRPCServer{

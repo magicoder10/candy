@@ -10,8 +10,7 @@ Simple 2D multi-player online game.
 
 ### Start server
 ```bash
-go run pubsub_server.go
-go run game_server.go
+go run servers.go
 ```
 
 ### Create a game

@@ -19,9 +19,9 @@ const Width = 1152
 const Height = 830
 
 type serverConfig struct {
-	PubSubServerHOST string `env:"PUBSUB_SERVER_HOST" default:"localhost"`
-	PubSubPORT       int    `env:"PUBSUB_SERVER_PORT" default:"8000"`
-	GameServerHOST   string `env:"GAME_SERVER_HOST" default:"localhost"`
+	PubSubServerHost string `env:"PUBSUB_SERVER_HOST" default:"localhost"`
+	PubSubServerPort int    `env:"PUBSUB_SERVER_PORT" default:"8000"`
+	GameServerHost   string `env:"GAME_SERVER_HOST" default:"localhost"`
 	GameServerPort   int    `env:"GAME_SERVER_PORT" default:"8000"`
 }
 
@@ -69,12 +69,12 @@ func (a *App) Launch() error {
 	}
 
 	a.pubSub.Start()
-	err = a.remotePubSub.Start(config.PubSubServerHOST, config.PubSubPORT)
+	err = a.remotePubSub.Start(config.PubSubServerHost, config.PubSubServerPort)
 	if err != nil {
 		return err
 	}
 
-	err = a.gameClient.Start(config.GameServerHOST, config.GameServerPort)
+	err = a.gameClient.Start(config.GameServerHost, config.GameServerPort)
 	if err != nil {
 		return err
 	}
