@@ -1,0 +1,18 @@
+#!/bin/bash
+
+rm -rf build/"$2" > /dev/null
+mkdir -p build/"$2"
+
+cd src || exit
+
+CGO_ENABLED=1 GOOS="$1" GOARCH=amd64 go build -o ../build/"$2"/client"$3" client.go
+
+cd ../
+
+# Copy assets & configs
+mkdir -p build/"$2"/public/
+cp -R src/public/* build/"$2"/public/
+cp -R src/.env build/"$2"/
+
+
+zip -r build/"$2"-amd64.zip build/"$2"/* -x "*.DS_Store"

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+dir_path=$(dirname "$0")
+"$dir_path"/build darwin osx
+

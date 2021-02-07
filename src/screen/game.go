@@ -49,7 +49,6 @@ func (g Game) Draw() {
 	g.rightSideBar.Draw(g.spriteSheetBatch)
 
 	g.spriteSheetBatch.RenderBatch()
-	g.graphics.RenderTexts()
 }
 
 func (g Game) HandleInput(in input.Input) {

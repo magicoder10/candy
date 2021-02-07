@@ -1,0 +1,18 @@
+FROM golang:1.15
+
+RUN apt update
+RUN apt install -y libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev \
+    libxi-dev libgl1-mesa-dev libasound2-dev
+RUN apt install -y zip
+
+WORKDIR /app
+
+RUN mkdir src
+COPY src/go.mod src/go.sum src/
+RUN cd src && go mod download
+
+COPY . .
+
+VOLUME /app/build
+
+CMD ./scripts/build/build-win-linux
