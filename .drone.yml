@@ -4,6 +4,6 @@ name: default
 
 steps:
   - name: test
-    image: golang:1.15-alpine3.12
+    image: golang:1.15
     commands:
       - go test ./...
