@@ -7,7 +7,6 @@ steps:
     image: golang:1.15
     commands:
       - apt update
-      - apt install -y libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev >
-        libxi-dev libgl1-mesa-dev libasound2-dev
+      - apt install -y libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev libxi-dev libgl1-mesa-dev libasound2-dev
       - go mod download
       - go test ./...
