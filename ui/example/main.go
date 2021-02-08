@@ -1,43 +1,41 @@
 package main
 
 import (
+	"log"
+
 	"candy/assets"
 	"candy/graphics"
 	"candy/observability"
+	"candy/screen"
 	"candy/ui"
-
-	"github.com/faiface/pixel"
-	"github.com/faiface/pixel/pixelgl"
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func main() {
-	pixelgl.Run(run)
-}
-
-func run() {
 	screenWidth := 1000
 	screenHeight := 1000
-
-	px, err := graphics.NewPixel(pixelgl.WindowConfig{
-		Title:       "Candy",
-		Icon:        nil,
-		Bounds:      pixel.R(0, 0, float64(screenWidth), float64(screenHeight)),
-		VSync:       true,
-		AlwaysOnTop: false,
-	})
-	if err != nil {
-		panic(err)
-	}
 
 	ass, err := assets.LoadAssets("assets")
 	if err != nil {
 		panic(err)
 	}
 
+	eb := graphics.NewEbiten(false)
+
 	logger := observability.NewLogger(observability.Debug)
 	rootConstraint := ui.NewScreenConstraint(screenWidth, screenHeight)
-	renderEngine := ui.NewRenderEngine(&logger, &px, rootConstraint)
+	renderEngine := ui.NewRenderEngine(&logger, &eb, rootConstraint)
 
 	app := newApp(&ass, &renderEngine)
-	graphics.StartMainLoop(24, app, &px, &px)
+
+	g := graphics.NewEbitenWindow(graphics.WindowConfig{
+		Width:  screen.Width,
+		Height: screen.Height,
+		Title:  "Candy",
+	}, app, 24, &eb)
+	g.Init()
+
+	if err := ebiten.RunGame(&g); err != nil {
+		log.Fatal(err)
+	}
 }
