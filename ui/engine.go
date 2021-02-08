@@ -29,8 +29,8 @@ func (r *RenderEngine) Render(component Component) {
 	r.compositeLayer = image.NewRGBA(image.Rectangle{
 		Max: image.Point{X: r.rootConstraints.maxWidth, Y: r.rootConstraints.maxHeight},
 	})
-	white := color.RGBA{R: 255, G: 255, B: 255, A: 255}
-	draw.Draw(r.compositeLayer, r.compositeLayer.Bounds(), &image.Uniform{C: white}, image.Point{}, draw.Src)
+	transparent := color.RGBA{R: 0, G: 0, B: 0, A: 0}
+	draw.Draw(r.compositeLayer, r.compositeLayer.Bounds(), &image.Uniform{C: transparent}, image.Point{}, draw.Src)
 
 	component.paint(r.painter, r.compositeLayer, offset{})
 

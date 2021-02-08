@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	eb := graphics.NewEbiten()
+	eb := graphics.NewEbiten(true)
 
 	ass, err := assets.LoadAssets("assets")
 	if err != nil {

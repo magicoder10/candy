@@ -16,8 +16,9 @@ import (
 var _ Graphics = (*Ebiten)(nil)
 
 type Ebiten struct {
-	texts   []*ebitenText
-	batches []*ebitenBatch
+	reverseY bool
+	texts    []*ebitenText
+	batches  []*ebitenBatch
 }
 
 func (e Ebiten) Clear() {
@@ -40,8 +41,6 @@ func (e *Ebiten) NewText(face font.Face, x int, y int, width int, height int, sc
 }
 
 func (e *Ebiten) RenderTexts(screen *ebiten.Image) {
-	screenHeight := float64(screen.Bounds().Max.Y - screen.Bounds().Min.Y)
-
 	for _, t := range e.texts {
 		bound := text.BoundString(t.fontFace, t.textContent)
 		width := float64(bound.Max.X - bound.Min.X)
@@ -50,9 +49,11 @@ func (e *Ebiten) RenderTexts(screen *ebiten.Image) {
 		x := float64(t.x) + float64(t.width)/2 - width/2
 		y := float64(t.y) + float64(t.height)/2 - height/2
 
+		adjustedY := adjustY(e.reverseY, screen, int(y), 0)
+
 		switch t.alignment {
 		case AlignCenter:
-			text.Draw(screen, t.textContent, t.fontFace, int(x), int(screenHeight-y), color.White)
+			text.Draw(screen, t.textContent, t.fontFace, int(x), adjustedY, color.White)
 		}
 	}
 }
@@ -76,10 +77,11 @@ func (e *Ebiten) Render(screen *ebiten.Image) {
 	e.RenderTexts(screen)
 }
 
-func NewEbiten() Ebiten {
+func NewEbiten(reverseY bool) Ebiten {
 	return Ebiten{
-		texts:   make([]*ebitenText, 0),
-		batches: make([]*ebitenBatch, 0),
+		texts:    make([]*ebitenText, 0),
+		batches:  make([]*ebitenBatch, 0),
+		reverseY: reverseY,
 	}
 }
 
@@ -121,11 +123,14 @@ func (e *ebitenBatch) RenderBatch() {
 
 func (e *ebitenBatch) renderBatch(screen *ebiten.Image) {
 	sort.SliceStable(e.spritesDrawn, func(i, j int) bool {
-		return e.spritesDrawn[i].z > e.spritesDrawn[j].z
+		if e.ebiten.reverseY {
+			return e.spritesDrawn[i].z > e.spritesDrawn[j].z
+		} else {
+			return e.spritesDrawn[i].z < e.spritesDrawn[j].z
+		}
 	})
 
 	spSheetHeight := e.spriteSheet.Bounds().Max.Y - e.spriteSheet.Bounds().Min.Y
-	screenHeight := screen.Bounds().Max.Y - screen.Bounds().Min.Y
 
 	for _, spriteDrawn := range e.spritesDrawn {
 
@@ -144,9 +149,13 @@ func (e *ebitenBatch) renderBatch(screen *ebiten.Image) {
 
 		op := &ebiten.DrawImageOptions{}
 		op.GeoM.Scale(spriteDrawn.scale, spriteDrawn.scale)
+
+		scaledHeight := float64(spriteDrawn.imageBound.Height) * spriteDrawn.scale
+		adjustedY := adjustY(e.ebiten.reverseY, screen, spriteDrawn.y, scaledHeight)
 		op.GeoM.Translate(
 			float64(spriteDrawn.x),
-			float64(screenHeight-spriteDrawn.y)-float64(spriteDrawn.imageBound.Height)*spriteDrawn.scale)
+			float64(adjustedY),
+		)
 
 		screen.DrawImage(e.spriteSheet.SubImage(bound).(*ebiten.Image), op)
 	}
@@ -168,5 +177,14 @@ func newEbitenBatch(spriteSheet *ebiten.Image, ebiten *Ebiten) *ebitenBatch {
 		spriteSheet:  spriteSheet,
 		spritesDrawn: make([]*spriteDrawn, 0),
 		ebiten:       ebiten,
+	}
+}
+
+func adjustY(shouldAdjust bool, screen *ebiten.Image, originalY int, scaledHeight float64) int {
+	if !shouldAdjust {
+		return originalY
+	} else {
+		screenHeight := screen.Bounds().Max.Y - screen.Bounds().Min.Y
+		return screenHeight - originalY - int(scaledHeight)
 	}
 }

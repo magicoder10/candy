@@ -1,7 +1,6 @@
 package ui
 
 import (
-	"image"
 	"image/draw"
 	"time"
 
@@ -19,7 +18,6 @@ type Component interface {
 	getChildrenOffset() []offset
 	setChildrenOffset(childrenOffsets []offset)
 	paint(painter *painter, destLayer draw.Image, offset offset)
-	rasterize(painter *painter, renderLayer draw.Image, position image.Point)
 }
 
 type Style struct {
@@ -76,8 +74,4 @@ func (s *sharedComponent) setSize(size size) {
 
 func (s *sharedComponent) setChildrenOffset(childrenOffsets []offset) {
 	s.childrenOffset = childrenOffsets
-}
-
-func (s *sharedComponent) rasterize(painter *painter, renderLayer draw.Image, position image.Point) {
-
 }
