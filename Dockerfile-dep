@@ -1,0 +1,8 @@
+FROM golang:1.15
+
+RUN apt update
+
+RUN apt install -y libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev \
+    libxi-dev libgl1-mesa-dev libasound2-dev
+
+WORKDIR /app
