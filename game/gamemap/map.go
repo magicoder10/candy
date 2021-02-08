@@ -14,7 +14,6 @@ import (
 	"candy/game/square"
 	"candy/graphics"
 	"candy/pubsub"
-	"candy/server/gamestate"
 )
 
 const defaultRows = 12
@@ -44,6 +43,7 @@ type Map struct {
 	gridYOffset int
 	grid        *[][]square.Square
 	// this is only used for debugging
+	tiles             *[]*square.Tile
 	candiesMutex      *sync.Mutex
 	candies           *map[cell.Cell]*candy.Candy
 	brokenSquares     map[*candy.Candy][]brokenSquare
@@ -72,25 +72,15 @@ func (m Map) DrawGrid(batch graphics.Batch) {
 
 func (m Map) RevealItems() {
 	// this is only used for debugging
-	for _, sqRow := range *m.grid {
-		for _, sq := range sqRow {
-			if sq == nil {
-				continue
-			}
-			sq.RevealItem()
-		}
+	for _, t := range *m.tiles {
+		t.RevealItem()
 	}
 }
 
 func (m Map) HideItems() {
 	// this is only used for debugging
-	for _, sqRow := range *m.grid {
-		for _, sq := range sqRow {
-			if sq == nil {
-				continue
-			}
-			sq.HideItem()
-		}
+	for _, t := range *m.tiles {
+		t.HideItem()
 	}
 }
 
@@ -234,28 +224,46 @@ func (m Map) HasRevealedItem(c cell.Cell) bool {
 }
 
 func (m Map) RetrieveGameItem(c cell.Cell) gameitem.Type {
-	sq := (*m.grid)[c.Row][c.Col]
-	if sq == nil {
-		return gameitem.NoneType
-	}
-	gameItemType := sq.RetrieveGameItem()
+	gameItemType := (*m.grid)[c.Row][c.Col].RetrieveGameItem()
 	(*m.grid)[c.Row][c.Col] = nil
 	return gameItemType
 }
 
-func NewMap(assets assets.Assets, g graphics.Graphics, pubSub *pubsub.PubSub,
-	gameSetup gamestate.Setup,
-	screenX int, screenY int,
-) *Map {
+func NewMap(assets assets.Assets, g graphics.Graphics, pubSub *pubsub.PubSub, screenX int, screenY int) *Map {
 	rand.Seed(time.Now().UnixNano())
 	grid := make([][]square.Square, 0)
 
-	for _, sqRow := range gameSetup.Map.Squares {
-		squareRow := make([]square.Square, 0)
-		for _, sq := range sqRow {
-			squareRow = append(squareRow, square.New(sq))
+	for row := 0; row < defaultRows; row++ {
+		gridRow := make([]square.Square, defaultCols)
+		grid = append(grid, gridRow)
+	}
+
+	mapConfig := [][]rune{
+		{},
+		{},
+		{'G', 'Y'},
+		{},
+		{'G', 'Y', ' ', 'Y', ' ', ' ', ' ', 'G'},
+		{' ', ' ', ' ', 'Y', ' ', ' ', ' ', 'G'},
+		{'G', 'Y', ' ', 'Y', ' ', ' ', ' ', 'G'},
+		{},
+		{'G', 'Y'},
+		{},
+		{'G', 'Y'},
+		{},
+	}
+
+	tiles := make([]*square.Tile, 0)
+
+	for row, rowConfig := range mapConfig {
+		for col, colConfig := range rowConfig {
+			if colConfig == ' ' {
+				continue
+			}
+			t := square.NewTile(colConfig, randomGameItem())
+			tiles = append(tiles, t)
+			grid[row][col] = t
 		}
-		grid = append(grid, squareRow)
 	}
 
 	candies := make(map[cell.Cell]*candy.Candy, 0)
@@ -278,6 +286,7 @@ func NewMap(assets assets.Assets, g graphics.Graphics, pubSub *pubsub.PubSub,
 		gridXOffset:      gridXOffset,
 		gridYOffset:      gridYOffset,
 		grid:             &grid,
+		tiles:            &tiles,
 		candiesMutex:     &sync.Mutex{},
 		candies:          &candies,
 		candyRangeCutter: &cdRangeCutter,

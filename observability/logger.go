@@ -37,16 +37,16 @@ func (l Logger) Fatalf(format string, arr ...interface{}) {
 }
 
 func (l Logger) Fatatln(message string) {
-	l.logWithLineTrace(Fatal, "%s\n", ANSIRed, message)
+	l.Fatalf("%s\n", message)
 }
 
 // Fatal errors to certain operations but now the whole service or app.
-func (l Logger) Errorf(format string, err error) {
-	l.logWithLineTrace(Error, format, ANSIRed, err)
+func (l Logger) Errorf(err error) {
+	l.logWithLineTrace(Error, "%w", ANSIRed, err)
 }
 
 func (l Logger) Errorln(err error) {
-	l.logWithLineTrace(Error, "%w\n", ANSIRed, err)
+	l.Errorf(err)
 }
 
 // Potential issues with automatic recovery.
@@ -82,7 +82,7 @@ func (l Logger) Tracef(format string, arr ...interface{}) {
 }
 
 func (l Logger) Traceln(message string) {
-	l.logWithLineTrace(Trace, "%s\n", ANSIDefault, message)
+	l.Tracef("%s\n", message)
 }
 
 func (l Logger) isVisible(logLevel LogLevel) bool {
@@ -90,7 +90,7 @@ func (l Logger) isVisible(logLevel LogLevel) bool {
 }
 
 func (l Logger) logWithLineTrace(level LogLevel, format string, color string, arr ...interface{}) {
-	newFormat := fmt.Sprintf("%s\n%s", lineTrace(3), format)
+	newFormat := fmt.Sprintf("%s\n%s", lineTrace(), format)
 	l.logf(level, newFormat, color, arr...)
 }
 
@@ -107,8 +107,8 @@ func (l Logger) logf(level LogLevel, format string, color string, arr ...interfa
 	fmt.Printf(withColor("%s [%s] %s", color), now, logLevelNames[level], fmt.Sprintf(format, arr...))
 }
 
-func lineTrace(skip int) string {
-	_, file, line, _ := runtime.Caller(skip)
+func lineTrace() string {
+	_, file, line, _ := runtime.Caller(3)
 	return fmt.Sprintf("%s:%d", file, line)
 }
 

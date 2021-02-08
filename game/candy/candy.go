@@ -16,14 +16,6 @@ type Candy struct {
 	state state
 }
 
-func (c Candy) RevealItem() {
-	return
-}
-
-func (c Candy) HideItem() {
-	return
-}
-
 func (c Candy) HasRevealedItem() bool {
 	return false
 }

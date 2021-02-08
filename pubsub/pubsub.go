@@ -11,7 +11,7 @@ type callback func(payload interface{})
 
 type Subscription struct {
 	pubSub   *PubSub
-	topic    Topic
+	topic    topic
 	callback callback
 }
 
@@ -37,10 +37,10 @@ type PubSub struct {
 	logger        *observability.Logger
 	started       bool
 	mutex         sync.Mutex
-	subscriptions map[Topic][]*Subscription
+	subscriptions map[topic][]*Subscription
 }
 
-func (p *PubSub) Subscribe(topic Topic, callback callback) (*Subscription, error) {
+func (p *PubSub) Subscribe(topic topic, callback callback) (*Subscription, error) {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 	sub := &Subscription{
@@ -52,7 +52,7 @@ func (p *PubSub) Subscribe(topic Topic, callback callback) (*Subscription, error
 	return sub, nil
 }
 
-func (p *PubSub) Publish(topic Topic, payload interface{}) error {
+func (p *PubSub) Publish(topic topic, payload interface{}) error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 	if !p.started {
@@ -61,7 +61,6 @@ func (p *PubSub) Publish(topic Topic, payload interface{}) error {
 
 	subs, ok := p.subscriptions[topic]
 	if !ok {
-		p.logger.Infof("topic not found:%s\n", topic)
 		return nil
 	}
 
@@ -91,6 +90,6 @@ func NewPubSub(logger *observability.Logger) *PubSub {
 	return &PubSub{
 		logger:        logger,
 		mutex:         sync.Mutex{},
-		subscriptions: make(map[Topic][]*Subscription),
+		subscriptions: make(map[topic][]*Subscription),
 	}
 }

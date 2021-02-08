@@ -11,7 +11,7 @@ import (
 
 const explodingTimeShort = 250 * time.Millisecond
 const explodingTimeMedium = 500 * time.Millisecond
-const explodingTimeLong = 650 * time.Millisecond
+const explodingTimeLong = 750 * time.Millisecond
 
 const animationDelay = 300 * time.Millisecond
 
@@ -139,7 +139,7 @@ func newExplodingState(sharedState sharedState) *explodingState {
 func getExplodingTime(powerLevel int) time.Duration {
 	if powerLevel <= 3 {
 		return explodingTimeShort
-	} else if powerLevel <= 5 {
+	} else if powerLevel <= 6 {
 		return explodingTimeMedium
 	} else {
 		return explodingTimeLong

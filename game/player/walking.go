@@ -95,13 +95,10 @@ func newWalkingState(shared sharedState, lag int64, direction direction.Directio
 	// Check change of direction
 	shared.direction = direction
 	shared.pubSub.Publish(pubsub.OnPlayerWalking, pubsub.OnPlayerWalkingPayload{
-		PlayerID:  shared.playerID,
-		X:         shared.x,
-		Y:         shared.y,
-		Direction: shared.direction,
-		CurrStep:  shared.currStep,
-		Width:     shared.playerWidth,
-		Height:    shared.playerHeight,
+		X:      shared.x,
+		Y:      shared.y,
+		Width:  shared.playerWidth,
+		Height: shared.playerHeight,
 	})
 	return &walkingState{
 		sharedState: shared,

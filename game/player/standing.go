@@ -2,6 +2,7 @@ package player
 
 import (
 	"candy/game/direction"
+	"candy/game/square"
 	"candy/input"
 	"candy/pubsub"
 )
@@ -12,7 +13,7 @@ type standingState struct {
 	sharedState
 }
 
-func (s *standingState) handleInput(in input.Input) state {
+func (s standingState) handleInput(in input.Input) state {
 	switch in.Action {
 	case input.Press:
 		switch in.Device {
@@ -35,25 +36,23 @@ func (s *standingState) handleInput(in input.Input) state {
 }
 
 func newStandingStateOnSquare(
-	pubSub *pubsub.PubSub,
-	playerID string,
 	moveChecker MoveChecker,
 	playerWidth int, playerHeight int,
 	gridX int, gridY int,
-	x int, y int,
+	row int, col int,
 	regionOffset regionOffset,
 	character character,
-) *standingState {
-	return &standingState{
+	pubSub *pubsub.PubSub,
+) standingState {
+	return standingState{
 		sharedState{
-			playerID:     playerID,
 			moveChecker:  moveChecker,
 			currStep:     1,
 			direction:    direction.Down,
 			playerWidth:  playerWidth,
 			playerHeight: playerHeight,
-			x:            gridX + x,
-			y:            gridY + y,
+			x:            gridX + col*square.Width,
+			y:            gridY + row*square.Width,
 			regionOffset: regionOffset,
 			character:    character,
 			pubSub:       pubSub,
@@ -61,7 +60,7 @@ func newStandingStateOnSquare(
 	}
 }
 
-func newStandingState(shared sharedState) *standingState {
+func newStandingState(shared sharedState) standingState {
 	shared.currStep = 1
-	return &standingState{shared}
+	return standingState{shared}
 }

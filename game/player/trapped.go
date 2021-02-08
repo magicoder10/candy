@@ -20,7 +20,7 @@ func (t trappedState) isNormal() bool {
 	return false
 }
 
-func (t *trappedState) handleInput(in input.Input) state {
+func (t trappedState) handleInput(in input.Input) state {
 	return t
 }
 
@@ -34,11 +34,11 @@ func (t trappedState) update(timeElapsed time.Duration) {
 	t.jelly.update(timeElapsed)
 }
 
-func newTrapState(state sharedState) *trappedState {
+func newTrapState(state sharedState) trappedState {
 	jl := newJelly()
 	prevDirection := state.direction
 	state.direction = direction.Down
-	return &trappedState{
+	return trappedState{
 		sharedState:   state,
 		jelly:         &jl,
 		prevDirection: prevDirection,

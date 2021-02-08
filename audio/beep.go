@@ -35,7 +35,7 @@ func (b Beep) Play() {
 	if err != nil {
 		return
 	}
-	//speaker.Play(b.streamer)
+	speaker.Play(b.streamer)
 }
 
 func (b Beep) Stop() {

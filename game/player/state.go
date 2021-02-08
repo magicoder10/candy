@@ -8,7 +8,6 @@ import (
 	"candy/graphics"
 	"candy/input"
 	"candy/pubsub"
-	"candy/server/gamestate"
 )
 
 type state interface {
@@ -18,14 +17,12 @@ type state interface {
 	trapped() state
 	getX() int
 	getY() int
-	syncState(playerState gamestate.PlayerState)
 	getWidth() int
 	getHeight() int
 	isNormal() bool
 }
 
 type sharedState struct {
-	playerID     string
 	currStep     int
 	direction    direction.Direction
 	playerWidth  int
@@ -64,13 +61,6 @@ func (s sharedState) getX() int {
 
 func (s sharedState) getY() int {
 	return s.y
-}
-
-func (s *sharedState) syncState(remoteState gamestate.PlayerState) {
-	s.x = remoteState.X
-	s.y = remoteState.Y
-	s.direction = remoteState.Direction
-	s.currStep = remoteState.CurrentStep
 }
 
 func (s sharedState) getWidth() int {

@@ -9,7 +9,6 @@ import (
 	"candy/graphics"
 	"candy/input"
 	"candy/pubsub"
-	"candy/server/gamestate"
 )
 
 const spriteWidth = 48
@@ -34,13 +33,11 @@ type walkCycleOffset struct {
 }
 
 type Player struct {
-	playerID     string
 	state        state
 	regionOffset regionOffset
 	character    character
 	marker       *marker.Marker
 	powerLevel   int
-	remotePubSub *pubsub.Remote
 }
 
 func (p Player) Draw(batch graphics.Batch) {
@@ -106,50 +103,31 @@ func (p *Player) IncrementPower() {
 	p.powerLevel++
 }
 
-func (p Player) GetID() string {
-	return p.playerID
-}
-
-func (p *Player) SyncMove(gameID string) {
-	p.remotePubSub.Subscribe(pubsub.NewSyncPlayerMove(gameID, p.playerID), func(payloadBytes []byte) {
-		payload, err := gamestate.GetSyncPlayerMovePayload(payloadBytes)
-		if err != nil {
-			return
-		}
-		p.state.syncState(payload)
-	})
-}
-
 func NewPlayer(
-	playerID string,
 	moveChecker MoveChecker,
 	character character,
 	gridX int,
 	gridY int,
+	row int,
+	col int,
 	pubSub *pubsub.PubSub,
-	remotePubSub *pubsub.Remote,
-	x int,
-	y int,
 ) *Player {
 	return &Player{
-		playerID:     playerID,
-		remotePubSub: remotePubSub,
 		regionOffset: regionOffset{
 			x: 0,
 			y: 0,
 		},
 		character: character,
 		state: newStandingStateOnSquare(
-			pubSub,
-			playerID,
 			moveChecker, bodyWidth, feetLength,
 			gridX, gridY,
-			x, y,
+			row, col,
 			regionOffset{
 				x: 0,
 				y: 0,
 			},
 			character,
+			pubSub,
 		),
 		powerLevel: 1,
 	}

@@ -8,33 +8,9 @@ Simple 2D multi-player online game.
 
 ## Getting Started
 
-### Start server
 ```bash
-go run pubsub_server.go
-go run game_server.go
+go run main.go
 ```
-
-### Create a game
-```bash
-go run client.go
-```
-
-### Join a game created
-```bash
-go run client.go [game_id]
-
-// eg.
-// go run main.go 5f7e7c8e-ffe5-428f-9880-7afa23609c0b
-```
-
-### Join remote game server
-
-1. Start remote servers
-2. Update `.env` to include the host name & port of the remote servers
-
-### Start the game
-The game will automatically start for all players when the creator clicks on the sign in screen.
-
 
 ![](docs/preview.png)
 

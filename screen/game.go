@@ -15,7 +15,6 @@ import (
 	"candy/input"
 	"candy/observability"
 	"candy/pubsub"
-	"candy/server/gamestate"
 	"candy/view"
 )
 
@@ -24,17 +23,15 @@ var _ view.View = (*Game)(nil)
 const backpackHeight = 94
 
 type Game struct {
-	gameID string
 	screen
 	graphics         graphics.Graphics
 	spriteSheetBatch graphics.Batch
 	gameMap          *gamemap.Map
 	backpack         *game.BackPack
-	currPlayerID     string
-	players          map[string]*player.Player
+	currPlayerIndex  int
+	players          []*player.Player
 	rightSideBar     game.RightSideBar
 	pubSub           *pubsub.PubSub
-	remotePubSub     *pubsub.Remote
 }
 
 func (g Game) Draw() {
@@ -53,9 +50,7 @@ func (g Game) Draw() {
 }
 
 func (g Game) HandleInput(in input.Input) {
-	if currPlayer, ok := g.players[g.currPlayerID]; ok {
-		currPlayer.HandleInput(in)
-	}
+	g.players[g.currPlayerIndex].HandleInput(in)
 
 	switch in.Action {
 	case input.Release:
@@ -73,18 +68,8 @@ func (g Game) HandleInput(in input.Input) {
 
 func (g Game) dropCandy(payload pubsub.OnDropCandyPayload) {
 	playerCell := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
-	currPlayer := g.players[g.currPlayerID]
-
-	succeed := g.gameMap.AddCandy(playerCell, candy.NewBuilder(currPlayer.GetPowerLevel()))
-	if succeed {
-		g.remotePubSub.Publish(pubsub.NewSyncDropCandy(g.gameID), gamestate.Candy{
-			Cell: gamestate.Cell{
-				Row: playerCell.Row,
-				Col: playerCell.Col,
-			},
-			PowerLevel: currPlayer.GetPowerLevel(),
-		})
-	}
+	currPlayer := g.players[g.currPlayerIndex]
+	g.gameMap.AddCandy(playerCell, candy.NewBuilder(currPlayer.GetPowerLevel()))
 }
 
 func (g Game) Update(timeElapsed time.Duration) {
@@ -96,39 +81,9 @@ func (g Game) Update(timeElapsed time.Duration) {
 }
 
 func (g *Game) Init() {
-	g.players[g.currPlayerID].ShowMarker(false)
+	g.currPlayerIndex = 0
+	g.players[g.currPlayerIndex].ShowMarker(false)
 	g.screen.Init()
-
-	g.pubSub.Subscribe(pubsub.OnCandyExploding, func(payload interface{}) {
-		c := payload.(cell.Cell)
-		g.onCandyExploding(c)
-	})
-	g.pubSub.Subscribe(pubsub.OnDropCandy, func(payload interface{}) {
-		pl := payload.(pubsub.OnDropCandyPayload)
-		g.dropCandy(pl)
-	})
-	g.pubSub.Subscribe(pubsub.OnPlayerWalking, func(payload interface{}) {
-		p := payload.(pubsub.OnPlayerWalkingPayload)
-		g.onPlayerWalking(p)
-	})
-	g.pubSub.Subscribe(pubsub.IncrementPlayerPower, func(_ interface{}) {
-		g.incrementPlayerPower()
-	})
-	g.remotePubSub.Subscribe(pubsub.NewSyncDropCandy(g.gameID), func(payload []byte) {
-		cdState, err := gamestate.GetCandy(payload)
-		if err != nil {
-			return
-		}
-		g.gameMap.AddCandy(cell.Cell{Row: cdState.Row, Col: cdState.Col}, candy.NewBuilder(cdState.PowerLevel))
-	})
-	g.remotePubSub.Subscribe(pubsub.NewSyncRetrieveGameItem(g.gameID), func(payload []byte) {
-		c, err := gamestate.GetCell(payload)
-		if err != nil {
-			return
-		}
-		g.gameMap.RetrieveGameItem(cell.Cell{Row: c.Row, Col: c.Col})
-	})
-	g.syncPlayerMoves()
 }
 
 func (g *Game) onCandyExploding(cell cell.Cell) {
@@ -153,70 +108,38 @@ func (g Game) getObjectCell(objectX int, objectY int, objectWidth int, objectHei
 
 func (g Game) onPlayerWalking(payload pubsub.OnPlayerWalkingPayload) {
 	c := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
-
 	if g.gameMap.HasRevealedItem(c) {
 		gameItemType := g.gameMap.RetrieveGameItem(c)
 		item := gameitem.WithPubSub(gameItemType, g.pubSub)
-
 		g.backpack.AddItem(item)
-		g.remotePubSub.Publish(pubsub.NewSyncRetrieveGameItem(g.gameID), gamestate.Cell{
-			Row: c.Row,
-			Col: c.Col,
-		})
 	}
-	g.remotePubSub.Publish(pubsub.NewSyncPlayerMove(g.gameID, payload.PlayerID), gamestate.PlayerState{
-		X:           payload.X,
-		Y:           payload.Y,
-		CurrentStep: payload.CurrStep,
-		Direction:   payload.Direction,
-	})
 }
 
 func (g Game) incrementPlayerPower() {
-	g.players[g.currPlayerID].IncrementPower()
-}
-
-func (g Game) syncPlayerMoves() {
-	for id, ply := range g.players {
-		if id == g.currPlayerID {
-			continue
-		}
-		ply.SyncMove(g.gameID)
-	}
+	g.players[g.currPlayerIndex].IncrementPower()
 }
 
 func NewGame(
 	logger *observability.Logger,
 	assets assets.Assets, g graphics.Graphics,
 	pubSub *pubsub.PubSub,
-	remotePubSub *pubsub.Remote,
-	gameID string,
-	gameSetup gamestate.Setup,
-	currPlayerID string,
 ) *Game {
-	gameMap := gamemap.NewMap(assets, g, pubSub, gameSetup, 0, backpackHeight)
+	gameMap := gamemap.NewMap(assets, g, pubSub, 0, backpackHeight)
 	playerMoveChecker := gameMap.GetPlayerMoveChecker()
 	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
-
-	players := make(map[string]*player.Player)
-
-	for playerID, plyState := range gameSetup.Players {
-		ply := player.NewPlayer(
-			playerID,
-			playerMoveChecker,
-			player.NewCharacter(plyState.Character),
-			0,
-			backpackHeight,
-			pubSub, remotePubSub,
-			plyState.Position.X,
-			plyState.Position.Y,
-		)
-		players[playerID] = ply
+	players := []*player.Player{
+		player.NewPlayer(playerMoveChecker, player.BlackBoy, 0, backpackHeight, 1, 2, pubSub),
+		player.NewPlayer(playerMoveChecker, player.BlackGirl, 0, backpackHeight, 1, 3, pubSub),
+		player.NewPlayer(playerMoveChecker, player.BrownBoy, 0, backpackHeight, 1, 4, pubSub),
+		player.NewPlayer(playerMoveChecker, player.BrownGirl, 0, backpackHeight, 1, 5, pubSub),
+		player.NewPlayer(playerMoveChecker, player.YellowBoy, 0, backpackHeight, 1, 6, pubSub),
+		player.NewPlayer(playerMoveChecker, player.YellowGirl, 0, backpackHeight, 1, 7, pubSub),
+		player.NewPlayer(playerMoveChecker, player.OrangeBoy, 0, backpackHeight, 1, 8, pubSub),
+		player.NewPlayer(playerMoveChecker, player.OrangeGirl, 0, backpackHeight, 1, 9, pubSub),
 	}
 	backpack := game.NewBackPack(g, 0, 0)
 	rightSideBar := game.NewRightSideBar(gamemap.Width, 0, players)
 	gm := Game{
-		gameID: gameID,
 		screen: screen{
 			name:   "Game",
 			logger: logger,
@@ -224,12 +147,26 @@ func NewGame(
 		graphics:         g,
 		spriteSheetBatch: batch,
 		gameMap:          gameMap,
-		currPlayerID:     currPlayerID,
 		players:          players,
 		backpack:         &backpack,
 		rightSideBar:     rightSideBar,
 		pubSub:           pubSub,
-		remotePubSub:     remotePubSub,
 	}
+
+	pubSub.Subscribe(pubsub.OnCandyExploding, func(payload interface{}) {
+		c := payload.(cell.Cell)
+		gm.onCandyExploding(c)
+	})
+	pubSub.Subscribe(pubsub.OnDropCandy, func(payload interface{}) {
+		pl := payload.(pubsub.OnDropCandyPayload)
+		gm.dropCandy(pl)
+	})
+	pubSub.Subscribe(pubsub.OnPlayerWalking, func(payload interface{}) {
+		p := payload.(pubsub.OnPlayerWalkingPayload)
+		gm.onPlayerWalking(p)
+	})
+	pubSub.Subscribe(pubsub.IncrementPlayerPower, func(_ interface{}) {
+		gm.incrementPlayerPower()
+	})
 	return &gm
 }
