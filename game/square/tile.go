@@ -1,8 +1,8 @@
 package square
 
 import (
-	"candy/game/gameitem"
-	"candy/graphics"
+    "candy/game/gameitem"
+    "candy/graphics"
 )
 
 const revealItemXOffset = 16
@@ -14,95 +14,95 @@ const brokenTileYOffset = 2
 var _ Square = (*Tile)(nil)
 
 type Tile struct {
-	state tileState
+    state tileState
 }
 
 func (t Tile) HasRevealedItem() bool {
-	return t.state.hasItem()
+    return t.state.hasItem()
 }
 
 func (t *Tile) RetrieveGameItem() gameitem.Type {
-	return t.state.removeItem()
+    return t.state.removeItem()
 }
 
 func (t Tile) IsBroken() bool {
-	return t.state.isBroken()
+    return t.state.isBroken()
 }
 
 func (t Tile) ShouldRemove() bool {
-	return t.state.shouldRemove()
+    return t.state.shouldRemove()
 }
 
 func (t *Tile) UnblockFire() {
-	t.state = t.state.unblockFire()
+    t.state = t.state.unblockFire()
 }
 
 func (t *Tile) Break() {
-	t.state = t.state.breakTile()
+    t.state = t.state.breakTile()
 }
 
 func (t Tile) IsBreakable() bool {
-	return t.state.breakable()
+    return t.state.breakable()
 }
 
 func (t Tile) Draw(batch graphics.Batch, x int, y int) {
-	t.state.draw(batch, x, y)
+    t.state.draw(batch, x, y)
 }
 
 func (t Tile) CanEnter() bool {
-	return t.state.canEnter()
+    return t.state.canEnter()
 }
 
 func (t *Tile) RevealItem() {
-	t.state.revealItem()
+    t.state.revealItem()
 }
 
 func (t *Tile) HideItem() {
-	t.state.hideItem()
+    t.state.hideItem()
 }
 
 func (t *Tile) RemoveItem() gameitem.Type {
-	return t.state.removeItem()
+    return t.state.removeItem()
 }
 
 func newYellow(gameItemType gameitem.Type) Tile {
-	return Tile{
-		state: &tileSolidState{
-			tileSharedState{
-				imageXOffset: 576,
-				imageYOffset: 304,
-				xOffset:      -4,
-				yOffset:      -2,
-				gameItemType: gameItemType,
-			},
-		},
-	}
+    return Tile{
+        state: &tileSolidState{
+            tileSharedState{
+                imageXOffset: 576,
+                imageYOffset: 304,
+                xOffset:      -4,
+                yOffset:      -2,
+                gameItemType: gameItemType,
+            },
+        },
+    }
 }
 
 func newGreen(gameItemType gameitem.Type) Tile {
-	return Tile{
-		state: &tileSolidState{
-			tileSharedState{
-				imageXOffset: 576,
-				imageYOffset: 224,
-				xOffset:      -4,
-				yOffset:      -2,
-				gameItemType: gameItemType,
-			},
-		},
-	}
+    return Tile{
+        state: &tileSolidState{
+            tileSharedState{
+                imageXOffset: 576,
+                imageYOffset: 224,
+                xOffset:      -4,
+                yOffset:      -2,
+                gameItemType: gameItemType,
+            },
+        },
+    }
 }
 
 func NewTile(tileType rune, gameItemType gameitem.Type) *Tile {
-	switch tileType {
-	case 'Y':
-		tile := newYellow(gameItemType)
-		return &tile
-	case 'G':
-		tile := newGreen(gameItemType)
-		return &tile
-	default:
-		tile := newGreen(gameItemType)
-		return &tile
-	}
+    switch tileType {
+    case 'Y':
+        tile := newYellow(gameItemType)
+        return &tile
+    case 'G':
+        tile := newGreen(gameItemType)
+        return &tile
+    default:
+        tile := newGreen(gameItemType)
+        return &tile
+    }
 }

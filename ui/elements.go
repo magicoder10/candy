@@ -1,6 +1,6 @@
 package ui
 
 type componentBuilder struct {
-	layout layout
-	style  *Style
+    layout layout
+    style  *Style
 }

@@ -1,14 +1,14 @@
 package audio
 
 import (
-	"os"
+    "os"
 )
 
 type Audio interface {
-	Play()
-	Stop()
+    Play()
+    Stop()
 }
 
 func NewAudio(file *os.File, extension string) (Audio, error) {
-	return newBeep(file, extension)
+    return newBeep(file, extension)
 }

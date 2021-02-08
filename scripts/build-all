@@ -1,0 +1,9 @@
+#!/bin/bash
+
+rm -rf build
+mkdir build
+
+docker build -t candy -f Dockerfile-build . && docker run -v $(pwd)/build:/app/build candy
+
+dir_path=$(dirname "$0")
+"$dir_path"/build/build-osx
