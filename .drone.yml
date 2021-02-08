@@ -8,5 +8,5 @@ steps:
     commands:
       - apt update
       - apt install -y libx11-dev libxcursor-dev libxrandr-dev libxinerama-dev
-      - apt install libxi-dev libgl1-mesa-dev libasound2-dev
+      - apt install -y libxi-dev libgl1-mesa-dev libasound2-dev
       - go test ./...
