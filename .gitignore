@@ -3,6 +3,3 @@
 
 # Build
 /build
-.dockerignore
-.editorconfig
-Dockerfile-build
