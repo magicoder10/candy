@@ -1,13 +1,13 @@
 package graphics
 
 import (
-	"time"
+    "time"
 
-	"candy/input"
+    "candy/input"
 )
 
 type Sprite interface {
-	Draw()
-	Update(timeElapsed time.Duration)
-	HandleInput(in input.Input)
+    Draw()
+    Update(timeElapsed time.Duration)
+    HandleInput(in input.Input)
 }

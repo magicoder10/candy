@@ -1,0 +1,14 @@
+FROM harbor.internal.teamyapp.com/internal/candy-client
+
+RUN apt install -y zip
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY . .
+
+VOLUME /app/build
+
+CMD ./scripts/build/build-win-linux

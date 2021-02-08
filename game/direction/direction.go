@@ -3,8 +3,8 @@ package direction
 type Direction int
 
 const (
-	Up Direction = iota
-	Right
-	Left
-	Down
+    Up Direction = iota
+    Right
+    Left
+    Down
 )
