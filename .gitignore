@@ -1,2 +1,5 @@
 # Jetbrain IDE
 .idea
+
+# Build
+/build
