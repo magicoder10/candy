@@ -65,8 +65,8 @@ func (t *Tile) RemoveItem() gameitem.Type {
 	return t.state.removeItem()
 }
 
-func newYellow(gameItemType gameitem.Type) Tile {
-	return Tile{
+func newYellowTile(gameItemType gameitem.Type) *Tile {
+	return &Tile{
 		state: &tileSolidState{
 			tileSharedState{
 				imageXOffset: 576,
@@ -79,8 +79,8 @@ func newYellow(gameItemType gameitem.Type) Tile {
 	}
 }
 
-func newGreen(gameItemType gameitem.Type) Tile {
-	return Tile{
+func newGreenTile(gameItemType gameitem.Type) *Tile {
+	return &Tile{
 		state: &tileSolidState{
 			tileSharedState{
 				imageXOffset: 576,
@@ -90,19 +90,5 @@ func newGreen(gameItemType gameitem.Type) Tile {
 				gameItemType: gameItemType,
 			},
 		},
-	}
-}
-
-func NewTile(tileType rune, gameItemType gameitem.Type) *Tile {
-	switch tileType {
-	case 'Y':
-		tile := newYellow(gameItemType)
-		return &tile
-	case 'G':
-		tile := newGreen(gameItemType)
-		return &tile
-	default:
-		tile := newGreen(gameItemType)
-		return &tile
 	}
 }

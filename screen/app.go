@@ -5,23 +5,35 @@ import (
 	"time"
 
 	"candy/assets"
+	"candy/client"
+	"candy/env"
 	"candy/graphics"
 	"candy/input"
 	"candy/observability"
 	"candy/pubsub"
+	"candy/server/gamestate"
 	"candy/view"
 )
 
 const Width = 1152
 const Height = 830
 
+type serverConfig struct {
+	PubSubServerHost string `env:"PUBSUB_SERVER_HOST" default:"localhost"`
+	PubSubServerPort int    `env:"PUBSUB_SERVER_PORT" default:"8000"`
+	GameServerHost   string `env:"GAME_SERVER_HOST" default:"localhost"`
+	GameServerPort   int    `env:"GAME_SERVER_PORT" default:"8000"`
+}
+
 var _ graphics.Sprite = (*App)(nil)
 
 type App struct {
-	logger *observability.Logger
-	assets assets.Assets
-	router *view.Router
-	pubSub *pubsub.PubSub
+	logger       *observability.Logger
+	assets       assets.Assets
+	router       *view.Router
+	pubSub       *pubsub.PubSub
+	remotePubSub *pubsub.Remote
+	gameClient   *client.Client
 }
 
 func (a App) Draw() {
@@ -50,8 +62,24 @@ func (a App) HandleInput(in input.Input) {
 }
 
 func (a *App) Launch() error {
+	config := serverConfig{}
+	err := env.ParseConfigFromEnv(&config)
+	if err != nil {
+		panic(err)
+	}
+
 	a.pubSub.Start()
-	err := a.router.Navigate("/", nil)
+	err = a.remotePubSub.Start(config.PubSubServerHost, config.PubSubServerPort)
+	if err != nil {
+		return err
+	}
+
+	err = a.gameClient.Start(config.GameServerHost, config.GameServerPort)
+	if err != nil {
+		return err
+	}
+
+	err = a.router.Navigate("/", nil)
 	if err != nil {
 		return err
 	}
@@ -62,21 +90,35 @@ func (a *App) Launch() error {
 func NewApp(logger *observability.Logger, assets assets.Assets, g graphics.Graphics) (App, error) {
 	rt := view.NewRouter(logger)
 	pubSub := pubsub.NewPubSub(logger)
+	remotePubSub := pubsub.NewRemote(logger)
+	gameClient := client.New(logger)
 
 	routes := []view.Route{
 		{Path: "/game", CreateFactory: func(props interface{}) view.View {
-			gm := NewGame(logger, assets, g, pubSub)
+			parsedProps := props.(gameRouteProps)
+			gm := NewGame(
+				logger, assets, g, pubSub, remotePubSub,
+				parsedProps.gameID, parsedProps.gameSetup, parsedProps.playerID,
+			)
 			return gm
 		}},
 		{Path: "/", CreateFactory: func(props interface{}) view.View {
-			return NewSignIn(logger, assets, g, rt)
+			return NewSignIn(logger, assets, g, rt, remotePubSub, gameClient)
 		}},
 	}
 	err := rt.AddRoutes(routes)
 	return App{
-		logger: logger,
-		assets: assets,
-		pubSub: pubSub,
-		router: rt,
+		logger:       logger,
+		assets:       assets,
+		pubSub:       pubSub,
+		remotePubSub: remotePubSub,
+		gameClient:   gameClient,
+		router:       rt,
 	}, err
+}
+
+type gameRouteProps struct {
+	gameSetup gamestate.Setup
+	gameID    string
+	playerID  string
 }

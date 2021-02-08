@@ -3,6 +3,7 @@ package gameitem
 import (
 	"candy/graphics"
 	"candy/pubsub"
+	"candy/server/gamestate"
 )
 
 type Type int
@@ -148,4 +149,20 @@ func WithPubSub(itemType Type, pubSub *pubsub.PubSub) GameItem {
 		return FirstAidKit{}
 	}
 	return None{}
+}
+
+var typeMap = map[gamestate.GameItemType]Type{
+	gamestate.ItemTypeNone:        NoneType,
+	gamestate.ItemTypePower:       PowerType,
+	gamestate.ItemTypeSpeed:       SpeedType,
+	gamestate.ItemTypeCandy:       CandyType,
+	gamestate.ItemTypeFirstAidKit: FirstAidKitType,
+}
+
+func NewType(gameItemType gamestate.GameItemType) Type {
+	if it, ok := typeMap[gameItemType]; ok {
+		return it
+	} else {
+		return NoneType
+	}
 }

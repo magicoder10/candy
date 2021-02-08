@@ -2,9 +2,10 @@ package main
 
 import (
 	"candy/assets"
+	"candy/env"
 	"candy/graphics"
 	"candy/observability"
-	"candy/ui"
+	"candy/screen"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
@@ -15,13 +16,12 @@ func main() {
 }
 
 func run() {
-	screenWidth := 1000
-	screenHeight := 1000
+	env.AutoLoad()
 
 	px, err := graphics.NewPixel(pixelgl.WindowConfig{
 		Title:       "Candy",
 		Icon:        nil,
-		Bounds:      pixel.R(0, 0, float64(screenWidth), float64(screenHeight)),
+		Bounds:      pixel.R(0, 0, screen.Width, screen.Height),
 		VSync:       true,
 		AlwaysOnTop: false,
 	})
@@ -34,10 +34,15 @@ func run() {
 		panic(err)
 	}
 
-	logger := observability.NewLogger(observability.Debug)
-	rootConstraint := ui.NewScreenConstraint(screenWidth, screenHeight)
-	renderEngine := ui.NewRenderEngine(&logger, &px, rootConstraint)
+	logger := observability.NewLogger(observability.Info)
 
-	app := newApp(&ass, &renderEngine)
-	graphics.StartMainLoop(24, app, &px, &px)
+	app, err := screen.NewApp(&logger, ass, &px)
+	if err != nil {
+		panic(err)
+	}
+	err = app.Launch()
+	if err != nil {
+		panic(err)
+	}
+	graphics.StartMainLoop(24, &app, &px, &px)
 }
