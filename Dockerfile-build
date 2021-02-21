@@ -1,4 +1,4 @@
-FROM harbor.internal.teamyapp.com/internal/candy-client
+FROM harbor.internal.teamyapp.com/internal/candy-ui
 
 RUN apt install -y zip
 
