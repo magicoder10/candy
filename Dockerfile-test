@@ -1,0 +1,3 @@
+FROM harbor.internal.teamyapp.com/internal/candy-client
+
+RUN apt install -y xvfb
