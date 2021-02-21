@@ -1,9 +1,9 @@
 package player
 
 import (
-    "candy/game/direction"
+	"candy/game/direction"
 )
 
 type MoveChecker interface {
-    CanMove(currX int, currY int, objectWidth int, objectHeight int, dir direction.Direction, stepSize int) bool
+	CanMove(currX int, currY int, objectWidth int, objectHeight int, dir direction.Direction, stepSize int) bool
 }
