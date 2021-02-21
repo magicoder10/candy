@@ -20,11 +20,16 @@ type Assets struct {
 }
 
 func (a Assets) GetImage(imageName string) image.Image {
-    return a.imageMap[imageName]
+    return a.imageMap[convertPath(imageName)]
 }
 
 func (a Assets) GetAudio(audioName string) audio.Audio {
-    return a.audioMap[audioName]
+    return a.audioMap[convertPath(audioName)]
+}
+
+func convertPath(path string) string {
+    parts := strings.Split(path, "/")
+    return filepath.Join(parts...)
 }
 
 func LoadAssets(assetRootDir string) (Assets, error) {
