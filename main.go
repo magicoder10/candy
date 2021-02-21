@@ -1,7 +1,10 @@
 package main
 
 import (
+	"flag"
 	"log"
+	"os"
+	"runtime/pprof"
 
 	"candy/assets"
 	"candy/graphics"
@@ -11,7 +14,33 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")
+var memprofile = flag.String("memprofile", "", "write memory profile to this file")
+
 func main() {
+	flag.Parse()
+	// Enable CPU profiling
+	if *cpuprofile != "" {
+		f, err := os.Create(*cpuprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
+
+	// Enable memory profiling
+	if *memprofile != "" {
+		f, err := os.Create(*memprofile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+		pprof.WriteHeapProfile(f)
+		return
+	}
+
 	eb := graphics.NewEbiten(true)
 
 	ass, err := assets.LoadAssets("public")
