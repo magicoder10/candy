@@ -5,9 +5,14 @@ name: default
 steps:
   - name: test
     pull: if-not-exists
-    image: harbor.internal.teamyapp.com/internal/candy-client:latest
+    image: harbor.internal.teamyapp.com/internal/candy-ui-test:latest
     commands:
       - go mod download
-      - go test ./...
+      - xvfb-run go test ./...
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
 image_pull_secrets:
   - dockerconfig

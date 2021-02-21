@@ -1,0 +1,4 @@
+FROM harbor.internal.teamyapp.com/internal/candy-client
+
+# Configure virtual display inside Docker for GLFW
+RUN apt install -y xvfb
