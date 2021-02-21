@@ -4,19 +4,18 @@ import (
 	"candy/game/direction"
 	"candy/game/square"
 	"candy/input"
-	"candy/observability"
 	"candy/pubsub"
 )
 
 var _ state = (*standingState)(nil)
 
 type standingState struct {
-	sharedState
+	*sharedState
 }
 
-func (s *standingState) handleInput(in input.Input) state {
+func (s standingState) handleInput(in input.Input) state {
 	switch in.Action {
-	case input.SinglePress:
+	case input.Press:
 		switch in.Device {
 		case input.UpArrowKey:
 			return newWalkingStateFromStanding(s.sharedState, 0, direction.Up)
@@ -27,6 +26,7 @@ func (s *standingState) handleInput(in input.Input) state {
 		case input.RightArrowKey:
 			return newWalkingStateFromStanding(s.sharedState, 0, direction.Right)
 		}
+	case input.SinglePress:
 		switch in.Device {
 		case input.SpaceKey:
 			s.dropCandy()
@@ -43,11 +43,9 @@ func newStandingStateOnSquare(
 	regionOffset regionOffset,
 	character character,
 	pubSub *pubsub.PubSub,
-	logger *observability.Logger,
-) *standingState {
-	return &standingState{
-		sharedState{
-			logger:       logger,
+) standingState {
+	return standingState{
+		&sharedState{
 			moveChecker:  moveChecker,
 			currStep:     1,
 			direction:    direction.Down,
@@ -56,14 +54,15 @@ func newStandingStateOnSquare(
 			x:            gridX + col*square.Width,
 			y:            gridY + row*square.Width,
 			regionOffset: regionOffset,
+			powerLevel:   character.initialPower,
+			stepSize:     character.initialStepSize,
 			character:    character,
 			pubSub:       pubSub,
-			stepSize:     character.initialStepSize,
 		},
 	}
 }
 
-func newStandingState(shared sharedState) *standingState {
+func newStandingState(shared *sharedState) *standingState {
 	shared.currStep = 1
-	return &standingState{shared}
+	return &standingState{sharedState: shared}
 }

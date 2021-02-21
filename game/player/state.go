@@ -1,7 +1,6 @@
 package player
 
 import (
-	"candy/observability"
 	"time"
 
 	"candy/game/direction"
@@ -20,12 +19,12 @@ type state interface {
 	getY() int
 	getWidth() int
 	getHeight() int
+	increasePowerLevel(amountIncrease int)
+	increaseStepSize(amountIncrease int)
 	isNormal() bool
-	increaseSpeed(stepSizeDelta int)
 }
 
 type sharedState struct {
-	logger       *observability.Logger
 	currStep     int
 	direction    direction.Direction
 	playerWidth  int
@@ -34,9 +33,10 @@ type sharedState struct {
 	y            int
 	moveChecker  MoveChecker
 	regionOffset regionOffset
+	powerLevel   int
+	stepSize     int
 	character    character
 	pubSub       *pubsub.PubSub
-	stepSize     int
 }
 
 func (s sharedState) update(timeElapsed time.Duration) {
@@ -47,7 +47,7 @@ func (s sharedState) isNormal() bool {
 	return true
 }
 
-func (s sharedState) trapped() state {
+func (s *sharedState) trapped() state {
 	return newTrapState(s)
 }
 
@@ -75,17 +75,20 @@ func (s sharedState) getHeight() int {
 	return s.playerHeight
 }
 
-func (s sharedState) dropCandy() {
-	s.pubSub.Publish(pubsub.OnDropCandy, pubsub.OnDropCandyPayload{
-		X:      s.x,
-		Y:      s.y,
-		Width:  s.playerWidth,
-		Height: s.playerHeight,
-	})
+func (s *sharedState) increasePowerLevel(amountIncrease int) {
+	s.powerLevel += amountIncrease
 }
 
-func (s *sharedState) increaseSpeed(stepSizeDelta int) {
-	s.logger.Infof("Previous player step size: %d\n", s.stepSize)
-	s.stepSize += stepSizeDelta
-	s.logger.Infof("After increase player step size: %d\n", s.stepSize)
+func (s *sharedState) increaseStepSize(amountIncrease int) {
+	s.stepSize += amountIncrease
+}
+
+func (s sharedState) dropCandy() {
+	s.pubSub.Publish(pubsub.OnDropCandy, pubsub.OnDropCandyPayload{
+		X:          s.x,
+		Y:          s.y,
+		Width:      s.playerWidth,
+		Height:     s.playerHeight,
+		PowerLevel: s.powerLevel,
+	})
 }

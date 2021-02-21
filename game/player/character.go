@@ -2,6 +2,7 @@ package player
 
 type character struct {
 	walkCycleOffset walkCycleOffset
+	initialPower    int
 	initialStepSize int
 }
 
@@ -10,7 +11,8 @@ var BlackBoy = character{
 		x: 0,
 		y: spriteColHeight,
 	},
-	initialStepSize: 10,
+	initialStepSize: 4,
+	initialPower:    1,
 }
 
 var BlackGirl = character{
@@ -19,6 +21,7 @@ var BlackGirl = character{
 		y: 0,
 	},
 	initialStepSize: 4,
+	initialPower:    1,
 }
 
 var BrownBoy = character{
@@ -27,6 +30,7 @@ var BrownBoy = character{
 		y: spriteColHeight,
 	},
 	initialStepSize: 6,
+	initialPower:    1,
 }
 
 var BrownGirl = character{
@@ -35,6 +39,7 @@ var BrownGirl = character{
 		y: 0,
 	},
 	initialStepSize: 6,
+	initialPower:    1,
 }
 
 var YellowBoy = character{
@@ -43,6 +48,7 @@ var YellowBoy = character{
 		y: spriteColHeight,
 	},
 	initialStepSize: 6,
+	initialPower:    1,
 }
 
 var YellowGirl = character{
@@ -51,6 +57,7 @@ var YellowGirl = character{
 		y: 0,
 	},
 	initialStepSize: 6,
+	initialPower:    1,
 }
 
 var OrangeBoy = character{
@@ -59,6 +66,7 @@ var OrangeBoy = character{
 		y: spriteColHeight,
 	},
 	initialStepSize: 6,
+	initialPower:    1,
 }
 
 var OrangeGirl = character{
@@ -67,4 +75,5 @@ var OrangeGirl = character{
 		y: 0,
 	},
 	initialStepSize: 6,
+	initialPower:    1,
 }

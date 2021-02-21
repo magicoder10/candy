@@ -1,3 +1,4 @@
 *.sketch
 *.md
 /build
+*.md

@@ -9,12 +9,6 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type Window interface {
-	IsClosed() bool
-	PollEvents() []input.Input
-	Redraw()
-}
-
 type WindowConfig struct {
 	Width  int
 	Height int
@@ -68,27 +62,27 @@ func (e EbitenWindow) Layout(outsideWidth, outsideHeight int) (screenWidth, scre
 
 func (e EbitenWindow) pollEvents() []input.Input {
 	inputs := make([]input.Input, 0)
-	if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
+	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
 		inputs = append(inputs, input.Input{
-			Action: input.SinglePress,
+			Action: input.Press,
 			Device: input.LeftArrowKey,
 		})
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
+	if ebiten.IsKeyPressed(ebiten.KeyRight) {
 		inputs = append(inputs, input.Input{
-			Action: input.SinglePress,
+			Action: input.Press,
 			Device: input.RightArrowKey,
 		})
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
+	if ebiten.IsKeyPressed(ebiten.KeyUp) {
 		inputs = append(inputs, input.Input{
-			Action: input.SinglePress,
+			Action: input.Press,
 			Device: input.UpArrowKey,
 		})
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
+	if ebiten.IsKeyPressed(ebiten.KeyDown) {
 		inputs = append(inputs, input.Input{
-			Action: input.SinglePress,
+			Action: input.Press,
 			Device: input.DownArrowKey,
 		})
 	}

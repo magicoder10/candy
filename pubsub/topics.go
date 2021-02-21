@@ -5,16 +5,17 @@ type topic int
 const (
 	OnCandyExploding topic = iota
 	OnPlayerWalking
-	IncrementPlayerPower
+	IncreasePlayerPower
 	IncreasePlayerSpeed
 	OnDropCandy
 )
 
 type OnDropCandyPayload struct {
-	X      int
-	Y      int
-	Width  int
-	Height int
+	X          int
+	Y          int
+	Width      int
+	Height     int
+	PowerLevel int
 }
 
 type OnPlayerWalkingPayload struct {

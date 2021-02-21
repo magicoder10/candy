@@ -78,7 +78,7 @@ type Power struct {
 }
 
 func (p Power) Use() {
-	p.pubSub.Publish(pubsub.IncrementPlayerPower, nil)
+	p.pubSub.Publish(pubsub.IncreasePlayerPower, 1)
 }
 
 func (p Power) GetType() Type {
@@ -87,20 +87,12 @@ func (p Power) GetType() Type {
 
 var _ GameItem = (*Speed)(nil)
 
-/*
-1. [X] Speed(gameitem): emit increase player speed event
-2. [X] Player(player): set player initial speed based on character
-3. [X] state(player): remember current player speed
-4. [X] walkingState(player): use speed provided by shared state
-5. [X] PubSub(pubsub): notify subscriber of increase player speed event
-6. [] Game (screen): increase current player speed
-*/
 type Speed struct {
 	pubSub *pubsub.PubSub
 }
 
 func (p Speed) Use() {
-	p.pubSub.Publish(pubsub.IncreasePlayerSpeed, 5)
+	p.pubSub.Publish(pubsub.IncreasePlayerSpeed, 2)
 }
 
 func (p Speed) GetType() Type {

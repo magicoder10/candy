@@ -11,7 +11,7 @@ import (
 var _ state = (*trappedState)(nil)
 
 type trappedState struct {
-	sharedState
+	*sharedState
 	jelly         *Jelly
 	prevDirection direction.Direction
 }
@@ -34,7 +34,7 @@ func (t trappedState) update(timeElapsed time.Duration) {
 	t.jelly.update(timeElapsed)
 }
 
-func newTrapState(state sharedState) *trappedState {
+func newTrapState(state *sharedState) *trappedState {
 	jl := newJelly()
 	prevDirection := state.direction
 	state.direction = direction.Down

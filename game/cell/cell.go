@@ -1,14 +1,14 @@
 package cell
 
 import (
-    "fmt"
+	"fmt"
 )
 
 type Cell struct {
-    Row int
-    Col int
+	Row int
+	Col int
 }
 
 func (c Cell) String() string {
-    return fmt.Sprintf("[Row:%d,Col:%d]", c.Row, c.Col)
+	return fmt.Sprintf("[Row:%d,Col:%d]", c.Row, c.Col)
 }

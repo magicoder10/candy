@@ -67,8 +67,7 @@ func (g Game) HandleInput(in input.Input) {
 
 func (g Game) dropCandy(payload pubsub.OnDropCandyPayload) {
 	playerCell := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
-	currPlayer := g.players[g.currPlayerIndex]
-	g.gameMap.AddCandy(playerCell, candy.NewBuilder(currPlayer.GetPowerLevel()))
+	g.gameMap.AddCandy(playerCell, candy.NewBuilder(payload.PowerLevel))
 }
 
 func (g Game) Update(timeElapsed time.Duration) {
@@ -114,12 +113,12 @@ func (g Game) onPlayerWalking(payload pubsub.OnPlayerWalkingPayload) {
 	}
 }
 
-func (g Game) incrementPlayerPower() {
-	g.players[g.currPlayerIndex].IncrementPower()
+func (g Game) increasePlayerPower(amountIncrease int) {
+	g.players[g.currPlayerIndex].IncreasePowerLevel(amountIncrease)
 }
 
-func (g Game) increasePlayerSpeed(stepSizeDelta int) {
-	g.players[g.currPlayerIndex].IncreaseSpeed(stepSizeDelta)
+func (g Game) increaseStepSize(amountIncrease int) {
+	g.players[g.currPlayerIndex].IncreaseStepSize(amountIncrease)
 }
 
 func NewGame(
@@ -131,14 +130,14 @@ func NewGame(
 	playerMoveChecker := gameMap.GetPlayerMoveChecker()
 	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
 	players := []*player.Player{
-		player.NewPlayer(playerMoveChecker, player.BlackBoy, 0, backpackHeight, 1, 2, pubSub, logger),
-		player.NewPlayer(playerMoveChecker, player.BlackGirl, 0, backpackHeight, 1, 3, pubSub, logger),
-		player.NewPlayer(playerMoveChecker, player.BrownBoy, 0, backpackHeight, 1, 4, pubSub, logger),
-		player.NewPlayer(playerMoveChecker, player.BrownGirl, 0, backpackHeight, 1, 5, pubSub, logger),
-		player.NewPlayer(playerMoveChecker, player.YellowBoy, 0, backpackHeight, 1, 6, pubSub, logger),
-		player.NewPlayer(playerMoveChecker, player.YellowGirl, 0, backpackHeight, 1, 7, pubSub, logger),
-		player.NewPlayer(playerMoveChecker, player.OrangeBoy, 0, backpackHeight, 1, 8, pubSub, logger),
-		player.NewPlayer(playerMoveChecker, player.OrangeGirl, 0, backpackHeight, 1, 9, pubSub, logger),
+		player.NewPlayer(playerMoveChecker, player.BlackBoy, 0, backpackHeight, 1, 2, pubSub),
+		player.NewPlayer(playerMoveChecker, player.BlackGirl, 0, backpackHeight, 1, 3, pubSub),
+		player.NewPlayer(playerMoveChecker, player.BrownBoy, 0, backpackHeight, 1, 4, pubSub),
+		player.NewPlayer(playerMoveChecker, player.BrownGirl, 0, backpackHeight, 1, 5, pubSub),
+		player.NewPlayer(playerMoveChecker, player.YellowBoy, 0, backpackHeight, 1, 6, pubSub),
+		player.NewPlayer(playerMoveChecker, player.YellowGirl, 0, backpackHeight, 1, 7, pubSub),
+		player.NewPlayer(playerMoveChecker, player.OrangeBoy, 0, backpackHeight, 1, 8, pubSub),
+		player.NewPlayer(playerMoveChecker, player.OrangeGirl, 0, backpackHeight, 1, 9, pubSub),
 	}
 	backpack := game.NewBackPack(g, 0, 0)
 	rightSideBar := game.NewRightSideBar(gamemap.Width, 0, players)
@@ -168,12 +167,13 @@ func NewGame(
 		p := payload.(pubsub.OnPlayerWalkingPayload)
 		gm.onPlayerWalking(p)
 	})
-	pubSub.Subscribe(pubsub.IncrementPlayerPower, func(_ interface{}) {
-		gm.incrementPlayerPower()
+	pubSub.Subscribe(pubsub.IncreasePlayerPower, func(payload interface{}) {
+		powerLevel := payload.(int)
+		gm.increasePlayerPower(powerLevel)
 	})
 	pubSub.Subscribe(pubsub.IncreasePlayerSpeed, func(payload interface{}) {
 		stepSizeDelta := payload.(int)
-		gm.increasePlayerSpeed(stepSizeDelta)
+		gm.increaseStepSize(stepSizeDelta)
 	})
 	return &gm
 }

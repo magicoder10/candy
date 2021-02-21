@@ -3,9 +3,9 @@ package candy
 var _ state = (*explodedState)(nil)
 
 type explodedState struct {
-    sharedState
+	sharedState
 }
 
 func (e explodedState) exploded() bool {
-    return true
+	return true
 }
