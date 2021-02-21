@@ -164,7 +164,7 @@ func NewGame(
 		gm.onPlayerWalking(p)
 	})
 	pubSub.Subscribe(pubsub.IncreasePlayerPower, func(payload interface{}) {
-		p := payload.(int)
+		powerLevel := payload.(int)
 		gm.increasePlayerPower(p)
 	})
 	return &gm
