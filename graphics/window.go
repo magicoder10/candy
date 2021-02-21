@@ -4,16 +4,9 @@ import (
 	"time"
 
 	"candy/input"
-
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
-
-type Window interface {
-	IsClosed() bool
-	PollEvents() []input.Input
-	Redraw()
-}
 
 type WindowConfig struct {
 	Width  int
@@ -92,9 +85,9 @@ func (e EbitenWindow) pollEvents() []input.Input {
 			Device: input.DownArrowKey,
 		})
 	}
-	if ebiten.IsKeyPressed(ebiten.KeyR) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyR) {
 		inputs = append(inputs, input.Input{
-			Action: input.Press,
+			Action: input.SinglePress,
 			Device: input.RKey,
 		})
 	}

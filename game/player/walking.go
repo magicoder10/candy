@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"candy/game/direction"
-	"candy/game/square"
 	"candy/input"
 	"candy/pubsub"
 )
@@ -17,8 +16,7 @@ var _ state = (*walkingState)(nil)
 
 type walkingState struct {
 	*sharedState
-	stepSize int
-	lag      int64
+	lag int64
 }
 
 func (w *walkingState) update(timeElapsed time.Duration) {
@@ -102,7 +100,6 @@ func newWalkingState(shared *sharedState, lag int64, direction direction.Directi
 	return &walkingState{
 		sharedState: shared,
 		lag:         lag,
-		stepSize:    square.Width / 10,
 	}
 }
 

@@ -55,6 +55,7 @@ func newStandingStateOnSquare(
 			y:            gridY + row*square.Width,
 			regionOffset: regionOffset,
 			powerLevel:   character.initialPower,
+			stepSize:     character.initialStepSize,
 			character:    character,
 			pubSub:       pubSub,
 		},

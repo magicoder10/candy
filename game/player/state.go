@@ -20,6 +20,7 @@ type state interface {
 	getWidth() int
 	getHeight() int
 	increasePowerLevel(amountIncrease int)
+	increaseStepSize(amountIncrease int)
 	isNormal() bool
 }
 
@@ -33,6 +34,7 @@ type sharedState struct {
 	moveChecker  MoveChecker
 	regionOffset regionOffset
 	powerLevel   int
+	stepSize     int
 	character    character
 	pubSub       *pubsub.PubSub
 }
@@ -75,6 +77,10 @@ func (s sharedState) getHeight() int {
 
 func (s *sharedState) increasePowerLevel(amountIncrease int) {
 	s.powerLevel += amountIncrease
+}
+
+func (s *sharedState) increaseStepSize(amountIncrease int) {
+	s.stepSize += amountIncrease
 }
 
 func (s sharedState) dropCandy() {

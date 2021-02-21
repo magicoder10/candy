@@ -1,11 +1,11 @@
 package screen
 
 import (
-	"candy/game/candy"
 	"time"
 
 	"candy/assets"
 	"candy/game"
+	"candy/game/candy"
 	"candy/game/cell"
 	"candy/game/gameitem"
 	"candy/game/gamemap"
@@ -57,7 +57,7 @@ func (g Game) HandleInput(in input.Input) {
 		case input.RKey:
 			g.gameMap.HideItems()
 		}
-	case input.Press:
+	case input.SinglePress:
 		switch in.Device {
 		case input.RKey:
 			g.gameMap.RevealItems()
@@ -117,6 +117,10 @@ func (g Game) increasePlayerPower(amountIncrease int) {
 	g.players[g.currPlayerIndex].IncreasePowerLevel(amountIncrease)
 }
 
+func (g Game) increaseStepSize(amountIncrease int) {
+	g.players[g.currPlayerIndex].IncreaseStepSize(amountIncrease)
+}
+
 func NewGame(
 	logger *observability.Logger,
 	assets assets.Assets, g graphics.Graphics,
@@ -166,6 +170,10 @@ func NewGame(
 	pubSub.Subscribe(pubsub.IncreasePlayerPower, func(payload interface{}) {
 		powerLevel := payload.(int)
 		gm.increasePlayerPower(powerLevel)
+	})
+	pubSub.Subscribe(pubsub.IncreasePlayerSpeed, func(payload interface{}) {
+		stepSizeDelta := payload.(int)
+		gm.increaseStepSize(stepSizeDelta)
 	})
 	return &gm
 }

@@ -6,6 +6,7 @@ const (
 	OnCandyExploding topic = iota
 	OnPlayerWalking
 	IncreasePlayerPower
+	IncreasePlayerSpeed
 	OnDropCandy
 )
 
