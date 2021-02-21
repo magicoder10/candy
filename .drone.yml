@@ -5,7 +5,7 @@ name: default
 steps:
   - name: test
     pull: if-not-exists
-    image: harbor.internal.teamyapp.com/internal/candy-client-test:latest
+    image: harbor.internal.teamyapp.com/internal/candy-ui-test:latest
     commands:
       - go mod download
       - xvfb-run go test ./...
