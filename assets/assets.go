@@ -15,16 +15,21 @@ var imageExtensions = map[string]struct{}{"jpg": {}, "png": {}}
 var audioExtensions = map[string]struct{}{"mp3": {}, "wav": {}}
 
 type Assets struct {
-	imageMap map[string]image.Image
+  imageMap map[string]image.Image
 	audioMap map[string]audio.Audio
 }
 
 func (a Assets) GetImage(imageName string) image.Image {
-	return a.imageMap[imageName]
+  return a.imageMap[convertPath(imageName)]
 }
 
 func (a Assets) GetAudio(audioName string) audio.Audio {
-	return a.audioMap[audioName]
+  return a.audioMap[convertPath(audioName)]
+}
+
+func convertPath(path string) string {
+  parts := strings.Split(path, "/")
+  return filepath.Join(parts...)
 }
 
 func LoadAssets(assetRootDir string) (Assets, error) {
