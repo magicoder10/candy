@@ -47,7 +47,6 @@ func (r RenderEngine) Draw() {
 		Height: imageBound.Max.Y,
 	}
 	r.batch.DrawSprite(0, 0, 0, bound, 1)
-	r.batch.RenderBatch()
 }
 
 func (r RenderEngine) generateLayout(component Component) {
