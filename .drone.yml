@@ -9,5 +9,10 @@ steps:
     commands:
       - go mod download
       - xvfb-run go test ./...
+trigger:
+  branch:
+    - master
+  event:
+    - pull_request
 image_pull_secrets:
   - dockerconfig
