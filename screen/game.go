@@ -165,7 +165,7 @@ func NewGame(
 	})
 	pubSub.Subscribe(pubsub.IncreasePlayerPower, func(payload interface{}) {
 		powerLevel := payload.(int)
-		gm.increasePlayerPower(p)
+		gm.increasePlayerPower(powerLevel)
 	})
 	return &gm
 }
