@@ -44,8 +44,6 @@ func (g Game) Draw() {
 
 	g.backpack.Draw(g.spriteSheetBatch)
 	g.rightSideBar.Draw(g.spriteSheetBatch)
-
-	g.spriteSheetBatch.RenderBatch()
 }
 
 func (g Game) HandleInput(in input.Input) {

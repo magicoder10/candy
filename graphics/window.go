@@ -29,6 +29,7 @@ type EbitenWindow struct {
 func (e *EbitenWindow) Init() {
 	ebiten.SetWindowSize(e.windowConfig.Width, e.windowConfig.Height)
 	ebiten.SetWindowTitle(e.windowConfig.Title)
+	e.ebiten.initBuffer(e.windowConfig.Width, e.windowConfig.Height)
 	e.prevTime = time.Now()
 }
 

@@ -39,7 +39,6 @@ func (s SignIn) Destroy() {
 
 func (s SignIn) Draw() {
 	s.batch.DrawSprite(0, 0, 1, signInBackgroundBound, 1)
-	s.batch.RenderBatch()
 }
 
 func (s SignIn) Update(timeElapsed time.Duration) {

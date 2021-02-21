@@ -1,0 +1,7 @@
+#!/bin/bash
+
+rm -rf perf
+mkdir perf
+
+go build -o build/main main.go
+./build/main --memprofile=perf/memory.perf

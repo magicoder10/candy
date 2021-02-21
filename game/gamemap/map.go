@@ -54,7 +54,6 @@ type Map struct {
 
 func (m Map) DrawMap() {
 	m.batch.DrawSprite(m.screenX, m.screenY, math.MaxInt32, mapBound, 1)
-	m.batch.RenderBatch()
 }
 
 func (m Map) DrawGrid(batch graphics.Batch) {
