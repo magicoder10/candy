@@ -27,11 +27,9 @@ type Text interface {
 
 type Batch interface {
 	DrawSprite(x int, y int, z int, imageBound Bound, scale float64)
-	RenderBatch()
 }
 
 type Graphics interface {
-	Clear()
 	NewText(face font.Face, x int, y int, width int, height int, scale float64, alignment alignment) Text
 	StartNewBatch(spriteSheet image.Image) Batch
 	SetCursorVisible(isVisible bool)
