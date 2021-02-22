@@ -6,7 +6,6 @@ import (
 	"candy/assets"
 	"candy/graphics"
 	"candy/observability"
-	"candy/screen"
 	"candy/ui"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -30,9 +29,9 @@ func main() {
 	renderEngine.Render(newApp(&ass))
 
 	g := graphics.NewEbitenWindow(graphics.WindowConfig{
-		Width:  screen.Width,
-		Height: screen.Height,
-		Title:  "Candy",
+		Width:  screenWidth,
+		Height: screenHeight,
+		Title:  "Example",
 	}, renderEngine, 24, &eb)
 	g.Init()
 

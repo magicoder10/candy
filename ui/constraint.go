@@ -18,7 +18,7 @@ func NewScreenConstraint(screenWidth int, screenHeight int) Constraints {
 
 func applyConstraints(component Component, constraints Constraints) {
 	if len(component.getChildren()) == 0 {
-		component.setSize(component.ComputeLeafSize())
+		component.setSize(component.ComputeLeafSize(constraints))
 		return
 	}
 
