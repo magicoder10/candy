@@ -4,8 +4,9 @@ import (
 	"time"
 
 	"candy/game/direction"
-	"candy/input"
 	"candy/pubsub"
+
+	"github.com/teamyapp/ui/input"
 )
 
 var nanoPerStep = (100 * time.Millisecond).Nanoseconds()

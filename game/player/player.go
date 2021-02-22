@@ -6,9 +6,10 @@ import (
 	"candy/game/direction"
 	"candy/game/marker"
 	"candy/game/square"
-	"candy/graphics"
-	"candy/input"
 	"candy/pubsub"
+
+	"github.com/teamyapp/ui/graphics"
+	"github.com/teamyapp/ui/input"
 )
 
 const spriteWidth = 48

@@ -5,7 +5,8 @@ import (
 
 	"candy/game/gameitem"
 	"candy/game/square"
-	"candy/graphics"
+
+	"github.com/teamyapp/ui/graphics"
 
 	"golang.org/x/image/font/basicfont"
 )

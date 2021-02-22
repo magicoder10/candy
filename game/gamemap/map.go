@@ -6,14 +6,15 @@ import (
 	"sync"
 	"time"
 
-	"candy/assets"
 	"candy/game/candy"
 	"candy/game/cell"
 	"candy/game/gameitem"
 	"candy/game/player"
 	"candy/game/square"
-	"candy/graphics"
 	"candy/pubsub"
+
+	"github.com/teamyapp/ui/assets"
+	"github.com/teamyapp/ui/graphics"
 )
 
 const defaultRows = 12

@@ -4,7 +4,8 @@ import (
 	"time"
 
 	"candy/game/cell"
-	"candy/graphics"
+
+	"github.com/teamyapp/ui/graphics"
 )
 
 const meltingTime = 5 * time.Second

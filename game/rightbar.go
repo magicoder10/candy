@@ -2,7 +2,8 @@ package game
 
 import (
 	"candy/game/player"
-	"candy/graphics"
+
+	"github.com/teamyapp/ui/graphics"
 )
 
 const playerStatusBarLeft = 56

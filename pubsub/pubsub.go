@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"candy/observability"
+	"github.com/teamyapp/ui/observability"
 )
 
 type callback func(payload interface{})

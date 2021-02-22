@@ -3,7 +3,6 @@ package screen
 import (
 	"time"
 
-	"candy/assets"
 	"candy/game"
 	"candy/game/candy"
 	"candy/game/cell"
@@ -11,11 +10,13 @@ import (
 	"candy/game/gamemap"
 	"candy/game/player"
 	"candy/game/square"
-	"candy/graphics"
-	"candy/input"
-	"candy/observability"
 	"candy/pubsub"
 	"candy/view"
+
+	"github.com/teamyapp/ui/assets"
+	"github.com/teamyapp/ui/graphics"
+	"github.com/teamyapp/ui/input"
+	"github.com/teamyapp/ui/observability"
 )
 
 var _ view.View = (*Game)(nil)
