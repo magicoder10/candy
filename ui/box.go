@@ -10,7 +10,7 @@ var _ sort.Interface = (*Children)(nil)
 
 type Children struct {
 	children       []Component
-	childrenOffset []offset
+	childrenOffset []Offset
 }
 
 func (c Children) Len() int {
@@ -26,13 +26,17 @@ func (c *Children) Swap(i, j int) {
 	c.childrenOffset[i], c.childrenOffset[j] = c.childrenOffset[j], c.childrenOffset[i]
 }
 
+type BoxProps struct {
+}
+
 var _ Component = (*Box)(nil)
 
 type Box struct {
-	sharedComponent
+	SharedComponent
+	props BoxProps
 }
 
-func (b Box) paint(painter *painter, destLayer draw.Image, offset offset) {
+func (b Box) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 	contentLayer := image.NewRGBA(image.Rectangle{
 		Max: image.Point{
 			X: b.size.width,
@@ -48,7 +52,7 @@ func (b Box) paint(painter *painter, destLayer draw.Image, offset offset) {
 
 	for index, child := range sortedChildren.children {
 		childOffset := sortedChildren.childrenOffset[index]
-		child.paint(painter, contentLayer, childOffset)
+		child.Paint(painter, contentLayer, childOffset)
 	}
 
 	painter.drawImage(contentLayer, image.Rectangle{
@@ -60,7 +64,7 @@ func (b Box) paint(painter *painter, destLayer draw.Image, offset offset) {
 	})
 }
 
-func (b Box) computeLeafSize() size {
+func (b Box) ComputeLeafSize() Size {
 	width := 0
 	if b.style.Width != nil {
 		width = *b.style.Width
@@ -69,33 +73,27 @@ func (b Box) computeLeafSize() size {
 	if b.style.Height != nil {
 		height = *b.style.Height
 	}
-	return size{width: width, height: height}
+	return Size{width: width, height: height}
 }
 
-type BoxBuilder struct {
-	children []Component
-	componentBuilder
-}
-
-func (b *BoxBuilder) Children(children []Component) *BoxBuilder {
-	b.children = children
-	return b
-}
-
-func (b *BoxBuilder) Build() *Box {
-	if b.style == nil {
-		b.style = &Style{}
+func NewBox(props *BoxProps, children []Component, style *Style) *Box {
+	if props == nil {
+		props = &BoxProps{}
 	}
-	if b.layout == nil {
-		b.layout = BoxLayout{}
+	if style == nil {
+		style = &Style{
+			LayoutType: BoxLayoutType,
+		}
 	}
-	return &Box{sharedComponent{
-		layout:   b.layout,
-		style:    *b.style,
-		children: b.children,
-	}}
-}
-
-func NewBoxBuilder() *BoxBuilder {
-	return &BoxBuilder{}
+	if children == nil {
+		children = make([]Component, 0)
+	}
+	return &Box{
+		props: *props,
+		SharedComponent: SharedComponent{
+			layout:         newLayout(style.LayoutType),
+			style:          *style,
+			children:       children,
+			childrenOffset: []Offset{},
+		}}
 }

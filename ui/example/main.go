@@ -25,15 +25,15 @@ func main() {
 
 	logger := observability.NewLogger(observability.Debug)
 	rootConstraint := ui.NewScreenConstraint(screenWidth, screenHeight)
-	renderEngine := ui.NewRenderEngine(&logger, &eb, rootConstraint)
 
-	app := newApp(&ass, &renderEngine)
+	renderEngine := ui.NewRenderEngine(&logger, &eb, rootConstraint)
+	renderEngine.Render(newApp(&ass))
 
 	g := graphics.NewEbitenWindow(graphics.WindowConfig{
 		Width:  screen.Width,
 		Height: screen.Height,
 		Title:  "Candy",
-	}, app, 24, &eb)
+	}, renderEngine, 24, &eb)
 	g.Init()
 
 	if err := ebiten.RunGame(&g); err != nil {

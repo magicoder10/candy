@@ -2,8 +2,20 @@ package ui
 
 type layout interface {
 	applyConstraintsToChildren(parent Component, parentConstraints Constraints)
-	computeParentSize(parent Component, parentConstraints Constraints) size
-	computeChildrenOffset(parent Component) []offset
+	computeParentSize(parent Component, parentConstraints Constraints) Size
+	computeChildrenOffset(parent Component) []Offset
 }
 
-var _ layout = (*BoxLayout)(nil)
+type LayoutType int
+
+const (
+	BoxLayoutType LayoutType = iota
+)
+
+func newLayout(layoutType LayoutType) layout {
+	switch layoutType {
+	case BoxLayoutType:
+		return BoxLayout{}
+	}
+	return BoxLayout{}
+}

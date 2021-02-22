@@ -4,6 +4,8 @@ import (
 	"math"
 )
 
+var _ layout = (*BoxLayout)(nil)
+
 type BoxLayout struct {
 }
 
@@ -15,13 +17,13 @@ func (b BoxLayout) applyConstraintsToChildren(parent Component, parentConstraint
 	}
 }
 
-func (b BoxLayout) computeChildrenOffset(parent Component) []offset {
+func (b BoxLayout) computeChildrenOffset(parent Component) []Offset {
 	nextX := 0
 	nextY := 0
 
-	offsets := make([]offset, 0)
+	offsets := make([]Offset, 0)
 	for _, child := range parent.getChildren() {
-		offsets = append(offsets, offset{
+		offsets = append(offsets, Offset{
 			x: nextX,
 			y: nextY,
 		})
@@ -30,7 +32,7 @@ func (b BoxLayout) computeChildrenOffset(parent Component) []offset {
 	return offsets
 }
 
-func (b BoxLayout) computeParentSize(parent Component, parentConstraints Constraints) size {
+func (b BoxLayout) computeParentSize(parent Component, parentConstraints Constraints) Size {
 	height := 0
 	children := parent.getChildren()
 	length := len(children)
@@ -39,5 +41,5 @@ func (b BoxLayout) computeParentSize(parent Component, parentConstraints Constra
 		childrenOffset := parent.getChildrenOffset()
 		height = childrenOffset[length-1].y + children[length-1].getSize().height
 	}
-	return size{width: parentConstraints.maxWidth, height: height}
+	return Size{width: parentConstraints.maxWidth, height: height}
 }

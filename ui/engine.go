@@ -4,15 +4,20 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	"time"
 
 	"candy/graphics"
+	"candy/input"
 	"candy/observability"
 )
+
+var _ graphics.Sprite = (*RenderEngine)(nil)
 
 type RenderEngine struct {
 	logger          *observability.Logger
 	graphics        graphics.Graphics
-	painter         *painter
+	painter         *Painter
+	rootComponent   Component
 	rootConstraints Constraints
 	compositeLayer  draw.Image
 	hasUpdate       bool
@@ -20,11 +25,34 @@ type RenderEngine struct {
 }
 
 func (r *RenderEngine) Render(component Component) {
+	r.rootComponent = component
+}
+
+func (r *RenderEngine) Draw() {
+	r.render()
+	r.draw()
+}
+
+func (r *RenderEngine) Update(timeElapsed time.Duration) {
+	if r.rootComponent == nil {
+		return
+	}
+	r.rootComponent.Update(timeElapsed)
+}
+
+func (r *RenderEngine) HandleInput(in input.Input) {
+	if r.rootComponent == nil {
+		return
+	}
+	r.rootComponent.HandleInput(in)
+}
+
+func (r *RenderEngine) render() {
 	if !r.hasUpdate {
 		return
 	}
 
-	r.generateLayout(component)
+	r.generateLayout(r.rootComponent)
 
 	r.compositeLayer = image.NewRGBA(image.Rectangle{
 		Max: image.Point{X: r.rootConstraints.maxWidth, Y: r.rootConstraints.maxHeight},
@@ -32,13 +60,13 @@ func (r *RenderEngine) Render(component Component) {
 	transparent := color.RGBA{R: 0, G: 0, B: 0, A: 0}
 	draw.Draw(r.compositeLayer, r.compositeLayer.Bounds(), &image.Uniform{C: transparent}, image.Point{}, draw.Src)
 
-	component.paint(r.painter, r.compositeLayer, offset{})
+	r.rootComponent.Paint(r.painter, r.compositeLayer, Offset{})
 
 	r.batch = r.graphics.StartNewBatch(r.compositeLayer)
 	r.hasUpdate = false
 }
 
-func (r RenderEngine) Draw() {
+func (r *RenderEngine) draw() {
 	imageBound := r.compositeLayer.Bounds()
 	bound := graphics.Bound{
 		X:      0,
@@ -57,11 +85,11 @@ func NewRenderEngine(
 	logger *observability.Logger,
 	g graphics.Graphics,
 	rootConstraints Constraints,
-) RenderEngine {
-	return RenderEngine{
+) *RenderEngine {
+	return &RenderEngine{
 		logger:          logger,
 		graphics:        g,
-		painter:         &painter{},
+		painter:         &Painter{},
 		rootConstraints: rootConstraints,
 		hasUpdate:       true,
 	}
