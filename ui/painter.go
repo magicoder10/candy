@@ -5,10 +5,10 @@ import (
 	"image/draw"
 )
 
-type painter struct {
+type Painter struct {
 }
 
-func (painter) drawImage(src image.Image, srcRect image.Rectangle, dest draw.Image, destPoint image.Point) {
+func (Painter) drawImage(src image.Image, srcRect image.Rectangle, dest draw.Image, destPoint image.Point) {
 	width := srcRect.Max.X - srcRect.Min.X
 	height := srcRect.Max.Y - srcRect.Min.Y
 

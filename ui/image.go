@@ -9,18 +9,25 @@ import (
 
 var _ Component = (*Image)(nil)
 
-type Image struct {
-	path string
-	sharedComponent
-	ass   *assets.Assets
-	image image.Image
+type ImageProps struct {
+	ImagePath string
 }
 
-func (i *Image) paint(painter *painter, destLayer draw.Image, offset offset) {
+type Image struct {
+	SharedComponent
+	props  ImageProps
+	assets *assets.Assets
+	image  image.Image
+}
+
+func (i *Image) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
+	if i.image == nil {
+		return
+	}
 	contentLayer := image.NewRGBA(image.Rectangle{
 		Max: image.Point{
-			X: i.sharedComponent.size.width,
-			Y: i.sharedComponent.size.height,
+			X: i.SharedComponent.size.width,
+			Y: i.SharedComponent.size.height,
 		},
 	})
 	painter.drawImage(i.image, i.image.Bounds(), contentLayer, image.Point{
@@ -33,9 +40,9 @@ func (i *Image) paint(painter *painter, destLayer draw.Image, offset offset) {
 	})
 }
 
-func (i Image) computeLeafSize() size {
+func (i Image) ComputeLeafSize() Size {
 	if i.image == nil {
-		return size{}
+		return Size{}
 	}
 	imageBound := i.image.Bounds()
 	width := imageBound.Max.X - imageBound.Min.X
@@ -46,44 +53,29 @@ func (i Image) computeLeafSize() size {
 	if i.style.Height != nil {
 		height = *i.style.Height
 	}
-	return size{
+	return Size{
 		width:  width,
 		height: height,
 	}
 }
 
-type ImageBuilder struct {
-	imagePath string
-	image     image.Image
-	componentBuilder
-}
-
-func (i *ImageBuilder) ImagePath(ass *assets.Assets, path string) *ImageBuilder {
-	i.imagePath = path
-	i.image = ass.GetImage(path)
-	return i
-}
-
-func (i ImageBuilder) Build() *Image {
-	if i.style == nil {
-		i.style = &Style{}
+func NewImage(assets *assets.Assets, props *ImageProps, style *Style) *Image {
+	if props == nil {
+		props = &ImageProps{}
 	}
-	if i.layout == nil {
-		i.layout = BoxLayout{}
+	if style == nil {
+		style = &Style{}
 	}
-	if i.image == nil {
-		i.image = image.NewRGBA(image.Rectangle{})
+	var img image.Image = nil
+	if len(props.ImagePath) > 0 {
+		img = assets.GetImage(props.ImagePath)
 	}
 	return &Image{
-		path: i.imagePath,
-		sharedComponent: sharedComponent{
-			layout: i.layout,
-			style:  *i.style,
+		props:  *props,
+		assets: assets,
+		image:  img,
+		SharedComponent: SharedComponent{
+			style: *style,
 		},
-		image: i.image,
 	}
-}
-
-func NewImageBuilder() *ImageBuilder {
-	return &ImageBuilder{}
 }

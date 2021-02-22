@@ -19,7 +19,7 @@ type Ebiten struct {
 	reverseY bool
 	texts    []*ebitenText
 	batches  []*ebitenBatch
-	buffer *ebiten.Image
+	buffer   *ebiten.Image
 }
 
 func (e *Ebiten) initBuffer(width int, height int) {
