@@ -12,18 +12,12 @@ type Component interface {
 	Update(timeElapsed time.Duration)
 	getLayout() layout
 	getChildren() []Component
-	ComputeLeafSize() Size
+	ComputeLeafSize(constraints Constraints) Size
 	getSize() Size
 	setSize(size Size)
 	getChildrenOffset() []Offset
 	setChildrenOffset(childrenOffsets []Offset)
 	Paint(painter *Painter, destLayer draw.Image, offset Offset)
-}
-
-type Style struct {
-	Width      *int
-	Height     *int
-	LayoutType LayoutType
 }
 
 type Size struct {
@@ -50,7 +44,9 @@ func (s SharedComponent) HandleInput(in input.Input) {
 }
 
 func (s SharedComponent) Update(timeElapsed time.Duration) {
-	return
+	for _, child := range s.children {
+		child.Update(timeElapsed)
+	}
 }
 
 func (s SharedComponent) getChildren() []Component {
@@ -77,6 +73,6 @@ func (s *SharedComponent) setChildrenOffset(childrenOffsets []Offset) {
 	s.childrenOffset = childrenOffsets
 }
 
-func (s *SharedComponent) ComputeLeafSize() Size {
+func (s *SharedComponent) ComputeLeafSize(_ Constraints) Size {
 	return Size{}
 }

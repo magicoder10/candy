@@ -6,26 +6,6 @@ import (
 	"sort"
 )
 
-var _ sort.Interface = (*Children)(nil)
-
-type Children struct {
-	children       []Component
-	childrenOffset []Offset
-}
-
-func (c Children) Len() int {
-	return len(c.children)
-}
-
-func (c Children) Less(i, j int) bool {
-	return c.childrenOffset[i].z < c.childrenOffset[j].z
-}
-
-func (c *Children) Swap(i, j int) {
-	c.children[i], c.children[j] = c.children[j], c.children[i]
-	c.childrenOffset[i], c.childrenOffset[j] = c.childrenOffset[j], c.childrenOffset[i]
-}
-
 type BoxProps struct {
 }
 
@@ -64,7 +44,7 @@ func (b Box) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 	})
 }
 
-func (b Box) ComputeLeafSize() Size {
+func (b Box) ComputeLeafSize(_ Constraints) Size {
 	width := 0
 	if b.style.Width != nil {
 		width = *b.style.Width
@@ -96,4 +76,24 @@ func NewBox(props *BoxProps, children []Component, style *Style) *Box {
 			children:       children,
 			childrenOffset: []Offset{},
 		}}
+}
+
+var _ sort.Interface = (*Children)(nil)
+
+type Children struct {
+	children       []Component
+	childrenOffset []Offset
+}
+
+func (c Children) Len() int {
+	return len(c.children)
+}
+
+func (c Children) Less(i, j int) bool {
+	return c.childrenOffset[i].z < c.childrenOffset[j].z
+}
+
+func (c *Children) Swap(i, j int) {
+	c.children[i], c.children[j] = c.children[j], c.children[i]
+	c.childrenOffset[i], c.childrenOffset[j] = c.childrenOffset[j], c.childrenOffset[i]
 }

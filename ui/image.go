@@ -7,11 +7,11 @@ import (
 	"candy/assets"
 )
 
-var _ Component = (*Image)(nil)
-
 type ImageProps struct {
 	ImagePath string
 }
+
+var _ Component = (*Image)(nil)
 
 type Image struct {
 	SharedComponent
@@ -40,7 +40,7 @@ func (i *Image) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 	})
 }
 
-func (i Image) ComputeLeafSize() Size {
+func (i Image) ComputeLeafSize(_ Constraints) Size {
 	if i.image == nil {
 		return Size{}
 	}
