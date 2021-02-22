@@ -13,10 +13,6 @@ type ImageProps struct {
 
 var _ Component = (*Image)(nil)
 
-type ImageProps struct {
-	ImagePath string
-}
-
 type Image struct {
 	SharedComponent
 	props  ImageProps
