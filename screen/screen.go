@@ -1,7 +1,7 @@
 package screen
 
 import (
-	"candy/observability"
+	"github.com/teamyapp/ui/observability"
 )
 
 type screen struct {

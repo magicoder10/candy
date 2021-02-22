@@ -2,7 +2,8 @@ package candy
 
 import (
 	"candy/game/square"
-	"candy/graphics"
+
+	"github.com/teamyapp/ui/graphics"
 )
 
 var explosionCenter = graphics.Bound{

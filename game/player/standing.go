@@ -3,8 +3,9 @@ package player
 import (
 	"candy/game/direction"
 	"candy/game/square"
-	"candy/input"
 	"candy/pubsub"
+
+	"github.com/teamyapp/ui/input"
 )
 
 var _ state = (*standingState)(nil)

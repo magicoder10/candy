@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"candy/observability"
+	"github.com/teamyapp/ui/observability"
 )
 
 type Route struct {

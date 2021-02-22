@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"time"
 
-	"candy/assets"
-	"candy/graphics"
-	"candy/input"
-	"candy/observability"
 	"candy/pubsub"
 	"candy/view"
+
+	"github.com/teamyapp/ui/assets"
+	"github.com/teamyapp/ui/graphics"
+	"github.com/teamyapp/ui/input"
+	"github.com/teamyapp/ui/observability"
 )
 
 const Width = 1152

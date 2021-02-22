@@ -7,7 +7,8 @@ import (
 	"candy/game/cell"
 	"candy/game/gameitem"
 	"candy/game/square"
-	"candy/graphics"
+
+	"github.com/teamyapp/ui/graphics"
 )
 
 var _ square.Square = (*Candy)(nil)

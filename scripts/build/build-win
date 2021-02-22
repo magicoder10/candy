@@ -2,4 +2,3 @@
 
 dir_path=$(dirname "$0")
 "$dir_path"/build windows win .exe
-

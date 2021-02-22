@@ -1,8 +1,9 @@
 package gameitem
 
 import (
-	"candy/graphics"
 	"candy/pubsub"
+
+	"github.com/teamyapp/ui/graphics"
 )
 
 type Type int
