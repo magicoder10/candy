@@ -4,3 +4,4 @@ dir_path=$(dirname "$0")
 
 "$dir_path"/build-win
 "$dir_path"/build-linux
+

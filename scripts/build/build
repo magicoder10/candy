@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf build/"$2"-amd64 >/dev/null
+rm -rf build/"$2"-amd64 > /dev/null
 mkdir -p build/"$2"-amd64
 
 CGO_ENABLED=1 GOOS="$1" GOARCH=amd64 go build -o build/"$2"-amd64/client"$3" main.go

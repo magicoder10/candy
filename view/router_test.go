@@ -3,7 +3,7 @@ package view
 import (
 	"testing"
 
-	"github.com/teamyapp/ui/observability"
+	"candy/observability"
 
 	"github.com/stretchr/testify/assert"
 )
