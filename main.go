@@ -6,12 +6,12 @@ import (
 	"os"
 	"runtime/pprof"
 
+	"candy/assets"
+	"candy/graphics"
+	"candy/observability"
 	"candy/screen"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/teamyapp/ui/assets"
-	"github.com/teamyapp/ui/graphics"
-	"github.com/teamyapp/ui/observability"
 )
 
 var cpuprofile = flag.String("cpuprofile", "", "write cpu profile to file")

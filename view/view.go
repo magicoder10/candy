@@ -3,7 +3,7 @@ package view
 import (
 	"time"
 
-	"github.com/teamyapp/ui/input"
+	"candy/input"
 )
 
 type View interface {

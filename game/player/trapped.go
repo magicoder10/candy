@@ -4,9 +4,8 @@ import (
 	"time"
 
 	"candy/game/direction"
-
-	"github.com/teamyapp/ui/graphics"
-	"github.com/teamyapp/ui/input"
+	"candy/graphics"
+	"candy/input"
 )
 
 var _ state = (*trappedState)(nil)
