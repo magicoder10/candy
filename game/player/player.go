@@ -82,6 +82,14 @@ func (p Player) GetHeight() int {
 	return p.state.getHeight()
 }
 
+func (p Player) GetCurCandyAmount() int {
+	return p.state.getCurCandyAmount()
+}
+
+func (p Player) GetMaxCandyAmount() int {
+	return p.state.getMaxCandyAmount()
+}
+
 func (p Player) IsNormal() bool {
 	return p.state.isNormal()
 }
@@ -99,8 +107,16 @@ func (p *Player) IncreasePowerLevel(amountIncrease int) {
 	p.state.increasePowerLevel(amountIncrease)
 }
 
-func (p *Player) IncreaseStepSize(amountIncrease int) {
+func (p Player) IncreaseStepSize(amountIncrease int) {
 	p.state.increaseStepSize(amountIncrease)
+}
+
+func (p *Player) IncrementCurCandyAmount() {
+	p.state.incrementCurCandyAmount()
+}
+
+func (p *Player) DecrementCurCandyAmount() {
+	p.state.decrementCurCandyAmount()
 }
 
 func NewPlayer(

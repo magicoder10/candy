@@ -66,7 +66,10 @@ func (g Game) HandleInput(in input.Input) {
 
 func (g Game) dropCandy(payload pubsub.OnDropCandyPayload) {
 	playerCell := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
-	g.gameMap.AddCandy(playerCell, candy.NewBuilder(payload.PowerLevel))
+	if g.getPlayerCurCandyAmount() > 0 {
+		g.gameMap.AddCandy(playerCell, candy.NewBuilder(payload.PowerLevel))
+		g.decrementCurCandyAmount()
+	}
 }
 
 func (g Game) Update(timeElapsed time.Duration) {
@@ -89,6 +92,10 @@ func (g *Game) onCandyExploding(cell cell.Cell) {
 		if ply.IsNormal() && playerCell == cell {
 			ply.Trapped()
 		}
+	}
+	// TODO: need to move maxCandyAmount to pubsub
+	if g.getPlayerCurCandyAmount() < g.getPlayerMaxCandyAmount() {
+		g.incrementCurCandyAmount()
 	}
 }
 
@@ -118,6 +125,22 @@ func (g Game) increasePlayerPower(amountIncrease int) {
 
 func (g Game) increaseStepSize(amountIncrease int) {
 	g.players[g.currPlayerIndex].IncreaseStepSize(amountIncrease)
+}
+
+func (g Game) getPlayerCurCandyAmount() int {
+	return g.players[g.currPlayerIndex].GetCurCandyAmount()
+}
+
+func (g Game) getPlayerMaxCandyAmount() int {
+	return g.players[g.currPlayerIndex].GetMaxCandyAmount()
+}
+
+func (g Game) incrementCurCandyAmount() {
+	g.players[g.currPlayerIndex].IncrementCurCandyAmount()
+}
+
+func (g Game) decrementCurCandyAmount() {
+	g.players[g.currPlayerIndex].DecrementCurCandyAmount()
 }
 
 func NewGame(

@@ -11,11 +11,12 @@ const (
 )
 
 type OnDropCandyPayload struct {
-	X          int
-	Y          int
-	Width      int
-	Height     int
-	PowerLevel int
+	X              int
+	Y              int
+	Width          int
+	Height         int
+	PowerLevel     int
+	MaxCandyAmount int
 }
 
 type OnPlayerWalkingPayload struct {
