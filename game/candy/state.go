@@ -5,8 +5,7 @@ import (
 	"time"
 
 	"candy/game/cell"
-
-	"github.com/teamyapp/ui/graphics"
+	"candy/graphics"
 )
 
 type state interface {

@@ -3,13 +3,12 @@ package screen
 import (
 	"time"
 
+	"candy/assets"
+	"candy/audio"
+	"candy/graphics"
+	"candy/input"
+	"candy/observability"
 	"candy/view"
-
-	"github.com/teamyapp/ui/assets"
-	"github.com/teamyapp/ui/audio"
-	"github.com/teamyapp/ui/graphics"
-	"github.com/teamyapp/ui/input"
-	"github.com/teamyapp/ui/observability"
 )
 
 var _ view.View = (*SignIn)(nil)

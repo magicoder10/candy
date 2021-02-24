@@ -3,7 +3,7 @@ package player
 import (
 	"time"
 
-	"github.com/teamyapp/ui/graphics"
+	"candy/graphics"
 )
 
 var JellyImageDuration = (180 * time.Millisecond).Nanoseconds()

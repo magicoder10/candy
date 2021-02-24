@@ -7,8 +7,7 @@ import (
 	"candy/game/cell"
 	"candy/game/direction"
 	"candy/game/square"
-
-	"github.com/teamyapp/ui/graphics"
+	"candy/graphics"
 )
 
 const explodingTimeShort = 250 * time.Millisecond

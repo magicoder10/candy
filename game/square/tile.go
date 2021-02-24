@@ -2,8 +2,7 @@ package square
 
 import (
 	"candy/game/gameitem"
-
-	"github.com/teamyapp/ui/graphics"
+	"candy/graphics"
 )
 
 const revealItemXOffset = 16
