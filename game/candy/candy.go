@@ -1,6 +1,7 @@
 package candy
 
 import (
+	"candy/pubsub"
 	"errors"
 	"time"
 
@@ -69,14 +70,19 @@ func (c Candy) CellsHit() []cell.Cell {
 	return c.state.cellsHit()
 }
 
-func newCandy(powerLevel int, center cell.Cell, rangeCutter RangeCutter) Candy {
-	return Candy{state: newMeltingState(powerLevel, center, rangeCutter)}
+func newCandy(
+	droppedBy int, powerLevel int, center cell.Cell,
+	rangeCutter RangeCutter, pubSub *pubsub.PubSub,
+) Candy {
+	return Candy{state: newMeltingState(droppedBy, powerLevel, center, rangeCutter, pubSub)}
 }
 
 type Builder struct {
+	droppedBy   int
 	powerLevel  int
 	center      *cell.Cell
 	rangeCutter RangeCutter
+	pubSub      *pubsub.PubSub
 }
 
 func (b *Builder) Center(center cell.Cell) *Builder {
@@ -93,9 +99,14 @@ func (b *Builder) Build() (Candy, error) {
 	if b.center == nil {
 		return Candy{}, errors.New("center cannot be empty")
 	}
-	return newCandy(b.powerLevel, *b.center, b.rangeCutter), nil
+	return newCandy(b.droppedBy, b.powerLevel, *b.center, b.rangeCutter, b.pubSub), nil
 }
 
-func NewBuilder(powerLevel int) Builder {
-	return Builder{powerLevel: powerLevel, rangeCutter: noChange{}}
+func NewBuilder(powerLevel int, droppedBy int, pubSub *pubsub.PubSub) Builder {
+	return Builder{
+		droppedBy:   droppedBy,
+		powerLevel:  powerLevel,
+		rangeCutter: noChange{},
+		pubSub:      pubSub,
+	}
 }

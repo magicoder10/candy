@@ -111,12 +111,8 @@ func (p Player) IncreaseStepSize(amountIncrease int) {
 	p.state.increaseStepSize(amountIncrease)
 }
 
-func (p *Player) IncrementCurCandyAmount() {
-	p.state.incrementCurCandyAmount()
-}
-
-func (p *Player) DecrementCurCandyAmount() {
-	p.state.decrementCurCandyAmount()
+func (p *Player) IncrementCandyAvailable() {
+	p.state.incrementCandyAvailable()
 }
 
 func NewPlayer(

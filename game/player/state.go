@@ -24,8 +24,7 @@ type state interface {
 	getMaxCandyAmount() int
 	increasePowerLevel(amountIncrease int)
 	increaseStepSize(amountIncrease int)
-	incrementCurCandyAmount() // after a candy explodes, curCandyAmount should increase by 1, means player can drop one more candy
-	decrementCurCandyAmount() // after a candy is exploded, curCandyAmount should decrease by 1
+	incrementCandyAvailable()
 	isNormal() bool
 }
 
@@ -40,8 +39,8 @@ type sharedState struct {
 	regionOffset   regionOffset
 	powerLevel     int
 	stepSize       int
-	curCandyAmount int
-	maxCandyAmount int
+	candyAvailable int
+	candyLimit     int
 	character      character
 	pubSub         *pubsub.PubSub
 }
@@ -83,11 +82,11 @@ func (s sharedState) getHeight() int {
 }
 
 func (s sharedState) getCurCandyAmount() int {
-	return s.curCandyAmount
+	return s.candyAvailable
 }
 
 func (s sharedState) getMaxCandyAmount() int {
-	return s.maxCandyAmount
+	return s.candyLimit
 }
 
 func (s *sharedState) increasePowerLevel(amountIncrease int) {
@@ -98,22 +97,22 @@ func (s *sharedState) increaseStepSize(amountIncrease int) {
 	s.stepSize += amountIncrease
 }
 
-func (s *sharedState) incrementCurCandyAmount() {
-	s.curCandyAmount++
+func (s *sharedState) incrementCandyAvailable() {
+	if s.candyAvailable < s.candyLimit {
+		s.candyAvailable++
+	}
 }
 
-func (s *sharedState) decrementCurCandyAmount() {
-	s.curCandyAmount--
-}
-
-func (s sharedState) dropCandy() {
+func (s *sharedState) dropCandy() {
+	if s.candyAvailable == 0 {
+		return
+	}
+	s.candyAvailable--
 	s.pubSub.Publish(pubsub.OnDropCandy, pubsub.OnDropCandyPayload{
-		X:              s.x,
-		Y:              s.y,
-		Width:          s.playerWidth,
-		Height:         s.playerHeight,
-		PowerLevel:     s.powerLevel,
-		MaxCandyAmount: s.maxCandyAmount,
-		//		CandyCurAmount: s.candyCurAmount,
+		X:          s.x,
+		Y:          s.y,
+		Width:      s.playerWidth,
+		Height:     s.playerHeight,
+		PowerLevel: s.powerLevel,
 	})
 }

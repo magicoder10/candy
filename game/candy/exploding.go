@@ -1,6 +1,7 @@
 package candy
 
 import (
+	"candy/pubsub"
 	"time"
 
 	"candy/game/cell"
@@ -128,6 +129,9 @@ func (e explodingState) hitRanges(processRange func(dir explodeDirection, currRa
 }
 
 func newExplodingState(sharedState sharedState) *explodingState {
+	defer func() {
+		sharedState.pubSub.Publish(pubsub.OnCandyStartExploding, sharedState.droppedBy)
+	}()
 	explodingTime := getExplodingTime(sharedState.powerLevel)
 	sharedState.remainingTime = explodingTime + animationDelay
 	return &explodingState{
