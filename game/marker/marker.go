@@ -3,7 +3,7 @@ package marker
 import (
 	"time"
 
-	"github.com/teamyapp/ui/graphics"
+	"candy/graphics"
 )
 
 const YOffset = 5

@@ -2,8 +2,7 @@ package player
 
 import (
 	"candy/game/direction"
-
-	"github.com/teamyapp/ui/graphics"
+	"candy/graphics"
 )
 
 func draw(
