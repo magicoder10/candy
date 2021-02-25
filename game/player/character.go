@@ -1,9 +1,10 @@
 package player
 
 type character struct {
-	walkCycleOffset walkCycleOffset
-	initialPower    int
-	initialStepSize int
+	walkCycleOffset   walkCycleOffset
+	initialPower      int
+	initialStepSize   int
+	initialCandyLimit int
 }
 
 var BlackBoy = character{
@@ -11,8 +12,9 @@ var BlackBoy = character{
 		x: 0,
 		y: spriteColHeight,
 	},
-	initialStepSize: 4,
-	initialPower:    1,
+	initialStepSize:   4,
+	initialPower:      1,
+	initialCandyLimit: 2,
 }
 
 var BlackGirl = character{
@@ -20,8 +22,9 @@ var BlackGirl = character{
 		x: 0,
 		y: 0,
 	},
-	initialStepSize: 4,
-	initialPower:    1,
+	initialStepSize:   4,
+	initialPower:      1,
+	initialCandyLimit: 3,
 }
 
 var BrownBoy = character{
@@ -29,8 +32,9 @@ var BrownBoy = character{
 		x: spriteRowWidth,
 		y: spriteColHeight,
 	},
-	initialStepSize: 6,
-	initialPower:    1,
+	initialStepSize:   6,
+	initialPower:      1,
+	initialCandyLimit: 2,
 }
 
 var BrownGirl = character{
@@ -38,8 +42,9 @@ var BrownGirl = character{
 		x: spriteRowWidth,
 		y: 0,
 	},
-	initialStepSize: 6,
-	initialPower:    1,
+	initialStepSize:   6,
+	initialPower:      1,
+	initialCandyLimit: 2,
 }
 
 var YellowBoy = character{
@@ -47,8 +52,9 @@ var YellowBoy = character{
 		x: spriteRowWidth * 2,
 		y: spriteColHeight,
 	},
-	initialStepSize: 6,
-	initialPower:    1,
+	initialStepSize:   6,
+	initialPower:      1,
+	initialCandyLimit: 2,
 }
 
 var YellowGirl = character{
@@ -56,8 +62,9 @@ var YellowGirl = character{
 		x: spriteRowWidth * 2,
 		y: 0,
 	},
-	initialStepSize: 6,
-	initialPower:    1,
+	initialStepSize:   6,
+	initialPower:      1,
+	initialCandyLimit: 2,
 }
 
 var OrangeBoy = character{
@@ -65,8 +72,9 @@ var OrangeBoy = character{
 		x: spriteRowWidth * 3,
 		y: spriteColHeight,
 	},
-	initialStepSize: 6,
-	initialPower:    1,
+	initialStepSize:   6,
+	initialPower:      1,
+	initialCandyLimit: 2,
 }
 
 var OrangeGirl = character{
@@ -74,6 +82,7 @@ var OrangeGirl = character{
 		x: spriteRowWidth * 3,
 		y: 0,
 	},
-	initialStepSize: 6,
-	initialPower:    1,
+	initialStepSize:   6,
+	initialPower:      1,
+	initialCandyLimit: 2,
 }

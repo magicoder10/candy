@@ -1,6 +1,7 @@
 package candy
 
 import (
+	"candy/pubsub"
 	"time"
 
 	"candy/game/cell"
@@ -17,12 +18,14 @@ type state interface {
 }
 
 type sharedState struct {
+	droppedBy     int
 	center        cell.Cell
 	powerLevel    int
 	remainingTime time.Duration
 	lag           int64
 	shouldExplode bool
 	rangeCutter   RangeCutter
+	pubSub        *pubsub.PubSub
 }
 
 func (s *sharedState) explode() {
