@@ -16,9 +16,7 @@ func newApp(assets *assets.Assets) *app {
 	return &app{ui.NewBox([]ui.Component{
 		ui.NewButton(
 			&ui.ButtonProps{Text: ptr.String("Click")},
-			&ui.Style{
-				Width: ptr.Int(100),
-			},
+			nil,
 		),
 		ui.NewText(&ui.TextProps{Text: `
 I guess we could discuss the implications of the phrase "meant to be."
