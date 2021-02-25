@@ -81,14 +81,6 @@ func (p Player) GetHeight() int {
 	return p.state.getHeight()
 }
 
-func (p Player) GetCurCandyAmount() int {
-	return p.state.getCurCandyAmount()
-}
-
-func (p Player) GetMaxCandyAmount() int {
-	return p.state.getMaxCandyAmount()
-}
-
 func (p Player) IsNormal() bool {
 	return p.state.isNormal()
 }
