@@ -46,18 +46,20 @@ func newStandingStateOnSquare(
 ) standingState {
 	return standingState{
 		&sharedState{
-			moveChecker:  moveChecker,
-			currStep:     1,
-			direction:    direction.Down,
-			playerWidth:  playerWidth,
-			playerHeight: playerHeight,
-			x:            gridX + col*square.Width,
-			y:            gridY + row*square.Width,
-			regionOffset: regionOffset,
-			powerLevel:   character.initialPower,
-			stepSize:     character.initialStepSize,
-			character:    character,
-			pubSub:       pubSub,
+			moveChecker:    moveChecker,
+			currStep:       1,
+			direction:      direction.Down,
+			playerWidth:    playerWidth,
+			playerHeight:   playerHeight,
+			x:              gridX + col*square.Width,
+			y:              gridY + row*square.Width,
+			regionOffset:   regionOffset,
+			powerLevel:     character.initialPower,
+			stepSize:       character.initialStepSize,
+			candyLimit:     character.initialCandyLimit,
+			availableCandy: character.initialCandyLimit,
+			character:      character,
+			pubSub:         pubSub,
 		},
 	}
 }

@@ -1,6 +1,7 @@
 package candy
 
 import (
+	"candy/pubsub"
 	"time"
 
 	"candy/game/cell"
@@ -46,13 +47,18 @@ func (m meltingState) draw(batch graphics.Batch, x int, y int, z int) {
 	batch.DrawSprite(x, y, z, bound, 1)
 }
 
-func newMeltingState(powerLevel int, center cell.Cell, rangeCutter RangeCutter) *meltingState {
+func newMeltingState(
+	droppedBy int, powerLevel int, center cell.Cell,
+	rangeCutter RangeCutter, pubSub *pubsub.PubSub,
+) *meltingState {
 	return &meltingState{
 		sharedState: sharedState{
+			droppedBy:     droppedBy,
 			center:        center,
 			powerLevel:    powerLevel,
 			remainingTime: meltingTime,
 			rangeCutter:   rangeCutter,
+			pubSub:        pubSub,
 		},
 	}
 }

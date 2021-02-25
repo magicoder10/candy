@@ -4,6 +4,7 @@ type topic int
 
 const (
 	OnCandyExploding topic = iota
+	OnCandyStartExploding
 	OnPlayerWalking
 	IncreasePlayerPower
 	IncreasePlayerSpeed

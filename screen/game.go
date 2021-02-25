@@ -65,7 +65,7 @@ func (g Game) HandleInput(in input.Input) {
 
 func (g Game) dropCandy(payload pubsub.OnDropCandyPayload) {
 	playerCell := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
-	g.gameMap.AddCandy(playerCell, candy.NewBuilder(payload.PowerLevel))
+	g.gameMap.AddCandy(playerCell, candy.NewBuilder(payload.PowerLevel, g.currPlayerIndex, g.pubSub))
 }
 
 func (g Game) Update(timeElapsed time.Duration) {
@@ -117,6 +117,10 @@ func (g Game) increasePlayerPower(amountIncrease int) {
 
 func (g Game) increaseStepSize(amountIncrease int) {
 	g.players[g.currPlayerIndex].IncreaseStepSize(amountIncrease)
+}
+
+func (g Game) incrementAvailableCandy(playerID int) {
+	g.players[playerID].IncrementAvailableCandy()
 }
 
 func NewGame(
@@ -172,6 +176,11 @@ func NewGame(
 	pubSub.Subscribe(pubsub.IncreasePlayerSpeed, func(payload interface{}) {
 		stepSizeDelta := payload.(int)
 		gm.increaseStepSize(stepSizeDelta)
+	})
+	pubSub.Subscribe(pubsub.OnCandyStartExploding, func(payload interface{}) {
+		playerID := payload.(int)
+		gm.incrementAvailableCandy(playerID)
+
 	})
 	return &gm
 }

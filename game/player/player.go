@@ -98,8 +98,12 @@ func (p *Player) IncreasePowerLevel(amountIncrease int) {
 	p.state.increasePowerLevel(amountIncrease)
 }
 
-func (p *Player) IncreaseStepSize(amountIncrease int) {
+func (p Player) IncreaseStepSize(amountIncrease int) {
 	p.state.increaseStepSize(amountIncrease)
+}
+
+func (p *Player) IncrementAvailableCandy() {
+	p.state.incrementAvailableCandy()
 }
 
 func NewPlayer(
