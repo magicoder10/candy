@@ -6,6 +6,7 @@ import (
 	"image/draw"
 	"time"
 
+	"candy/assets"
 	"candy/graphics"
 	"candy/input"
 	"candy/observability"
@@ -20,8 +21,8 @@ type RenderEngine struct {
 	rootComponent   Component
 	rootConstraints Constraints
 	compositeLayer  draw.Image
-	hasUpdate       bool
 	batch           graphics.Batch
+	updateDeps      *UpdateDeps
 }
 
 func (r *RenderEngine) Render(component Component) {
@@ -37,7 +38,7 @@ func (r *RenderEngine) Update(timeElapsed time.Duration) {
 	if r.rootComponent == nil {
 		return
 	}
-	r.rootComponent.Update(timeElapsed)
+	r.rootComponent.Update(timeElapsed, r.updateDeps)
 }
 
 func (r *RenderEngine) HandleInput(in input.Input) {
@@ -48,7 +49,10 @@ func (r *RenderEngine) HandleInput(in input.Input) {
 }
 
 func (r *RenderEngine) render() {
-	if !r.hasUpdate {
+	if r.rootComponent == nil {
+		return
+	}
+	if !r.rootComponent.HasChanged() {
 		return
 	}
 
@@ -63,7 +67,8 @@ func (r *RenderEngine) render() {
 	r.rootComponent.Paint(r.painter, r.compositeLayer, Offset{})
 
 	r.batch = r.graphics.StartNewBatch(r.compositeLayer)
-	r.hasUpdate = false
+
+	r.rootComponent.ResetChangeDetection()
 }
 
 func (r *RenderEngine) draw() {
@@ -82,15 +87,19 @@ func (r RenderEngine) generateLayout(component Component) {
 }
 
 func NewRenderEngine(
+	rootConstraints Constraints,
 	logger *observability.Logger,
 	g graphics.Graphics,
-	rootConstraints Constraints,
+	assets *assets.Assets,
 ) *RenderEngine {
 	return &RenderEngine{
 		logger:          logger,
 		graphics:        g,
 		painter:         &Painter{},
 		rootConstraints: rootConstraints,
-		hasUpdate:       true,
+		updateDeps: &UpdateDeps{
+			assets: assets,
+			fonts:  NewFonts(),
+		},
 	}
 }

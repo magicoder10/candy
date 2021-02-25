@@ -25,8 +25,8 @@ func main() {
 	logger := observability.NewLogger(observability.Debug)
 	rootConstraint := ui.NewScreenConstraint(screenWidth, screenHeight)
 
-	renderEngine := ui.NewRenderEngine(&logger, &eb, rootConstraint)
-	renderEngine.Render(newApp(&ass))
+	renderEngine := ui.NewRenderEngine(rootConstraint, &logger, &eb, &ass)
+	renderEngine.Render(newApp())
 
 	g := graphics.NewEbitenWindow(graphics.WindowConfig{
 		Width:  screenWidth,

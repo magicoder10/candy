@@ -3,8 +3,7 @@ package ui
 import (
 	"image"
 	"image/draw"
-
-	"candy/assets"
+	"time"
 )
 
 type ImageProps struct {
@@ -15,9 +14,9 @@ var _ Component = (*Image)(nil)
 
 type Image struct {
 	SharedComponent
-	props  ImageProps
-	assets *assets.Assets
-	image  image.Image
+	props         ImageProps
+	prevImagePath string
+	image         image.Image
 }
 
 func (i *Image) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
@@ -59,24 +58,34 @@ func (i Image) ComputeLeafSize(_ Constraints) Size {
 	}
 }
 
-func NewImage(assets *assets.Assets, props *ImageProps, style *Style) *Image {
+func (i *Image) Update(timeElapsed time.Duration, deps *UpdateDeps) {
+	i.SharedComponent.Update(timeElapsed, deps)
+
+	if i.props.ImagePath != i.prevImagePath {
+		if len(i.props.ImagePath) > 0 {
+			i.image = deps.assets.GetImage(i.props.ImagePath)
+		}
+		i.hasChanged = true
+		i.prevImagePath = i.props.ImagePath
+	}
+
+	if i.style.hasChanged {
+		i.hasChanged = true
+	}
+}
+
+func NewImage(props *ImageProps, style *Style) *Image {
 	if props == nil {
 		props = &ImageProps{}
 	}
 	if style == nil {
 		style = &Style{}
 	}
-	var img image.Image = nil
-	if len(props.ImagePath) > 0 {
-		img = assets.GetImage(props.ImagePath)
-	}
 	return &Image{
-		props:  *props,
-		assets: assets,
-		image:  img,
+		props: *props,
 		SharedComponent: SharedComponent{
 			name:  "Image",
-			style: *style,
+			style: style,
 		},
 	}
 }

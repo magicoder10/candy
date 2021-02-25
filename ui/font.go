@@ -9,6 +9,37 @@ import (
 	"golang.org/x/image/font"
 )
 
+type Fonts struct {
+	fontFinder *sysfont.Finder
+	families   map[string]*fontFamily
+}
+
+func (f *Fonts) getFamily(familyName string) *fontFamily {
+	f.loadFont(familyName)
+	matchedFont := f.fontFinder.Match(familyName)
+	return f.families[matchedFont.Family]
+}
+
+func (f *Fonts) loadFont(familyName string) {
+	matchedFont := f.fontFinder.Match(familyName)
+	if _, ok := f.families[matchedFont.Family]; ok {
+		return
+	}
+	ff, err := newFontFamily(f.fontFinder, matchedFont.Family)
+	if err != nil {
+		return
+	}
+	f.families[matchedFont.Family] = &ff
+}
+
+func NewFonts() *Fonts {
+	finder := sysfont.NewFinder(nil)
+	return &Fonts{
+		fontFinder: finder,
+		families:   make(map[string]*fontFamily, 0),
+	}
+}
+
 type fontFamily struct {
 	dpi        int
 	fontFinder *sysfont.Finder
@@ -21,14 +52,14 @@ type fontStyle struct {
 	italic bool
 }
 
-func (f fontFamily) face(style fontStyle, fontSize int) (*truetype.Font, fontFace, error) {
+func (f fontFamily) face(style fontStyle, fontSize int) (*truetype.Font, *fontFace, error) {
 	ft, err := f.getFont(style)
 	if err != nil {
-		return nil, fontFace{}, err
+		return nil, nil, err
 	}
 	options := truetype.Options{Size: float64(fontSize), DPI: float64(f.dpi)}
 	face := truetype.NewFace(ft, &options)
-	return ft, fontFace{fontFace: face}, nil
+	return ft, &fontFace{fontFace: face}, nil
 }
 
 func (f fontFamily) getFont(style fontStyle) (*truetype.Font, error) {
@@ -43,18 +74,14 @@ func (f fontFamily) getQuery(style fontStyle) string {
 	return f.fontFamily + style.toString()
 }
 
-func findFontFamily(fontFinder *sysfont.Finder, fontFamily string) (string, []*sysfont.Font) {
-	matchedFont := fontFinder.Match(fontFamily)
-	if matchedFont == nil {
-		return "", []*sysfont.Font{}
-	}
+func findFontFamily(fontFinder *sysfont.Finder, family string) (string, []*sysfont.Font) {
 	fonts := make([]*sysfont.Font, 0)
 	for _, fontInstalled := range fontFinder.List() {
-		if matchedFont.Family == fontInstalled.Family {
+		if family == fontInstalled.Family {
 			fonts = append(fonts, fontInstalled)
 		}
 	}
-	return matchedFont.Family, fonts
+	return family, fonts
 }
 
 func loadFonts(fonts []*sysfont.Font) (map[sysfont.Font]*truetype.Font, error) {
@@ -73,11 +100,10 @@ func loadFonts(fonts []*sysfont.Font) (map[sysfont.Font]*truetype.Font, error) {
 	return parsedFonts, nil
 }
 
-func newFontFamily(fontFamilyName string) (fontFamily, error) {
-	finder := sysfont.NewFinder(nil)
-	familyName, fontsInFamily := findFontFamily(finder, fontFamilyName)
+func newFontFamily(fontFinder *sysfont.Finder, family string) (fontFamily, error) {
+	familyName, fontsInFamily := findFontFamily(fontFinder, family)
 	if len(fontsInFamily) < 1 {
-		return fontFamily{}, fmt.Errorf("font family not found: %s", fontFamilyName)
+		return fontFamily{}, fmt.Errorf("font family not found: %s", family)
 	}
 
 	fonts, err := loadFonts(fontsInFamily)
@@ -87,7 +113,7 @@ func newFontFamily(fontFamilyName string) (fontFamily, error) {
 	return fontFamily{
 		dpi:        72,
 		fontFamily: familyName,
-		fontFinder: finder,
+		fontFinder: fontFinder,
 		fonts:      fonts,
 	}, nil
 }
