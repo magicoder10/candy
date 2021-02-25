@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 
-	"candy/assets"
 	"candy/ui"
 	"candy/ui/ptr"
 )
@@ -14,7 +13,7 @@ type app struct {
 	*ui.Box
 }
 
-func newApp(assets *assets.Assets) *app {
+func newApp() *app {
 	return &app{ui.NewBox(
 		&ui.BoxProps{OnClick: func() {
 			fmt.Println("Box clicked")
@@ -37,7 +36,7 @@ determination that "meant to be" is exactly as meaningless a phrase as it
 seems to be, and that none of us is actually meant to be doing anything at all. 
 But that's my existential underpants underpinnings showing. It's the way the 
 cookie crumbles. And now I want a cookie.
-`}, &ui.Style{FontStyle: ui.FontStyle{
+`}, &ui.Style{FontStyle: &ui.FontStyle{
 				Family:     ptr.String("Source Code Pro"),
 				Weight:     ptr.String("ExtraLight"),
 				Italic:     ptr.Bool(false),
@@ -49,9 +48,9 @@ cookie crumbles. And now I want a cookie.
 					Blue:  255,
 					Alpha: 255,
 				}}}),
-			ui.NewImage(assets, &ui.ImageProps{ImagePath: "test/image3.png"}, nil),
-			ui.NewImage(assets, &ui.ImageProps{ImagePath: "test/image1.jpg"}, nil),
-			ui.NewImage(assets, &ui.ImageProps{ImagePath: "test/image2.jpg"}, nil),
+			ui.NewImage(&ui.ImageProps{ImagePath: "test/image3.png"}, nil),
+			ui.NewImage(&ui.ImageProps{ImagePath: "test/image1.jpg"}, nil),
+			ui.NewImage(&ui.ImageProps{ImagePath: "test/image2.jpg"}, nil),
 		},
 		nil)}
 }

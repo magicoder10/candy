@@ -5,14 +5,20 @@ import (
 	"image/draw"
 	"time"
 
+	"candy/assets"
 	"candy/input"
 )
+
+type UpdateDeps struct {
+	assets *assets.Assets
+	fonts  *Fonts
+}
 
 type Component interface {
 	GetName() string
 	HandleInput(in input.Input)
 	handleInput(in input.Input, offset Offset)
-	Update(timeElapsed time.Duration)
+	Update(timeElapsed time.Duration, deps *UpdateDeps)
 	getLayout() layout
 	getChildren() []Component
 	ComputeLeafSize(constraints Constraints) Size
@@ -21,6 +27,8 @@ type Component interface {
 	getStyle() Style
 	getChildrenOffset() []Offset
 	setChildrenOffset(childrenOffsets []Offset)
+	HasChanged() bool
+	ResetChangeDetection()
 	Paint(painter *Painter, destLayer draw.Image, offset Offset)
 }
 
@@ -38,11 +46,12 @@ type Offset struct {
 type SharedComponent struct {
 	name           string
 	layout         layout
-	style          Style
+	style          *Style
 	size           Size
 	childrenOffset []Offset
 	children       []Component
 	events         Events
+	hasChanged     bool
 }
 
 func (s *SharedComponent) HandleInput(in input.Input) {
@@ -74,10 +83,34 @@ func (s *SharedComponent) BoundingBox(offset Offset) image.Rectangle {
 	return image.Rect(offset.x, offset.y, offset.x+s.size.width, offset.y+s.size.height)
 }
 
-func (s SharedComponent) Update(timeElapsed time.Duration) {
+func (s *SharedComponent) Update(timeElapsed time.Duration, deps *UpdateDeps) {
 	for _, child := range s.children {
-		child.Update(timeElapsed)
+		child.Update(timeElapsed, deps)
+		if child.HasChanged() {
+			s.hasChanged = true
+		}
 	}
+	if s.style != nil {
+		s.style.Update(deps)
+		if s.style.hasChanged {
+			s.hasChanged = true
+		}
+	}
+}
+
+func (s SharedComponent) HasChanged() bool {
+	return s.hasChanged
+}
+
+func (s *SharedComponent) ResetChangeDetection() {
+	for _, child := range s.children {
+		child.ResetChangeDetection()
+	}
+
+	if s.style != nil {
+		s.style.ResetChangeDetection()
+	}
+	s.hasChanged = false
 }
 
 func (s SharedComponent) GetName() string {
@@ -105,7 +138,10 @@ func (s *SharedComponent) setSize(size Size) {
 }
 
 func (s SharedComponent) getStyle() Style {
-	return s.style
+	if s.style == nil {
+		return Style{}
+	}
+	return *s.style
 }
 
 func (s *SharedComponent) setChildrenOffset(childrenOffsets []Offset) {

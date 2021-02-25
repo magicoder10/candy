@@ -23,6 +23,10 @@ func (b Box) GetName() string {
 }
 
 func (b Box) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
+	if !b.hasChanged {
+		return
+	}
+
 	contentLayer := image.NewRGBA(image.Rectangle{
 		Max: image.Point{
 			X: b.size.width,
@@ -88,7 +92,7 @@ func NewBox(pros *BoxProps, children []Component, style *Style) *Box {
 		SharedComponent: SharedComponent{
 			name:           "Box",
 			layout:         newLayout(*style.LayoutType),
-			style:          *style,
+			style:          style,
 			children:       children,
 			childrenOffset: []Offset{},
 			events:         Events{onClick: pros.OnClick},
