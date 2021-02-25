@@ -63,9 +63,9 @@ func (g Game) HandleInput(in input.Input) {
 	}
 }
 
-func (g Game) dropCandy(payload pubsub.OnDropCandyPayload, pubSub *pubsub.PubSub) {
+func (g Game) dropCandy(payload pubsub.OnDropCandyPayload) {
 	playerCell := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
-	g.gameMap.AddCandy(playerCell, candy.NewBuilder(payload.PowerLevel, g.currPlayerIndex, pubSub))
+	g.gameMap.AddCandy(playerCell, candy.NewBuilder(payload.PowerLevel, g.currPlayerIndex, g.pubSub))
 }
 
 func (g Game) Update(timeElapsed time.Duration) {
@@ -163,7 +163,7 @@ func NewGame(
 	})
 	pubSub.Subscribe(pubsub.OnDropCandy, func(payload interface{}) {
 		pl := payload.(pubsub.OnDropCandyPayload)
-		gm.dropCandy(pl, pubSub)
+		gm.dropCandy(pl)
 	})
 	pubSub.Subscribe(pubsub.OnPlayerWalking, func(payload interface{}) {
 		p := payload.(pubsub.OnPlayerWalkingPayload)
