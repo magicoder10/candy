@@ -18,12 +18,6 @@ func newApp(assets *assets.Assets) *app {
 			&ui.ButtonProps{Text: ptr.String("Click")},
 			&ui.Style{
 				Width: ptr.Int(100),
-				Margin: &ui.EdgeSpacing{
-					Top:    ptr.Int(10),
-					Bottom: ptr.Int(20),
-					Left:   ptr.Int(30),
-					Right:  ptr.Int(40),
-				},
 			},
 		),
 		ui.NewText(&ui.TextProps{Text: `
