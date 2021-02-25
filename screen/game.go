@@ -119,8 +119,8 @@ func (g Game) increaseStepSize(amountIncrease int) {
 	g.players[g.currPlayerIndex].IncreaseStepSize(amountIncrease)
 }
 
-func (g Game) incrementAvailableCandy() {
-	g.players[g.currPlayerIndex].IncrementAvailableCandy()
+func (g Game) incrementAvailableCandy(playerID int) {
+	g.players[playerID].IncrementAvailableCandy()
 }
 
 func NewGame(
@@ -178,7 +178,9 @@ func NewGame(
 		gm.increaseStepSize(stepSizeDelta)
 	})
 	pubSub.Subscribe(pubsub.OnCandyStartExploding, func(payload interface{}) {
-		gm.incrementAvailableCandy()
+		playerID := payload.(int)
+		gm.incrementAvailableCandy(playerID)
+
 	})
 	return &gm
 }
