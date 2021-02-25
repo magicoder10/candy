@@ -19,11 +19,9 @@ type state interface {
 	getY() int
 	getWidth() int
 	getHeight() int
-	getCurCandyAmount() int
-	getMaxCandyAmount() int
 	increasePowerLevel(amountIncrease int)
 	increaseStepSize(amountIncrease int)
-	incrementCandyAvailable()
+	incrementAvailableCandy()
 	isNormal() bool
 }
 
@@ -38,7 +36,7 @@ type sharedState struct {
 	regionOffset   regionOffset
 	powerLevel     int
 	stepSize       int
-	candyAvailable int
+	availableCandy int
 	candyLimit     int
 	character      character
 	pubSub         *pubsub.PubSub
@@ -80,14 +78,6 @@ func (s sharedState) getHeight() int {
 	return s.playerHeight
 }
 
-func (s sharedState) getCurCandyAmount() int {
-	return s.candyAvailable
-}
-
-func (s sharedState) getMaxCandyAmount() int {
-	return s.candyLimit
-}
-
 func (s *sharedState) increasePowerLevel(amountIncrease int) {
 	s.powerLevel += amountIncrease
 }
@@ -96,17 +86,17 @@ func (s *sharedState) increaseStepSize(amountIncrease int) {
 	s.stepSize += amountIncrease
 }
 
-func (s *sharedState) incrementCandyAvailable() {
-	if s.candyAvailable < s.candyLimit {
-		s.candyAvailable++
+func (s *sharedState) incrementAvailableCandy() {
+	if s.availableCandy < s.candyLimit {
+		s.availableCandy++
 	}
 }
 
 func (s *sharedState) dropCandy() {
-	if s.candyAvailable == 0 {
+	if s.availableCandy == 0 {
 		return
 	}
-	s.candyAvailable--
+	s.availableCandy--
 	s.pubSub.Publish(pubsub.OnDropCandy, pubsub.OnDropCandyPayload{
 		X:          s.x,
 		Y:          s.y,

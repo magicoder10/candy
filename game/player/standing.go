@@ -57,7 +57,7 @@ func newStandingStateOnSquare(
 			powerLevel:     character.initialPower,
 			stepSize:       character.initialStepSize,
 			candyLimit:     character.initialCandyLimit,
-			candyAvailable: character.initialCandyLimit,
+			availableCandy: character.initialCandyLimit,
 			character:      character,
 			pubSub:         pubSub,
 		},
