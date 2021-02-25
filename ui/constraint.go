@@ -21,7 +21,6 @@ func applyConstraints(component Component, constraints Constraints) {
 		component.setSize(component.ComputeLeafSize(constraints))
 		return
 	}
-
 	layout := component.getLayout()
 	layout.applyConstraintsToChildren(component, constraints)
 	component.setChildrenOffset(layout.computeChildrenOffset(component))

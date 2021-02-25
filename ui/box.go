@@ -4,16 +4,18 @@ import (
 	"image"
 	"image/draw"
 	"sort"
-)
 
-type BoxProps struct {
-}
+	"candy/ui/ptr"
+)
 
 var _ Component = (*Box)(nil)
 
 type Box struct {
 	SharedComponent
-	props BoxProps
+}
+
+func (b Box) GetName() string {
+	return "Box"
 }
 
 func (b Box) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
@@ -23,6 +25,9 @@ func (b Box) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 			Y: b.size.height,
 		},
 	})
+	if b.style.Background != nil {
+		b.style.Background.Paint(painter, contentLayer)
+	}
 
 	sortedChildren := Children{
 		children:       b.children,
@@ -45,33 +50,36 @@ func (b Box) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 }
 
 func (b Box) ComputeLeafSize(_ Constraints) Size {
+	padding := b.style.GetPadding()
+
 	width := 0
 	if b.style.Width != nil {
 		width = *b.style.Width
 	}
+	width += padding.GetLeft() + padding.GetRight()
 	height := 0
 	if b.style.Height != nil {
 		height = *b.style.Height
 	}
+	height += padding.GetTop() + padding.GetBottom()
 	return Size{width: width, height: height}
 }
 
-func NewBox(props *BoxProps, children []Component, style *Style) *Box {
-	if props == nil {
-		props = &BoxProps{}
-	}
+func NewBox(children []Component, style *Style) *Box {
 	if style == nil {
 		style = &Style{
-			LayoutType: BoxLayoutType,
+			LayoutType: (*LayoutType)(ptr.Int(int(BoxLayoutType))),
 		}
+	}
+	if style.LayoutType == nil {
+		style.LayoutType = (*LayoutType)(ptr.Int(int(BoxLayoutType)))
 	}
 	if children == nil {
 		children = make([]Component, 0)
 	}
 	return &Box{
-		props: *props,
 		SharedComponent: SharedComponent{
-			layout:         newLayout(style.LayoutType),
+			layout:         newLayout(*style.LayoutType),
 			style:          *style,
 			children:       children,
 			childrenOffset: []Offset{},

@@ -11,6 +11,7 @@ type BoxLayout struct {
 
 func (b BoxLayout) applyConstraintsToChildren(parent Component, parentConstraints Constraints) {
 	parentConstraints.maxHeight = math.MaxInt64
+	parentConstraints.minWidth = parentConstraints.maxWidth
 
 	for _, child := range parent.getChildren() {
 		applyConstraints(child, parentConstraints)
@@ -18,8 +19,10 @@ func (b BoxLayout) applyConstraintsToChildren(parent Component, parentConstraint
 }
 
 func (b BoxLayout) computeChildrenOffset(parent Component) []Offset {
-	nextX := 0
-	nextY := 0
+	padding := parent.getStyle().GetPadding()
+
+	nextX := padding.GetLeft()
+	nextY := padding.GetTop()
 
 	offsets := make([]Offset, 0)
 	for _, child := range parent.getChildren() {
