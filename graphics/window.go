@@ -1,6 +1,7 @@
 package graphics
 
 import (
+	"image"
 	"time"
 
 	"candy/input"
@@ -130,9 +131,11 @@ func (e EbitenWindow) pollEvents() []input.Input {
 		})
 	}
 	if inpututil.IsMouseButtonJustPressed(ebiten.MouseButtonLeft) {
+		x, y := ebiten.CursorPosition()
 		inputs = append(inputs, input.Input{
-			Action: input.SinglePress,
-			Device: input.MouseLeftButton,
+			Action:         input.SinglePress,
+			Device:         input.MouseLeftButton,
+			CursorPosition: image.Point{X: x, Y: y},
 		})
 	}
 	return inputs

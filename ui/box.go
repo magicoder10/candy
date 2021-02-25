@@ -8,6 +8,10 @@ import (
 	"candy/ui/ptr"
 )
 
+type BoxProps struct {
+	OnClick onClickHandler
+}
+
 var _ Component = (*Box)(nil)
 
 type Box struct {
@@ -65,7 +69,10 @@ func (b Box) ComputeLeafSize(_ Constraints) Size {
 	return Size{width: width, height: height}
 }
 
-func NewBox(children []Component, style *Style) *Box {
+func NewBox(pros *BoxProps, children []Component, style *Style) *Box {
+	if pros == nil {
+		pros = &BoxProps{}
+	}
 	if style == nil {
 		style = &Style{
 			LayoutType: (*LayoutType)(ptr.Int(int(BoxLayoutType))),
@@ -79,10 +86,12 @@ func NewBox(children []Component, style *Style) *Box {
 	}
 	return &Box{
 		SharedComponent: SharedComponent{
+			name:           "Box",
 			layout:         newLayout(*style.LayoutType),
 			style:          *style,
 			children:       children,
 			childrenOffset: []Offset{},
+			events:         Events{onClick: pros.OnClick},
 		}}
 }
 

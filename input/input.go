@@ -2,11 +2,13 @@ package input
 
 import (
 	"fmt"
+	"image"
 )
 
 type Input struct {
-	Action action
-	Device device
+	Action         action
+	Device         device
+	CursorPosition image.Point
 }
 
 func (in Input) String() string {

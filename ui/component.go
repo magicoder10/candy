@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"image"
 	"image/draw"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 type Component interface {
 	GetName() string
 	HandleInput(in input.Input)
+	handleInput(in input.Input, offset Offset)
 	Update(timeElapsed time.Duration)
 	getLayout() layout
 	getChildren() []Component
@@ -34,21 +36,52 @@ type Offset struct {
 }
 
 type SharedComponent struct {
+	name           string
 	layout         layout
 	style          Style
 	size           Size
 	childrenOffset []Offset
 	children       []Component
+	events         Events
 }
 
-func (s SharedComponent) HandleInput(_ input.Input) {
-	return
+func (s *SharedComponent) HandleInput(in input.Input) {
+	s.handleInput(in, Offset{
+		x: 0,
+		y: 0,
+		z: 0,
+	})
+}
+
+func (s *SharedComponent) handleInput(in input.Input, offset Offset) {
+	for index, child := range s.children {
+		child.handleInput(in, s.childrenOffset[index])
+	}
+
+	switch in.Action {
+	case input.SinglePress:
+		switch in.Device {
+		case input.MouseLeftButton:
+			rect := s.BoundingBox(offset)
+			if in.CursorPosition.In(rect) {
+				s.events.tryOnClick()
+			}
+		}
+	}
+}
+
+func (s *SharedComponent) BoundingBox(offset Offset) image.Rectangle {
+	return image.Rect(offset.x, offset.y, offset.x+s.size.width, offset.y+s.size.height)
 }
 
 func (s SharedComponent) Update(timeElapsed time.Duration) {
 	for _, child := range s.children {
 		child.Update(timeElapsed)
 	}
+}
+
+func (s SharedComponent) GetName() string {
+	return s.name
 }
 
 func (s SharedComponent) getChildren() []Component {

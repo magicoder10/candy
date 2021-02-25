@@ -20,10 +20,6 @@ type Image struct {
 	image  image.Image
 }
 
-func (i *Image) GetName() string {
-	return "Image"
-}
-
 func (i *Image) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 	if i.image == nil {
 		return
@@ -79,6 +75,7 @@ func NewImage(assets *assets.Assets, props *ImageProps, style *Style) *Image {
 		assets: assets,
 		image:  img,
 		SharedComponent: SharedComponent{
+			name:  "Image",
 			style: *style,
 		},
 	}
