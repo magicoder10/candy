@@ -10,12 +10,15 @@ type LayoutType int
 
 const (
 	BoxLayoutType LayoutType = iota
+	InlineLayoutType
 )
 
 func newLayout(layoutType LayoutType) layout {
 	switch layoutType {
 	case BoxLayoutType:
 		return BoxLayout{}
+	case InlineLayoutType:
+		return InlineLayout{}
 	}
 	return BoxLayout{}
 }
