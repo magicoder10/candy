@@ -26,20 +26,23 @@ func (Painter) drawImage(src image.Image, srcRect image.Rectangle, dest draw.Ima
 	draw.Draw(dest, destRect, src, srcRect.Min, draw.Over)
 }
 
+func (Painter) fillColor(destImg draw.Image, color Color) {
+	draw.Draw(destImg, destImg.Bounds(), color.toUniform(), image.Point{}, draw.Src)
+}
+
 func (Painter) drawString(
 	dest draw.Image, destPoint image.Point,
 	ft *truetype.Font, text string, fontSize int, color Color,
 ) {
 	// TODO: support anti-aliasing
-	c := freetype.NewContext()
-	c.SetDPI(72)
-	c.SetFont(ft)
-	c.SetFontSize(float64(fontSize))
-	c.SetClip(dest.Bounds())
-	c.SetDst(dest)
-	c.SetSrc(color.toUniform())
-	c.SetHinting(font.HintingFull)
-	pt := freetype.Pt(destPoint.X, destPoint.Y+c.PointToFixed(float64(fontSize)).Round())
+	options := truetype.Options{Size: float64(fontSize), DPI: float64(72)}
+	face := truetype.NewFace(ft, &options)
 
-	c.DrawString(text, pt)
+	drawer := font.Drawer{
+		Dst:  dest,
+		Src:  color.toUniform(),
+		Face: face,
+		Dot:  freetype.Pt(destPoint.X, destPoint.Y+fontSize),
+	}
+	drawer.DrawString(text)
 }

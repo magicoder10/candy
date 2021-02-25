@@ -8,6 +8,7 @@ import (
 )
 
 type Component interface {
+	GetName() string
 	HandleInput(in input.Input)
 	Update(timeElapsed time.Duration)
 	getLayout() layout
@@ -15,6 +16,7 @@ type Component interface {
 	ComputeLeafSize(constraints Constraints) Size
 	getSize() Size
 	setSize(size Size)
+	getStyle() Style
 	getChildrenOffset() []Offset
 	setChildrenOffset(childrenOffsets []Offset)
 	Paint(painter *Painter, destLayer draw.Image, offset Offset)
@@ -39,7 +41,7 @@ type SharedComponent struct {
 	children       []Component
 }
 
-func (s SharedComponent) HandleInput(in input.Input) {
+func (s SharedComponent) HandleInput(_ input.Input) {
 	return
 }
 
@@ -67,6 +69,10 @@ func (s SharedComponent) getLayout() layout {
 
 func (s *SharedComponent) setSize(size Size) {
 	s.size = size
+}
+
+func (s SharedComponent) getStyle() Style {
+	return s.style
 }
 
 func (s *SharedComponent) setChildrenOffset(childrenOffsets []Offset) {

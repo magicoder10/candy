@@ -8,17 +8,28 @@ import (
 type Style struct {
 	Width      *int
 	Height     *int
-	LayoutType LayoutType
+	LayoutType *LayoutType
 	FontStyle  FontStyle
+	Padding    *EdgeSpacing
+	Margin     *EdgeSpacing
+	Background *Background
+}
+
+func (s Style) GetPadding() EdgeSpacing {
+	if s.Padding == nil {
+		return EdgeSpacing{}
+	} else {
+		return *s.Padding
+	}
 }
 
 type FontStyle struct {
-	Family     string
-	Weight     string
-	Italic     bool
-	LineHeight int
-	Color      Color
-	Size       int
+	Family     *string
+	Weight     *string
+	Italic     *bool
+	LineHeight *int
+	Color      *Color
+	Size       *int
 }
 
 var _ color.Color = (*Color)(nil)

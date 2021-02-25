@@ -20,6 +20,10 @@ type Image struct {
 	image  image.Image
 }
 
+func (i *Image) GetName() string {
+	return "Image"
+}
+
 func (i *Image) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 	if i.image == nil {
 		return
