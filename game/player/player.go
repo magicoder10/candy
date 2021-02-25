@@ -102,8 +102,8 @@ func (p Player) IncreaseStepSize(amountIncrease int) {
 	p.state.increaseStepSize(amountIncrease)
 }
 
-func (p *Player) IncrementCandyAvailable() {
-	p.state.incrementCandyAvailable()
+func (p *Player) IncrementAvailableCandy() {
+	p.state.incrementAvailableCandy()
 }
 
 func NewPlayer(
