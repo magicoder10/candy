@@ -31,10 +31,6 @@ type Text struct {
 	shouldUpdate bool
 }
 
-func (t *Text) GetName() string {
-	return "Text"
-}
-
 func (t *Text) ComputeLeafSize(constraints Constraints) Size {
 	if len(t.props.Text) == 0 || t.fontFace == nil {
 		return Size{width: 0, height: 0}
@@ -169,6 +165,7 @@ func NewText(props *TextProps, style *Style) *Text {
 	return &Text{
 		shouldUpdate: true,
 		SharedComponent: SharedComponent{
+			name:  "Text",
 			style: *style,
 		},
 		props: *props,

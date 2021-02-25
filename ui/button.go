@@ -7,7 +7,8 @@ import (
 )
 
 type ButtonProps struct {
-	Text *string
+	Text    *string
+	OnClick onClickHandler
 }
 
 func (b ButtonProps) getText() string {
@@ -24,11 +25,7 @@ type Button struct {
 	SharedComponent
 }
 
-func (b Button) GetName() string {
-	return "Button"
-}
-
-func (b Button) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
+func (b *Button) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 	b.children[0].Paint(painter, destLayer, offset)
 }
 
@@ -62,11 +59,17 @@ func NewButton(props *ButtonProps, style *Style) *Button {
 	}
 	return &Button{
 		SharedComponent: SharedComponent{
+			name:   "Button",
 			layout: newLayout(InlineLayoutType),
 			children: []Component{
-				NewBox([]Component{
-					NewText(&TextProps{Text: props.getText()}, style),
-				}, style),
+				NewBox(
+					&BoxProps{
+						OnClick: props.OnClick,
+					}, []Component{
+						NewText(&TextProps{Text: props.getText()}, style),
+					},
+					style,
+				),
 			},
 			childrenOffset: make([]Offset, 0),
 		},
