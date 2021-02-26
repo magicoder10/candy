@@ -60,8 +60,8 @@ func NewSignIn(
 							},
 							Padding: &ui.EdgeSpacing{
 								All:    nil,
-								Top:    ptr.Int(8),
-								Bottom: ptr.Int(8),
+								Top:    ptr.Int(12),
+								Bottom: ptr.Int(12),
 							},
 							Width: ptr.Int(356),
 							Background: &ui.Background{
