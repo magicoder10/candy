@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-var _ layout = (*BoxLayout)(nil)
+var _ Layout = (*BoxLayout)(nil)
 
 type BoxLayout struct {
 }
@@ -13,36 +13,40 @@ func (b BoxLayout) applyConstraintsToChildren(parent Component, parentConstraint
 	parentConstraints.maxHeight = math.MaxInt64
 	parentConstraints.minWidth = parentConstraints.maxWidth
 
+	style := parent.getStyle()
+	if style.Width != nil {
+		parentConstraints.maxWidth = *style.Width
+	}
+	parent.setSize(Size{
+		width:  parentConstraints.maxWidth,
+		height: parentConstraints.maxHeight,
+	})
+
 	for _, child := range parent.getChildren() {
 		applyConstraints(child, parentConstraints)
 	}
 }
 
 func (b BoxLayout) computeChildrenOffset(parent Component) []Offset {
-	padding := parent.getStyle().GetPadding()
+	style := parent.getStyle()
+	padding := style.GetPadding()
 
-	nextX := padding.GetLeft()
+	aligner := style.GetAlignment()
 	nextY := padding.GetTop()
 
 	offsets := make([]Offset, 0)
 	for _, child := range parent.getChildren() {
-		offsets = append(offsets, Offset{
-			x: nextX,
+		nextY += child.getStyle().GetMargin().GetTop()
+		offset := Offset{
+			x: aligner.AlignHorizontal(parent, child),
 			y: nextY,
-		})
+		}
+		offsets = append(offsets, offset)
 		nextY += child.getSize().height
 	}
 	return offsets
 }
 
 func (b BoxLayout) computeParentSize(parent Component, parentConstraints Constraints) Size {
-	height := 0
-	children := parent.getChildren()
-	length := len(children)
-
-	if length > 0 {
-		childrenOffset := parent.getChildrenOffset()
-		height = childrenOffset[length-1].y + children[length-1].getSize().height
-	}
-	return Size{width: parentConstraints.maxWidth, height: height}
+	return Size{width: parentConstraints.maxWidth, height: getFullHeight(parent)}
 }

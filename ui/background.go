@@ -18,8 +18,15 @@ type Background struct {
 	hasChanged bool
 }
 
-func (b Background) Paint(painter *Painter, destLayer draw.Image) {
-	if b.ImagePath != nil {
+func (b Background) Paint(painter *Painter, size Size, destLayer draw.Image) {
+	if b.image != nil {
+		rect := image.Rectangle{
+			Max: image.Point{
+				X: size.width,
+				Y: size.height,
+			},
+		}
+		painter.drawImage(b.image, rect, destLayer, image.Point{})
 		return
 	}
 	if b.Color != nil {

@@ -27,6 +27,7 @@ type RenderEngine struct {
 
 func (r *RenderEngine) Render(component Component) {
 	r.rootComponent = component
+	component.Init()
 }
 
 func (r *RenderEngine) Draw() {
@@ -45,7 +46,7 @@ func (r *RenderEngine) HandleInput(in input.Input) {
 	if r.rootComponent == nil {
 		return
 	}
-	r.rootComponent.HandleInput(in)
+	r.rootComponent.HandleInput(in, Offset{})
 }
 
 func (r *RenderEngine) render() {
@@ -61,8 +62,9 @@ func (r *RenderEngine) render() {
 	r.compositeLayer = image.NewRGBA(image.Rectangle{
 		Max: image.Point{X: r.rootConstraints.maxWidth, Y: r.rootConstraints.maxHeight},
 	})
-	transparent := color.RGBA{R: 0, G: 0, B: 0, A: 0}
-	draw.Draw(r.compositeLayer, r.compositeLayer.Bounds(), &image.Uniform{C: transparent}, image.Point{}, draw.Src)
+
+	black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
+	draw.Draw(r.compositeLayer, r.compositeLayer.Bounds(), &image.Uniform{C: black}, image.Point{}, draw.Src)
 
 	r.rootComponent.Paint(r.painter, r.compositeLayer, Offset{})
 
@@ -72,6 +74,9 @@ func (r *RenderEngine) render() {
 }
 
 func (r *RenderEngine) draw() {
+	if r.compositeLayer == nil {
+		return
+	}
 	imageBound := r.compositeLayer.Bounds()
 	bound := graphics.Bound{
 		X:      0,
@@ -82,7 +87,7 @@ func (r *RenderEngine) draw() {
 	r.batch.DrawSprite(0, 0, 0, bound, 1)
 }
 
-func (r RenderEngine) generateLayout(component Component) {
+func (r *RenderEngine) generateLayout(component Component) {
 	applyConstraints(component, r.rootConstraints)
 }
 

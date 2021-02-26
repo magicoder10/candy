@@ -12,8 +12,8 @@ import (
 )
 
 func main() {
-	screenWidth := 1000
-	screenHeight := 1000
+	screenWidth := 1152
+	screenHeight := 830
 
 	ass, err := assets.LoadAssets("public")
 	if err != nil {
@@ -26,7 +26,12 @@ func main() {
 	rootConstraint := ui.NewScreenConstraint(screenWidth, screenHeight)
 
 	renderEngine := ui.NewRenderEngine(rootConstraint, &logger, &eb, &ass)
-	renderEngine.Render(newApp())
+
+	app, err := NewApp(&logger, ass)
+	if err != nil {
+		panic(err)
+	}
+	renderEngine.Render(app)
 
 	g := graphics.NewEbitenWindow(graphics.WindowConfig{
 		Width:  screenWidth,
@@ -35,7 +40,7 @@ func main() {
 	}, renderEngine, 24, &eb)
 	g.Init()
 
-	if err := ebiten.RunGame(&g); err != nil {
+	if err = ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
 }

@@ -4,35 +4,31 @@ import (
 	"math"
 )
 
-var _ layout = (*InlineLayout)(nil)
+var _ Layout = (*InlineLayout)(nil)
 
 type InlineLayout struct {
 	BoxLayout
 }
 
-func (b InlineLayout) applyConstraintsToChildren(parent Component, parentConstraints Constraints) {
+func (i InlineLayout) applyConstraintsToChildren(parent Component, parentConstraints Constraints) {
 	parentConstraints.maxHeight = math.MaxInt64
 
 	style := parent.getStyle()
-
 	if style.Width != nil {
 		parentConstraints.maxWidth = *style.Width
 	}
+	parent.setSize(Size{
+		width:  parentConstraints.maxWidth,
+		height: parentConstraints.maxHeight,
+	})
 
 	for _, child := range parent.getChildren() {
 		applyConstraints(child, parentConstraints)
 	}
 }
 
-func (b InlineLayout) computeParentSize(parent Component, parentConstraints Constraints) Size {
-	height := 0
+func (i InlineLayout) computeParentSize(parent Component, _ Constraints) Size {
 	children := parent.getChildren()
-	length := len(children)
-
-	if length > 0 {
-		childrenOffset := parent.getChildrenOffset()
-		height = childrenOffset[length-1].y + children[length-1].getSize().height
-	}
 	style := parent.getStyle()
 
 	width := 0.0
@@ -45,6 +41,5 @@ func (b InlineLayout) computeParentSize(parent Component, parentConstraints Cons
 	}
 	padding := parent.getStyle().GetPadding()
 	fullWidth := int(width) + padding.GetLeft() + padding.GetRight()
-	fullHeight := height + padding.GetBottom()
-	return Size{width: fullWidth, height: fullHeight}
+	return Size{width: fullWidth, height: getFullHeight(parent)}
 }

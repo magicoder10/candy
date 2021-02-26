@@ -53,16 +53,16 @@ func (e *EbitenWindow) Update() error {
 	return nil
 }
 
-func (e EbitenWindow) Draw(screen *ebiten.Image) {
+func (e *EbitenWindow) Draw(screen *ebiten.Image) {
 	e.sp.Draw()
 	e.ebiten.Render(screen)
 }
 
-func (e EbitenWindow) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
+func (e *EbitenWindow) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return e.windowConfig.Width, e.windowConfig.Height
 }
 
-func (e EbitenWindow) pollEvents() []input.Input {
+func (e *EbitenWindow) pollEvents() []input.Input {
 	inputs := make([]input.Input, 0)
 	if ebiten.IsKeyPressed(ebiten.KeyLeft) {
 		inputs = append(inputs, input.Input{
@@ -141,13 +141,13 @@ func (e EbitenWindow) pollEvents() []input.Input {
 	return inputs
 }
 
-func NewEbitenWindow(windowConfig WindowConfig, sp Sprite, framesPerSeconds int, ebiten *Ebiten) EbitenWindow {
+func NewEbitenWindow(windowConfig WindowConfig, sp Sprite, framesPerSeconds int, eb *Ebiten) *EbitenWindow {
 	nanoPerUpdate := time.Second.Nanoseconds() / int64(framesPerSeconds)
-	return EbitenWindow{
+	return &EbitenWindow{
 		sp:            sp,
 		nanoPerUpdate: nanoPerUpdate,
 		updateTime:    time.Duration(nanoPerUpdate),
 		windowConfig:  windowConfig,
-		ebiten:        ebiten,
+		ebiten:        eb,
 	}
 }
