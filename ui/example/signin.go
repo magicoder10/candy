@@ -43,7 +43,7 @@ func NewSignIn(
 						ui.NewButton(&ui.ButtonProps{
 							Text: ptr.String("Sign In with Github"),
 							OnClick: func() {
-								router.Navigate("/game", nil)
+								router.Navigate("/demo", nil)
 								fmt.Println("Sign In button clicked")
 							},
 						}, &ui.Style{
@@ -80,7 +80,7 @@ func NewSignIn(
 							Horizontal: ui.AlignHorizontalCenter.Ptr(),
 						},
 						Background: &ui.Background{
-							ImagePath: ptr.String("screen/signin.png"),
+							ImagePath: ptr.String("test/signin.png"),
 						},
 					},
 				),

@@ -40,7 +40,7 @@ func NewApp(logger *observability.Logger, assets assets.Assets) (*App, error) {
 	pubSub := pubsub.NewPubSub(logger)
 
 	routes := []ui.Route{
-		{Path: "/game", CreateFactory: func(props interface{}) ui.Component {
+		{Path: "/demo", CreateFactory: func(props interface{}) ui.Component {
 			return newDemo()
 		}},
 		{Path: "/", CreateFactory: func(props interface{}) ui.Component {
