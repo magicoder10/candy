@@ -26,11 +26,7 @@ func newDemo() *demo {
 						fmt.Println("Button clicked")
 					},
 				},
-				&ui.Style{
-					Background: &ui.Background{
-						ImagePath: ptr.String("test/image2.jpg"),
-					},
-				},
+				&demoButtonStyle,
 			),
 			ui.NewText(&ui.TextProps{Text: `
 I guess we could discuss the implications of the phrase "meant to be."
@@ -40,18 +36,7 @@ determination that "meant to be" is exactly as meaningless a phrase as it
 seems to be, and that none of us is actually meant to be doing anything at all. 
 But that's my existential underpants underpinnings showing. It's the way the 
 cookie crumbles. And now I want a cookie.
-`}, &ui.Style{FontStyle: &ui.FontStyle{
-				Family:     ptr.String("Source Code Pro"),
-				Weight:     ptr.String("ExtraLight"),
-				Italic:     ptr.Bool(false),
-				Size:       ptr.Int(20),
-				LineHeight: ptr.Int(24),
-				Color: &ui.Color{
-					Red:   255,
-					Green: 255,
-					Blue:  255,
-					Alpha: 255,
-				}}}),
+`}, &textStyle),
 			ui.NewImage(&ui.ImageProps{ImagePath: "test/image3.png"}, nil),
 			ui.NewImage(&ui.ImageProps{ImagePath: "test/image1.jpg"}, nil),
 		},
