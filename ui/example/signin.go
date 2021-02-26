@@ -46,43 +46,9 @@ func NewSignIn(
 								router.Navigate("/demo", nil)
 								fmt.Println("Sign In button clicked")
 							},
-						}, &ui.Style{
-							Alignment: &ui.Alignment{
-								Horizontal: ui.AlignHorizontalCenter.Ptr(),
-							},
-							FontStyle: &ui.FontStyle{
-								Weight:     ptr.String("medium"),
-								LineHeight: ptr.Int(20),
-								Size:       ptr.Int(20),
-							},
-							Margin: &ui.EdgeSpacing{
-								Top: ptr.Int(469),
-							},
-							Padding: &ui.EdgeSpacing{
-								All:    nil,
-								Top:    ptr.Int(12),
-								Bottom: ptr.Int(12),
-							},
-							Width: ptr.Int(356),
-							Background: &ui.Background{
-								Color: &ui.Color{
-									Red:   22,
-									Green: 107,
-									Blue:  107,
-									Alpha: 255,
-								},
-							},
-						}),
+						}, &signInButtonStyle),
 					},
-					&ui.Style{
-						Height: ptr.Int(Height),
-						Alignment: &ui.Alignment{
-							Horizontal: ui.AlignHorizontalCenter.Ptr(),
-						},
-						Background: &ui.Background{
-							ImagePath: ptr.String("test/signin.png"),
-						},
-					},
+					&boxStyle,
 				),
 			},
 		},
