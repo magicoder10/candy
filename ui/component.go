@@ -3,6 +3,7 @@ package ui
 import (
 	"image"
 	"image/draw"
+	"sort"
 	"time"
 
 	"candy/assets"
@@ -14,22 +15,33 @@ type UpdateDeps struct {
 	fonts  *Fonts
 }
 
+type changeDetector interface {
+	MarkChanged()
+	HasChanged() bool
+	ResetChangeDetection()
+}
+
+type lifeCycle interface {
+	Init()
+	Destroy()
+}
+
 type Component interface {
 	GetName() string
-	HandleInput(in input.Input)
-	handleInput(in input.Input, offset Offset)
 	Update(timeElapsed time.Duration, deps *UpdateDeps)
-	getLayout() layout
-	getChildren() []Component
+	Paint(painter *Painter, destLayer draw.Image, offset Offset)
 	ComputeLeafSize(constraints Constraints) Size
+	changeDetector
+	lifeCycle
+
+	HandleInput(in input.Input, screenOffset Offset)
+	getLayout() Layout
+	getChildren() []Component
 	getSize() Size
 	setSize(size Size)
 	getStyle() Style
 	getChildrenOffset() []Offset
 	setChildrenOffset(childrenOffsets []Offset)
-	HasChanged() bool
-	ResetChangeDetection()
-	Paint(painter *Painter, destLayer draw.Image, offset Offset)
 }
 
 type Size struct {
@@ -43,35 +55,75 @@ type Offset struct {
 	z int
 }
 
+func (o Offset) Add(relativeOffset Offset) Offset {
+	o.x += relativeOffset.x
+	o.y += relativeOffset.y
+	o.z += relativeOffset.z
+	return o
+}
+
 type SharedComponent struct {
-	name           string
-	layout         layout
-	style          *Style
+	Name           string
+	Layout         Layout
+	Style          *Style
 	size           Size
 	childrenOffset []Offset
-	children       []Component
+	contentLayer   draw.Image
+	Children       []Component
 	events         Events
 	hasChanged     bool
 }
 
-func (s *SharedComponent) HandleInput(in input.Input) {
-	s.handleInput(in, Offset{
-		x: 0,
-		y: 0,
-		z: 0,
+func (s *SharedComponent) Init() {
+	s.MarkChanged()
+	return
+}
+func (s *SharedComponent) Destroy() {}
+
+func (s *SharedComponent) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
+	if s.hasChanged || s.contentLayer == nil {
+		s.contentLayer = image.NewRGBA(image.Rectangle{
+			Max: image.Point{
+				X: s.size.width,
+				Y: s.size.height,
+			},
+		})
+		if s.Style != nil && s.Style.Background != nil {
+			s.Style.Background.Paint(painter, s.size, s.contentLayer)
+		}
+
+		sortedChildren := Children{
+			children:       s.Children,
+			childrenOffset: s.childrenOffset,
+		}
+		sort.Sort(&sortedChildren)
+
+		for index, child := range sortedChildren.children {
+			childOffset := sortedChildren.childrenOffset[index]
+			child.Paint(painter, s.contentLayer, childOffset)
+		}
+	}
+
+	painter.drawImage(s.contentLayer, image.Rectangle{
+		Min: image.Point{},
+		Max: s.contentLayer.Bounds().Max,
+	}, destLayer, image.Point{
+		X: offset.x,
+		Y: offset.y,
 	})
 }
 
-func (s *SharedComponent) handleInput(in input.Input, offset Offset) {
-	for index, child := range s.children {
-		child.handleInput(in, s.childrenOffset[index])
+func (s *SharedComponent) HandleInput(in input.Input, screenOffset Offset) {
+	for index, child := range s.Children {
+		relativeOffset := s.childrenOffset[index]
+		child.HandleInput(in, screenOffset.Add(relativeOffset))
 	}
 
 	switch in.Action {
 	case input.SinglePress:
 		switch in.Device {
 		case input.MouseLeftButton:
-			rect := s.BoundingBox(offset)
+			rect := s.BoundingBox(screenOffset)
 			if in.CursorPosition.In(rect) {
 				s.events.tryOnClick()
 			}
@@ -84,18 +136,22 @@ func (s *SharedComponent) BoundingBox(offset Offset) image.Rectangle {
 }
 
 func (s *SharedComponent) Update(timeElapsed time.Duration, deps *UpdateDeps) {
-	for _, child := range s.children {
+	for _, child := range s.Children {
 		child.Update(timeElapsed, deps)
 		if child.HasChanged() {
 			s.hasChanged = true
 		}
 	}
-	if s.style != nil {
-		s.style.Update(deps)
-		if s.style.hasChanged {
+	if s.Style != nil {
+		s.Style.Update(deps)
+		if s.Style.hasChanged {
 			s.hasChanged = true
 		}
 	}
+}
+
+func (s *SharedComponent) MarkChanged() {
+	s.hasChanged = true
 }
 
 func (s SharedComponent) HasChanged() bool {
@@ -103,22 +159,22 @@ func (s SharedComponent) HasChanged() bool {
 }
 
 func (s *SharedComponent) ResetChangeDetection() {
-	for _, child := range s.children {
+	for _, child := range s.Children {
 		child.ResetChangeDetection()
 	}
 
-	if s.style != nil {
-		s.style.ResetChangeDetection()
+	if s.Style != nil {
+		s.Style.ResetChangeDetection()
 	}
 	s.hasChanged = false
 }
 
 func (s SharedComponent) GetName() string {
-	return s.name
+	return s.Name
 }
 
 func (s SharedComponent) getChildren() []Component {
-	return s.children
+	return s.Children
 }
 
 func (s SharedComponent) getSize() Size {
@@ -129,8 +185,8 @@ func (s SharedComponent) getChildrenOffset() []Offset {
 	return s.childrenOffset
 }
 
-func (s SharedComponent) getLayout() layout {
-	return s.layout
+func (s SharedComponent) getLayout() Layout {
+	return s.Layout
 }
 
 func (s *SharedComponent) setSize(size Size) {
@@ -138,10 +194,10 @@ func (s *SharedComponent) setSize(size Size) {
 }
 
 func (s SharedComponent) getStyle() Style {
-	if s.style == nil {
+	if s.Style == nil {
 		return Style{}
 	}
-	return *s.style
+	return *s.Style
 }
 
 func (s *SharedComponent) setChildrenOffset(childrenOffsets []Offset) {

@@ -1,10 +1,9 @@
 package ui
 
 import (
+	"candy/ui/ptr"
 	"image"
 	"image/color"
-
-	"candy/ui/ptr"
 
 	"github.com/golang/freetype/truetype"
 )
@@ -16,6 +15,7 @@ type Style struct {
 	FontStyle  *FontStyle
 	Padding    *EdgeSpacing
 	Margin     *EdgeSpacing
+	Alignment  *Alignment
 	Background *Background
 	hasChanged bool
 }
@@ -46,12 +46,43 @@ func (s *Style) ResetChangeDetection() {
 	s.hasChanged = false
 }
 
+func (s Style) GetWidth() int {
+	if s.Width == nil {
+		return 0
+	} else {
+		return *s.Width
+	}
+}
+
+func (s Style) GetHeight() int {
+	if s.Height == nil {
+		return 0
+	} else {
+		return *s.Height
+	}
+}
+
 func (s Style) GetPadding() EdgeSpacing {
 	if s.Padding == nil {
 		return EdgeSpacing{}
 	} else {
 		return *s.Padding
 	}
+}
+
+func (s Style) GetMargin() EdgeSpacing {
+	if s.Margin == nil {
+		return EdgeSpacing{}
+	} else {
+		return *s.Margin
+	}
+}
+
+func (s Style) GetAlignment() Alignment {
+	if s.Alignment == nil {
+		return Alignment{}
+	}
+	return *s.Alignment
 }
 
 type FontStyle struct {

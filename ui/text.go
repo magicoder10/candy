@@ -31,8 +31,8 @@ func (t *Text) ComputeLeafSize(constraints Constraints) Size {
 	}
 
 	lineWidth := t.breakIntoLines(constraints)
-	bottomOffset := *t.style.FontStyle.Size / 5 * 2
-	height := len(t.lines)*(*t.style.FontStyle.LineHeight) + bottomOffset
+	bottomOffset := *t.Style.FontStyle.Size / 5 * 2
+	height := len(t.lines)*(*t.Style.FontStyle.LineHeight) + bottomOffset
 	return Size{width: lineWidth, height: height}
 }
 
@@ -42,8 +42,8 @@ func (t *Text) Update(_ time.Duration, deps *UpdateDeps) {
 		t.prevText = t.props.Text
 	}
 
-	t.style.Update(deps)
-	if t.style.hasChanged {
+	t.Style.Update(deps)
+	if t.Style.hasChanged {
 		t.hasChanged = true
 	}
 }
@@ -54,7 +54,7 @@ func (t *Text) breakIntoLines(constraints Constraints) int {
 
 	drawEnd := 0
 
-	fontFace := t.style.FontStyle.fontFace
+	fontFace := t.Style.FontStyle.fontFace
 
 	runes := []rune(strings.ReplaceAll(t.props.Text, "\n", ""))
 	line := make([]rune, 0)
@@ -103,12 +103,12 @@ func (t Text) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 	})
 
 	for index, line := range t.lines {
-		y := index * (*t.style.FontStyle.LineHeight)
+		y := index * (*t.Style.FontStyle.LineHeight)
 		destPoint := image.Point{X: 0, Y: y}
 		painter.drawString(
 			contentLayer, destPoint,
-			t.style.FontStyle.font, line,
-			*t.style.FontStyle.Size, *t.style.FontStyle.Color,
+			t.Style.FontStyle.font, line,
+			*t.Style.FontStyle.Size, *t.Style.FontStyle.Color,
 		)
 
 	}
@@ -128,8 +128,8 @@ func NewText(props *TextProps, style *Style) *Text {
 	}
 	return &Text{
 		SharedComponent: SharedComponent{
-			name:  "Text",
-			style: style,
+			Name:  "Text",
+			Style: style,
 		},
 		props: *props,
 	}

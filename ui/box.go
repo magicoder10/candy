@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"image"
-	"image/draw"
 	"sort"
 
 	"candy/ui/ptr"
@@ -22,52 +20,17 @@ func (b Box) GetName() string {
 	return "Box"
 }
 
-func (b Box) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
-	if !b.hasChanged {
-		return
-	}
-
-	contentLayer := image.NewRGBA(image.Rectangle{
-		Max: image.Point{
-			X: b.size.width,
-			Y: b.size.height,
-		},
-	})
-	if b.style.Background != nil {
-		b.style.Background.Paint(painter, contentLayer)
-	}
-
-	sortedChildren := Children{
-		children:       b.children,
-		childrenOffset: b.childrenOffset,
-	}
-	sort.Sort(&sortedChildren)
-
-	for index, child := range sortedChildren.children {
-		childOffset := sortedChildren.childrenOffset[index]
-		child.Paint(painter, contentLayer, childOffset)
-	}
-
-	painter.drawImage(contentLayer, image.Rectangle{
-		Min: image.Point{},
-		Max: contentLayer.Bounds().Max,
-	}, destLayer, image.Point{
-		X: offset.x,
-		Y: offset.y,
-	})
-}
-
 func (b Box) ComputeLeafSize(_ Constraints) Size {
-	padding := b.style.GetPadding()
+	padding := b.Style.GetPadding()
 
 	width := 0
-	if b.style.Width != nil {
-		width = *b.style.Width
+	if b.Style.Width != nil {
+		width = *b.Style.Width
 	}
 	width += padding.GetLeft() + padding.GetRight()
 	height := 0
-	if b.style.Height != nil {
-		height = *b.style.Height
+	if b.Style.Height != nil {
+		height = *b.Style.Height
 	}
 	height += padding.GetTop() + padding.GetBottom()
 	return Size{width: width, height: height}
@@ -90,10 +53,10 @@ func NewBox(pros *BoxProps, children []Component, style *Style) *Box {
 	}
 	return &Box{
 		SharedComponent: SharedComponent{
-			name:           "Box",
-			layout:         newLayout(*style.LayoutType),
-			style:          style,
-			children:       children,
+			Name:           "Box",
+			Layout:         NewLayout(*style.LayoutType),
+			Style:          style,
+			Children:       children,
 			childrenOffset: []Offset{},
 			events:         Events{onClick: pros.OnClick},
 		}}

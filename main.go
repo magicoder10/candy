@@ -66,7 +66,7 @@ func main() {
 	}, app, 24, &eb)
 	g.Init()
 
-	if err := ebiten.RunGame(&g); err != nil {
+	if err := ebiten.RunGame(g); err != nil {
 		log.Fatal(err)
 	}
 }

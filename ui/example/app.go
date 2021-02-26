@@ -1,56 +1,70 @@
 package main
 
 import (
-	"fmt"
+	"image/draw"
 
+	"candy/assets"
+	"candy/observability"
+	"candy/pubsub"
 	"candy/ui"
-	"candy/ui/ptr"
 )
 
-var _ ui.Component = (*app)(nil)
+const Height = 830
 
-type app struct {
-	*ui.Box
+var _ ui.Component = (*App)(nil)
+
+type App struct {
+	ui.SharedComponent
+	logger *observability.Logger
+	assets assets.Assets
+	router *ui.Router
+	pubSub *pubsub.PubSub
 }
 
-func newApp() *app {
-	return &app{ui.NewBox(
-		&ui.BoxProps{OnClick: func() {
-			fmt.Println("Box clicked")
+func (a *App) Paint(painter *ui.Painter, destLayer draw.Image, offset ui.Offset) {
+	if len(a.Children) > 0 {
+		a.Children[0].Paint(painter, destLayer, offset)
+	}
+}
+
+func (a *App) Init() {
+	a.pubSub.Start()
+	err := a.router.Navigate("/", nil)
+	if err != nil {
+		return
+	}
+}
+
+func NewApp(logger *observability.Logger, assets assets.Assets) (*App, error) {
+	rt := ui.NewRouter(logger)
+	pubSub := pubsub.NewPubSub(logger)
+
+	routes := []ui.Route{
+		{Path: "/demo", CreateFactory: func(props interface{}) ui.Component {
+			return newDemo()
 		}},
-		[]ui.Component{
-			ui.NewButton(
-				&ui.ButtonProps{
-					Text: ptr.String("Click"),
-					OnClick: func() {
-						fmt.Println("Button clicked")
-					},
-				},
-				nil,
-			),
-			ui.NewText(&ui.TextProps{Text: `
-I guess we could discuss the implications of the phrase "meant to be."
-That is if we wanted to drown ourselves in a sea of backwardly referential 
-semantics and other mumbo-jumbo. Maybe such a discussion would result in the 
-determination that "meant to be" is exactly as meaningless a phrase as it 
-seems to be, and that none of us is actually meant to be doing anything at all. 
-But that's my existential underpants underpinnings showing. It's the way the 
-cookie crumbles. And now I want a cookie.
-`}, &ui.Style{FontStyle: &ui.FontStyle{
-				Family:     ptr.String("Source Code Pro"),
-				Weight:     ptr.String("ExtraLight"),
-				Italic:     ptr.Bool(false),
-				Size:       ptr.Int(20),
-				LineHeight: ptr.Int(24),
-				Color: &ui.Color{
-					Red:   255,
-					Green: 255,
-					Blue:  255,
-					Alpha: 255,
-				}}}),
-			ui.NewImage(&ui.ImageProps{ImagePath: "test/image3.png"}, nil),
-			ui.NewImage(&ui.ImageProps{ImagePath: "test/image1.jpg"}, nil),
-			ui.NewImage(&ui.ImageProps{ImagePath: "test/image2.jpg"}, nil),
+		{Path: "/", CreateFactory: func(props interface{}) ui.Component {
+			return NewSignIn(rt, assets)
+		}},
+	}
+	err := rt.AddRoutes(routes)
+	if err != nil {
+		return nil, err
+	}
+	app := &App{
+		logger: logger,
+		assets: assets,
+		pubSub: pubSub,
+		router: rt,
+		SharedComponent: ui.SharedComponent{
+			Name:     "App",
+			Layout:   ui.NewLayout(ui.BoxLayoutType),
+			Children: []ui.Component{},
 		},
-		nil)}
+	}
+	rt.OnCurrentChange(func(curr ui.Component) {
+		app.Children = []ui.Component{curr}
+		app.MarkChanged()
+	})
+	return app, err
 }

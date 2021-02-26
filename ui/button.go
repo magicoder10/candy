@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"image/draw"
-
 	"candy/ui/ptr"
 )
 
@@ -23,10 +21,6 @@ var _ Component = (*Button)(nil)
 
 type Button struct {
 	SharedComponent
-}
-
-func (b *Button) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
-	b.children[0].Paint(painter, destLayer, offset)
 }
 
 func NewButton(props *ButtonProps, style *Style) *Button {
@@ -57,21 +51,44 @@ func NewButton(props *ButtonProps, style *Style) *Button {
 			Right:  ptr.Int(20),
 		}
 	}
+
+	textStyle := copyStyle(style)
+	textStyle.Padding = nil
+	textStyle.Background = nil
+
+	boxStyle := copyStyle(style)
+
+	style.Background = nil
+	style.Padding = nil
+
 	return &Button{
 		SharedComponent: SharedComponent{
-			name:   "Button",
-			layout: newLayout(InlineLayoutType),
-			children: []Component{
+			Name:   "Button",
+			Layout: NewLayout(InlineLayoutType),
+			Style:  style,
+			Children: []Component{
 				NewBox(
 					&BoxProps{
 						OnClick: props.OnClick,
 					}, []Component{
-						NewText(&TextProps{Text: props.getText()}, style),
+						NewText(&TextProps{Text: props.getText()}, textStyle),
 					},
-					style,
+					boxStyle,
 				),
 			},
 			childrenOffset: make([]Offset, 0),
 		},
 	}
+}
+
+func copyStyle(src *Style) *Style {
+	target := Style{}
+	target.FontStyle = src.FontStyle
+	target.LayoutType = src.LayoutType
+	target.Padding = src.Padding
+	target.Alignment = src.Alignment
+	target.Background = src.Background
+	target.Width = src.Width
+	target.Height = src.Height
+	return &target
 }
