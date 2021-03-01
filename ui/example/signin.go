@@ -31,6 +31,20 @@ func NewSignIn(
 	router *ui.Router,
 	assets assets.Assets,
 ) *SignIn {
+	// TML: Template Markup Language
+	//
+	// <SignIn layout="Box">
+	//   <Box style="boxStyle">
+	//     <Button
+	//		 style="signInButtonStyle"
+	//       Text="Sign In with Github"
+	//       OnClick="()=>{
+	//         router.Navigate('/demo', nil)
+	//         fmt.Println("Sign In button clicked")
+	//       }"
+	//	   />
+	//   </Box>
+	// </SignIn>
 	return &SignIn{
 		backgroundMusic: assets.GetAudio("screen/signin_bg.mp3"),
 		SharedComponent: ui.SharedComponent{
