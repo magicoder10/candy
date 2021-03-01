@@ -7,12 +7,14 @@ import (
 	"time"
 
 	"candy/assets"
+	"candy/graphics"
 	"candy/input"
 )
 
 type UpdateDeps struct {
-	assets *assets.Assets
-	fonts  *Fonts
+	assets   *assets.Assets
+	fonts    *Fonts
+	graphics graphics.Graphics
 }
 
 type changeDetector interface {
@@ -28,7 +30,7 @@ type lifeCycle interface {
 
 type Component interface {
 	GetName() string
-	Update(timeElapsed time.Duration, deps *UpdateDeps)
+	Update(timeElapsed time.Duration, screenOffset Offset, deps *UpdateDeps)
 	Paint(painter *Painter, destLayer draw.Image, offset Offset)
 	ComputeLeafSize(constraints Constraints) Size
 	changeDetector
@@ -63,15 +65,16 @@ func (o Offset) Add(relativeOffset Offset) Offset {
 }
 
 type SharedComponent struct {
-	Name           string
-	Layout         Layout
-	Style          *Style
-	size           Size
-	childrenOffset []Offset
-	contentLayer   draw.Image
-	Children       []Component
-	events         Events
-	hasChanged     bool
+	Name               string
+	Layout             Layout
+	Style              *Style
+	size               Size
+	childrenOffset     []Offset
+	contentLayer       draw.Image
+	Children           []Component
+	events             Events
+	hasChanged         bool
+	prevCursorPosition *image.Point
 }
 
 func (s *SharedComponent) Init() {
@@ -135,9 +138,14 @@ func (s *SharedComponent) BoundingBox(offset Offset) image.Rectangle {
 	return image.Rect(offset.x, offset.y, offset.x+s.size.width, offset.y+s.size.height)
 }
 
-func (s *SharedComponent) Update(timeElapsed time.Duration, deps *UpdateDeps) {
-	for _, child := range s.Children {
-		child.Update(timeElapsed, deps)
+func (s *SharedComponent) Update(timeElapsed time.Duration, screenOffset Offset, deps *UpdateDeps) {
+	if len(s.childrenOffset) != len(s.Children) {
+		return
+	}
+
+	for index, child := range s.Children {
+		relativeOffset := s.childrenOffset[index]
+		child.Update(timeElapsed, screenOffset.Add(relativeOffset), deps)
 		if child.HasChanged() {
 			s.hasChanged = true
 		}
@@ -148,6 +156,20 @@ func (s *SharedComponent) Update(timeElapsed time.Duration, deps *UpdateDeps) {
 			s.hasChanged = true
 		}
 	}
+
+	cursorPos := deps.graphics.GetCursorPosition()
+	if s.prevCursorPosition != nil && !cursorPos.Eq(*s.prevCursorPosition) {
+		s.events.tryOnMouseMove(cursorPos)
+
+		boundingBox := s.BoundingBox(screenOffset)
+		if s.prevCursorPosition.In(boundingBox) && !cursorPos.In(boundingBox) {
+			s.events.tryOnMouseLeave()
+		}
+		if !s.prevCursorPosition.In(boundingBox) && cursorPos.In(boundingBox) {
+			s.events.tryOnMouseEnter()
+		}
+	}
+	s.prevCursorPosition = &cursorPos
 }
 
 func (s *SharedComponent) MarkChanged() {

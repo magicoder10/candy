@@ -58,8 +58,8 @@ func (i Image) ComputeLeafSize(_ Constraints) Size {
 	}
 }
 
-func (i *Image) Update(timeElapsed time.Duration, deps *UpdateDeps) {
-	i.SharedComponent.Update(timeElapsed, deps)
+func (i *Image) Update(timeElapsed time.Duration, screenOffset Offset, deps *UpdateDeps) {
+	i.SharedComponent.Update(timeElapsed, screenOffset, deps)
 
 	if i.props.ImagePath != i.prevImagePath {
 		if len(i.props.ImagePath) > 0 {

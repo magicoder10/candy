@@ -1,6 +1,8 @@
 package ui
 
 import (
+	"fmt"
+
 	"candy/ui/ptr"
 )
 
@@ -70,6 +72,12 @@ func NewButton(props *ButtonProps, style *Style) *Button {
 				NewBox(
 					&BoxProps{
 						OnClick: props.OnClick,
+						OnMouseEnter: func() {
+							fmt.Println("Mouse enter")
+						},
+						OnMouseLeave: func() {
+							fmt.Println("Mouse leave")
+						},
 					}, []Component{
 						NewText(&TextProps{Text: props.getText()}, textStyle),
 					},

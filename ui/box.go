@@ -7,7 +7,9 @@ import (
 )
 
 type BoxProps struct {
-	OnClick onClickHandler
+	OnClick      onClickHandler
+	OnMouseEnter onMouseEnterHandler
+	OnMouseLeave onMouseLeaveHandler
 }
 
 var _ Component = (*Box)(nil)
@@ -36,9 +38,9 @@ func (b Box) ComputeLeafSize(_ Constraints) Size {
 	return Size{width: width, height: height}
 }
 
-func NewBox(pros *BoxProps, children []Component, style *Style) *Box {
-	if pros == nil {
-		pros = &BoxProps{}
+func NewBox(props *BoxProps, children []Component, style *Style) *Box {
+	if props == nil {
+		props = &BoxProps{}
 	}
 	if style == nil {
 		style = &Style{
@@ -58,7 +60,11 @@ func NewBox(pros *BoxProps, children []Component, style *Style) *Box {
 			Style:          style,
 			Children:       children,
 			childrenOffset: []Offset{},
-			events:         Events{onClick: pros.OnClick},
+			events: Events{
+				onClick:      props.OnClick,
+				onMouseEnter: props.OnMouseEnter,
+				onMouseLeave: props.OnMouseLeave,
+			},
 		}}
 }
 
