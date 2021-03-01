@@ -5,6 +5,29 @@ import (
 	"candy/ui/ptr"
 )
 
+// SL: Stylesheet Language
+//
+// signInButtonStyle {
+//   Alignment: {
+//	   Horizontal: center;
+//   }
+//   FontStyle: {
+//     Weight: medium;
+//	   LineHeight: 20px;
+//	   Size: 20px;
+//   }
+//   Margin: {
+//     Top: 469px;
+//   }
+//   Padding: {
+//     Top: 12px;
+//     Bottom: 12px;
+//   }
+//	 Width: 356px;
+//	 Background: {
+//     Color: rgba(22, 107, 107, 255);
+//	 }
+// }
 var signInButtonStyle = ui.Style{
 	Alignment: &ui.Alignment{
 		Horizontal: ui.AlignHorizontalCenter.Ptr(),
@@ -18,7 +41,6 @@ var signInButtonStyle = ui.Style{
 		Top: ptr.Int(469),
 	},
 	Padding: &ui.EdgeSpacing{
-		All:    nil,
 		Top:    ptr.Int(12),
 		Bottom: ptr.Int(12),
 	},
@@ -33,12 +55,30 @@ var signInButtonStyle = ui.Style{
 	},
 }
 
+// SL: Stylesheet Language
+//
+// demoButtonStyle {
+//  Background: {
+//	  ImagePath: "test/image2.jpg";
+//  }
+// }
 var demoButtonStyle = ui.Style{
 	Background: &ui.Background{
 		ImagePath: ptr.String("test/image2.jpg"),
 	},
 }
 
+// SL: Stylesheet Language
+//
+// boxStyle {
+//   Height: $height;
+//	 Alignment: {
+//     Horizontal: center;
+//	 }
+//   Background: {
+//	   ImagePath: "test/signin.png";
+//   }
+// }
 var boxStyle = ui.Style{
 	Height: ptr.Int(Height),
 	Alignment: &ui.Alignment{
@@ -49,10 +89,20 @@ var boxStyle = ui.Style{
 	},
 }
 
+// SL: Stylesheet Language
+//
+// boxStyle {
+//   FontStyle: {
+//     Family: "Source Code Pro";
+//     Weight: extraLight;
+//     Size: 20px;
+//     LineHeight: 24px;
+//     Color: rgba(255, 255, 255, 255);
+//   }
+// }
 var textStyle = ui.Style{FontStyle: &ui.FontStyle{
 	Family:     ptr.String("Source Code Pro"),
 	Weight:     ptr.String("ExtraLight"),
-	Italic:     ptr.Bool(false),
 	Size:       ptr.Int(20),
 	LineHeight: ptr.Int(24),
 	Color: &ui.Color{
