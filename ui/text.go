@@ -36,7 +36,7 @@ func (t *Text) ComputeLeafSize(constraints Constraints) Size {
 	return Size{width: lineWidth, height: height}
 }
 
-func (t *Text) Update(_ time.Duration, deps *UpdateDeps) {
+func (t *Text) Update(_ time.Duration, _ Offset, deps *UpdateDeps) {
 	if t.prevText != t.props.Text {
 		t.hasChanged = true
 		t.prevText = t.props.Text

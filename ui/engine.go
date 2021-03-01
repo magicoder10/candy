@@ -39,7 +39,7 @@ func (r *RenderEngine) Update(timeElapsed time.Duration) {
 	if r.rootComponent == nil {
 		return
 	}
-	r.rootComponent.Update(timeElapsed, r.updateDeps)
+	r.rootComponent.Update(timeElapsed, Offset{}, r.updateDeps)
 }
 
 func (r *RenderEngine) HandleInput(in input.Input) {
@@ -94,17 +94,18 @@ func (r *RenderEngine) generateLayout(component Component) {
 func NewRenderEngine(
 	rootConstraints Constraints,
 	logger *observability.Logger,
-	g graphics.Graphics,
+	gh graphics.Graphics,
 	assets *assets.Assets,
 ) *RenderEngine {
 	return &RenderEngine{
 		logger:          logger,
-		graphics:        g,
+		graphics:        gh,
 		painter:         &Painter{},
 		rootConstraints: rootConstraints,
 		updateDeps: &UpdateDeps{
-			assets: assets,
-			fonts:  NewFonts(),
+			assets:   assets,
+			fonts:    NewFonts(),
+			graphics: gh,
 		},
 	}
 }

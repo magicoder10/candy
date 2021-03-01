@@ -82,6 +82,11 @@ func (e *Ebiten) Render(screen *ebiten.Image) {
 	screen.DrawImage(e.buffer, nil)
 }
 
+func (e *Ebiten) GetCursorPosition() image.Point {
+	x, y := ebiten.CursorPosition()
+	return image.Point{X: x, Y: y}
+}
+
 func NewEbiten(reverseY bool) Ebiten {
 	return Ebiten{
 		texts:    make([]*ebitenText, 0),

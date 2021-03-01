@@ -33,6 +33,7 @@ type Graphics interface {
 	NewText(face font.Face, x int, y int, width int, height int, scale float64, alignment alignment) Text
 	StartNewBatch(spriteSheet image.Image) Batch
 	SetCursorVisible(isVisible bool)
+	GetCursorPosition() image.Point
 }
 
 type spriteDrawn struct {
