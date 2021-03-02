@@ -45,12 +45,14 @@ func (i Image) ComputeLeafSize(_ Constraints) Size {
 	}
 	imageBound := i.image.Bounds()
 	width := imageBound.Max.X - imageBound.Min.X
-	if i.Style.Width != nil {
-		width = *i.Style.Width
+
+	style := i.getStyle()
+	if style.Width != nil {
+		width = *style.Width
 	}
 	height := imageBound.Max.Y - imageBound.Min.Y
-	if i.Style.Height != nil {
-		height = *i.Style.Height
+	if style.Height != nil {
+		height = *style.Height
 	}
 	return Size{
 		width:  width,
@@ -69,23 +71,24 @@ func (i *Image) Update(timeElapsed time.Duration, screenOffset Offset, deps *Upd
 		i.prevImagePath = i.props.ImagePath
 	}
 
-	if i.Style.hasChanged {
+	if i.StatefulStyle.HasChanged() {
 		i.hasChanged = true
 	}
 }
 
-func NewImage(props *ImageProps, style *Style) *Image {
+func NewImage(props *ImageProps, statefulStyle *StatefulStyle) *Image {
 	if props == nil {
 		props = &ImageProps{}
 	}
-	if style == nil {
-		style = &Style{}
+	if statefulStyle == nil {
+		statefulStyle = NewStatefulStyle()
 	}
 	return &Image{
 		props: *props,
 		SharedComponent: SharedComponent{
-			Name:  "Image",
-			Style: style,
+			Name:          "Image",
+			States:        map[State]struct{}{},
+			StatefulStyle: statefulStyle,
 		},
 	}
 }

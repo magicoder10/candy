@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"image"
 	"image/draw"
 	"sort"
@@ -35,15 +36,28 @@ type Component interface {
 	ComputeLeafSize(constraints Constraints) Size
 	changeDetector
 	lifeCycle
-
 	HandleInput(in input.Input, screenOffset Offset)
 	getLayout() Layout
 	getChildren() []Component
 	getSize() Size
 	setSize(size Size)
-	getStyle() Style
+	getStyle() *Style
 	getChildrenOffset() []Offset
 	setChildrenOffset(childrenOffsets []Offset)
+}
+
+type State int
+
+const (
+	NormalState State = iota
+	HoverState
+	FocusState
+)
+
+var statePriority = []State{
+	NormalState,
+	HoverState,
+	FocusState,
 }
 
 type Size struct {
@@ -66,8 +80,9 @@ func (o Offset) Add(relativeOffset Offset) Offset {
 
 type SharedComponent struct {
 	Name               string
-	Layout             Layout
-	Style              *Style
+	States             map[State]struct{}
+	StatefulStyle      *StatefulStyle
+	style              *Style
 	size               Size
 	childrenOffset     []Offset
 	contentLayer       draw.Image
@@ -79,7 +94,11 @@ type SharedComponent struct {
 
 func (s *SharedComponent) Init() {
 	s.MarkChanged()
-	return
+	s.StatefulStyle.Init()
+	fmt.Println("+++++")
+	for _, child := range s.Children {
+		child.Init()
+	}
 }
 func (s *SharedComponent) Destroy() {}
 
@@ -91,8 +110,9 @@ func (s *SharedComponent) Paint(painter *Painter, destLayer draw.Image, offset O
 				Y: s.size.height,
 			},
 		})
-		if s.Style != nil && s.Style.Background != nil {
-			s.Style.Background.Paint(painter, s.size, s.contentLayer)
+		style := s.getStyle()
+		if style.Background != nil {
+			style.Background.Paint(painter, s.size, s.contentLayer)
 		}
 
 		sortedChildren := Children{
@@ -139,22 +159,21 @@ func (s *SharedComponent) BoundingBox(offset Offset) image.Rectangle {
 }
 
 func (s *SharedComponent) Update(timeElapsed time.Duration, screenOffset Offset, deps *UpdateDeps) {
-	if len(s.childrenOffset) != len(s.Children) {
-		return
-	}
-
 	for index, child := range s.Children {
-		relativeOffset := s.childrenOffset[index]
-		child.Update(timeElapsed, screenOffset.Add(relativeOffset), deps)
+		offset := screenOffset
+		if index < len(s.childrenOffset) {
+			relativeOffset := s.childrenOffset[index]
+			offset = screenOffset.Add(relativeOffset)
+		}
+		child.Update(timeElapsed, offset, deps)
 		if child.HasChanged() {
 			s.hasChanged = true
 		}
 	}
-	if s.Style != nil {
-		s.Style.Update(deps)
-		if s.Style.hasChanged {
-			s.hasChanged = true
-		}
+	style := s.getStyle()
+	style.Update(deps)
+	if s.StatefulStyle.HasChanged() {
+		s.hasChanged = true
 	}
 
 	cursorPos := deps.graphics.GetCursorPosition()
@@ -185,9 +204,7 @@ func (s *SharedComponent) ResetChangeDetection() {
 		child.ResetChangeDetection()
 	}
 
-	if s.Style != nil {
-		s.Style.ResetChangeDetection()
-	}
+	s.StatefulStyle.ResetChangeDetection()
 	s.hasChanged = false
 }
 
@@ -208,18 +225,25 @@ func (s SharedComponent) getChildrenOffset() []Offset {
 }
 
 func (s SharedComponent) getLayout() Layout {
-	return s.Layout
+	style := s.getStyle()
+	if style.LayoutType == nil {
+		return NewLayout(BoxLayoutType)
+	}
+	return NewLayout(*style.LayoutType)
 }
 
 func (s *SharedComponent) setSize(size Size) {
 	s.size = size
 }
 
-func (s SharedComponent) getStyle() Style {
-	if s.Style == nil {
-		return Style{}
+func (s *SharedComponent) getStyle() *Style {
+	if s.StatefulStyle.HasChanged() {
+		s.style = s.StatefulStyle.ComputeStyle(s.States)
 	}
-	return *s.Style
+	if s.style == nil {
+		return &Style{}
+	}
+	return s.style
 }
 
 func (s *SharedComponent) setChildrenOffset(childrenOffsets []Offset) {

@@ -30,9 +30,11 @@ func (t *Text) ComputeLeafSize(constraints Constraints) Size {
 		return t.size
 	}
 
-	lineWidth := t.breakIntoLines(constraints)
-	bottomOffset := *t.Style.FontStyle.Size / 5 * 2
-	height := len(t.lines)*(*t.Style.FontStyle.LineHeight) + bottomOffset
+	style := t.getStyle()
+	lineWidth := t.breakIntoLines(style, constraints)
+
+	bottomOffset := *style.FontStyle.Size / 5 * 2
+	height := len(t.lines)*(*style.FontStyle.LineHeight) + bottomOffset
 	return Size{width: lineWidth, height: height}
 }
 
@@ -42,19 +44,19 @@ func (t *Text) Update(_ time.Duration, _ Offset, deps *UpdateDeps) {
 		t.prevText = t.props.Text
 	}
 
-	t.Style.Update(deps)
-	if t.Style.hasChanged {
+	t.StatefulStyle.Update(deps)
+	if t.StatefulStyle.HasChanged() {
 		t.hasChanged = true
 	}
 }
 
-func (t *Text) breakIntoLines(constraints Constraints) int {
+func (t *Text) breakIntoLines(style *Style, constraints Constraints) int {
 	var prevRune *rune
 	maxLineWidth := 0
 
 	drawEnd := 0
 
-	fontFace := t.Style.FontStyle.fontFace
+	fontFace := style.GetFontStyle().fontFace
 
 	runes := []rune(strings.ReplaceAll(t.props.Text, "\n", ""))
 	line := make([]rune, 0)
@@ -102,13 +104,15 @@ func (t Text) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 		},
 	})
 
+	style := t.getStyle()
+
 	for index, line := range t.lines {
-		y := index * (*t.Style.FontStyle.LineHeight)
+		y := index * (*style.FontStyle.LineHeight)
 		destPoint := image.Point{X: 0, Y: y}
 		painter.drawString(
 			contentLayer, destPoint,
-			t.Style.FontStyle.font, line,
-			*t.Style.FontStyle.Size, *t.Style.FontStyle.Color,
+			style.FontStyle.font, line,
+			*style.FontStyle.Size, *style.FontStyle.Color,
 		)
 
 	}
@@ -119,17 +123,18 @@ func (t Text) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 	})
 }
 
-func NewText(props *TextProps, style *Style) *Text {
+func NewText(props *TextProps, statefulStyle *StatefulStyle) *Text {
 	if props == nil {
 		props = &TextProps{}
 	}
-	if style == nil {
-		style = &Style{}
+	if statefulStyle == nil {
+		statefulStyle = NewStatefulStyle()
 	}
 	return &Text{
 		SharedComponent: SharedComponent{
 			Name:  "Text",
-			Style: style,
+			States:        map[State]struct{}{},
+			StatefulStyle: statefulStyle,
 		},
 		props: *props,
 	}

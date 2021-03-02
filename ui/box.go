@@ -2,8 +2,6 @@ package ui
 
 import (
 	"sort"
-
-	"candy/ui/ptr"
 )
 
 type BoxProps struct {
@@ -23,32 +21,32 @@ func (b Box) GetName() string {
 }
 
 func (b Box) ComputeLeafSize(_ Constraints) Size {
-	padding := b.Style.GetPadding()
+	style := b.getStyle()
+	padding := style.GetPadding()
 
 	width := 0
-	if b.Style.Width != nil {
-		width = *b.Style.Width
+	if style.Width != nil {
+		width = *style.Width
 	}
 	width += padding.GetLeft() + padding.GetRight()
 	height := 0
-	if b.Style.Height != nil {
-		height = *b.Style.Height
+	if style.Height != nil {
+		height = *style.Height
 	}
 	height += padding.GetTop() + padding.GetBottom()
 	return Size{width: width, height: height}
 }
 
-func NewBox(props *BoxProps, children []Component, style *Style) *Box {
+func NewBox(props *BoxProps, children []Component, statefulStyle *StatefulStyle) *Box {
 	if props == nil {
 		props = &BoxProps{}
 	}
-	if style == nil {
-		style = &Style{
-			LayoutType: (*LayoutType)(ptr.Int(int(BoxLayoutType))),
-		}
+	if statefulStyle == nil {
+		statefulStyle = NewStatefulStyleWithLayout(BoxLayoutType)
 	}
-	if style.LayoutType == nil {
-		style.LayoutType = (*LayoutType)(ptr.Int(int(BoxLayoutType)))
+	normalStyle := statefulStyle.Styles[NormalState]
+	if normalStyle.LayoutType == nil {
+		normalStyle.LayoutType = LayoutTypePtr(BoxLayoutType)
 	}
 	if children == nil {
 		children = make([]Component, 0)
@@ -56,8 +54,8 @@ func NewBox(props *BoxProps, children []Component, style *Style) *Box {
 	return &Box{
 		SharedComponent: SharedComponent{
 			Name:           "Box",
-			Layout:         NewLayout(*style.LayoutType),
-			Style:          style,
+			States:        map[State]struct{}{},
+			StatefulStyle:  statefulStyle,
 			Children:       children,
 			childrenOffset: []Offset{},
 			events: Events{

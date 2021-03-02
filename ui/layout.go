@@ -1,5 +1,9 @@
 package ui
 
+import (
+	"candy/ui/ptr"
+)
+
 type Layout interface {
 	applyConstraintsToChildren(parent Component, parentConstraints Constraints)
 	computeParentSize(parent Component, parentConstraints Constraints) Size
@@ -21,6 +25,10 @@ func NewLayout(layoutType LayoutType) Layout {
 		return InlineLayout{}
 	}
 	return BoxLayout{}
+}
+
+func LayoutTypePtr(layoutType LayoutType) *LayoutType {
+	return (*LayoutType)(ptr.Int(int(layoutType)))
 }
 
 func getFullHeight(parent Component) int {
