@@ -26,20 +26,21 @@ type state interface {
 }
 
 type sharedState struct {
-	currStep       int
-	direction      direction.Direction
-	playerWidth    int
-	playerHeight   int
-	x              int
-	y              int
-	moveChecker    MoveChecker
-	regionOffset   regionOffset
-	powerLevel     int
-	stepSize       int
-	availableCandy int
-	candyLimit     int
-	character      character
-	pubSub         *pubsub.PubSub
+	currStep         int
+	direction        direction.Direction
+	playerWidth      int
+	playerHeight     int
+	x                int
+	y                int
+	dropCandyChecker DropCandyChecker
+	moveChecker      MoveChecker
+	regionOffset     regionOffset
+	powerLevel       int
+	stepSize         int
+	availableCandy   int
+	candyLimit       int
+	character        character
+	pubSub           *pubsub.PubSub
 }
 
 func (s sharedState) update(timeElapsed time.Duration) {
@@ -94,6 +95,9 @@ func (s *sharedState) incrementAvailableCandy() {
 
 func (s *sharedState) dropCandy() {
 	if s.availableCandy == 0 {
+		return
+	}
+	if !s.dropCandyChecker.CanDropCandy(s.x, s.y, s.playerWidth, s.playerHeight) {
 		return
 	}
 	s.availableCandy--

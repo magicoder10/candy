@@ -130,16 +130,17 @@ func NewGame(
 ) *Game {
 	gameMap := gamemap.NewMap(assets, g, pubSub, 0, backpackHeight)
 	playerMoveChecker := gameMap.GetPlayerMoveChecker()
+	dropCandyChecker := gamemap.NewDropCandyChecker(gameMap)
 	batch := g.StartNewBatch(assets.GetImage("sprite_sheet.png"))
 	players := []*player.Player{
-		player.NewPlayer(playerMoveChecker, player.BlackBoy, 0, backpackHeight, 1, 2, pubSub),
-		player.NewPlayer(playerMoveChecker, player.BlackGirl, 0, backpackHeight, 1, 3, pubSub),
-		player.NewPlayer(playerMoveChecker, player.BrownBoy, 0, backpackHeight, 1, 4, pubSub),
-		player.NewPlayer(playerMoveChecker, player.BrownGirl, 0, backpackHeight, 1, 5, pubSub),
-		player.NewPlayer(playerMoveChecker, player.YellowBoy, 0, backpackHeight, 1, 6, pubSub),
-		player.NewPlayer(playerMoveChecker, player.YellowGirl, 0, backpackHeight, 1, 7, pubSub),
-		player.NewPlayer(playerMoveChecker, player.OrangeBoy, 0, backpackHeight, 1, 8, pubSub),
-		player.NewPlayer(playerMoveChecker, player.OrangeGirl, 0, backpackHeight, 1, 9, pubSub),
+		player.NewPlayer(dropCandyChecker, playerMoveChecker, player.BlackBoy, 0, backpackHeight, 1, 2, pubSub),
+		player.NewPlayer(dropCandyChecker, playerMoveChecker, player.BlackGirl, 0, backpackHeight, 1, 3, pubSub),
+		player.NewPlayer(dropCandyChecker, playerMoveChecker, player.BrownBoy, 0, backpackHeight, 1, 4, pubSub),
+		player.NewPlayer(dropCandyChecker, playerMoveChecker, player.BrownGirl, 0, backpackHeight, 1, 5, pubSub),
+		player.NewPlayer(dropCandyChecker, playerMoveChecker, player.YellowBoy, 0, backpackHeight, 1, 6, pubSub),
+		player.NewPlayer(dropCandyChecker, playerMoveChecker, player.YellowGirl, 0, backpackHeight, 1, 7, pubSub),
+		player.NewPlayer(dropCandyChecker, playerMoveChecker, player.OrangeBoy, 0, backpackHeight, 1, 8, pubSub),
+		player.NewPlayer(dropCandyChecker, playerMoveChecker, player.OrangeGirl, 0, backpackHeight, 1, 9, pubSub),
 	}
 	backpack := game.NewBackPack(g, 0, 0)
 	rightSideBar := game.NewRightSideBar(gamemap.Width, 0, players)
