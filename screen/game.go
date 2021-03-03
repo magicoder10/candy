@@ -10,7 +10,6 @@ import (
 	"candy/game/gameitem"
 	"candy/game/gamemap"
 	"candy/game/player"
-	"candy/game/square"
 	"candy/graphics"
 	"candy/input"
 	"candy/observability"
@@ -64,7 +63,7 @@ func (g Game) HandleInput(in input.Input) {
 }
 
 func (g Game) dropCandy(payload pubsub.OnDropCandyPayload) {
-	playerCell := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
+	playerCell := g.gameMap.GetObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
 	g.gameMap.AddCandy(playerCell, candy.NewBuilder(payload.PowerLevel, g.currPlayerIndex, g.pubSub))
 }
 
@@ -92,18 +91,11 @@ func (g *Game) onCandyExploding(cell cell.Cell) {
 }
 
 func (g Game) getPlayerCell(player *player.Player) cell.Cell {
-	return g.getObjectCell(player.GetX(), player.GetY(), player.GetWidth(), player.GetHeight())
-}
-
-func (g Game) getObjectCell(objectX int, objectY int, objectWidth int, objectHeight int) cell.Cell {
-	return cell.GetCellLocatedAt(
-		objectX-g.gameMap.GetGridXOffset(), objectY-g.gameMap.GetGridYOffset(), objectWidth, objectHeight,
-		square.Width, square.Width,
-	)
+	return g.gameMap.GetObjectCell(player.GetX(), player.GetY(), player.GetWidth(), player.GetHeight())
 }
 
 func (g Game) onPlayerWalking(payload pubsub.OnPlayerWalkingPayload) {
-	c := g.getObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
+	c := g.gameMap.GetObjectCell(payload.X, payload.Y, payload.Width, payload.Height)
 	if g.gameMap.HasRevealedItem(c) {
 		gameItemType := g.gameMap.RetrieveGameItem(c)
 		item := gameitem.WithPubSub(gameItemType, g.pubSub)

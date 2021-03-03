@@ -48,7 +48,6 @@ type Map struct {
 	candies           *map[cell.Cell]*candy.Candy
 	brokenSquares     map[*candy.Candy][]brokenSquare
 	candyRangeCutter  candy.RangeCutter
-	dropCandyChecker  player.DropCandyChecker
 	playerMoveChecker player.MoveChecker
 	pubSub            *pubsub.PubSub
 }
