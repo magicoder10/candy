@@ -102,9 +102,11 @@ func (p Speed) GetType() Type {
 var _ GameItem = (*Candy)(nil)
 
 type Candy struct {
+	pubSub *pubsub.PubSub
 }
 
 func (p Candy) Use() {
+	p.pubSub.Publish(pubsub.IncreaseCandyLimit, 1)
 }
 
 func (p Candy) GetType() Type {
@@ -147,7 +149,9 @@ func WithPubSub(itemType Type, pubSub *pubsub.PubSub) GameItem {
 			pubSub: pubSub,
 		}
 	case CandyType:
-		return Candy{}
+		return Candy{
+			pubSub: pubSub,
+		}
 	case FirstAidKitType:
 		return FirstAidKit{}
 	}
