@@ -3,6 +3,8 @@
 
 # Build
 /build
+app
 
 # Performance diagnostic files
 /perf
+*.perf

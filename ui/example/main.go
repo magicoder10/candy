@@ -7,7 +7,7 @@ import (
 	"runtime/pprof"
 
 	"candy/assets"
-	"candy/graphics"
+	"candy/ui/graphics"
 	"candy/observability"
 	"candy/ui"
 
@@ -49,12 +49,13 @@ func main() {
 		panic(err)
 	}
 
-	eb := graphics.NewEbiten(false, false)
+	eb := graphics.NewEbiten(false)
+	ebitenCanvas := eb.NewCanvas(screenWidth, screenHeight)
 
 	logger := observability.NewLogger(observability.Debug)
 	rootConstraint := ui.NewScreenConstraint(screenWidth, screenHeight)
 
-	renderEngine := ui.NewRenderEngine(rootConstraint, &logger, &eb, &ass)
+	renderEngine := ui.NewRenderEngine(rootConstraint, &logger, &ass, &eb, ebitenCanvas)
 
 	app, err := NewApp(&logger, ass)
 	if err != nil {
@@ -66,7 +67,7 @@ func main() {
 		Width:  screenWidth,
 		Height: screenHeight,
 		Title:  "Example",
-	}, renderEngine, 24, &eb)
+	}, renderEngine, 24, ebitenCanvas)
 	g.Init()
 
 	if err = ebiten.RunGame(g); err != nil {

@@ -5,13 +5,13 @@ import (
 	"bytes"
 	"image"
 	"image/color"
-	"io/ioutil"
-	"sort"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 	"golang.org/x/image/font"
 )
+
+const rgbaPixelByteCount = 4
 
 var _ Graphics = (*Ebiten)(nil)
 
@@ -20,6 +20,11 @@ type Ebiten struct {
 	texts    []*ebitenText
 	batches  []*ebitenBatch
 	buffer   *ebiten.Image
+	imageBytes []byte
+}
+
+func (e *Ebiten) NewCanvas() *EbitenCanvas {
+	return &EbitenCanvas {}
 }
 
 func (e *Ebiten) initBuffer(width int, height int) {
@@ -98,95 +103,6 @@ func NewEbiten(autoClearScreen bool, reverseY bool) Ebiten {
 	}
 }
 
-type ebitenText struct {
-	buf         *bufio.ReadWriter
-	textContent string
-	fontFace    font.Face
-	graphics    *Ebiten
-	x           int
-	y           int
-	width       int
-	height      int
-	alignment   alignment
-}
-
-func (t *ebitenText) Write(p []byte) (int, error) {
-	return t.buf.Write(p)
-}
-
-func (t *ebitenText) Draw() {
-	_ = t.buf.Flush()
-	buf, _ := ioutil.ReadAll(t.buf)
-	t.textContent = string(buf)
-}
-
-var _ Batch = (*ebitenBatch)(nil)
-
-type ebitenBatch struct {
-	ebiten       *Ebiten
-	spriteSheet  *ebiten.Image
-	spritesDrawn []*spriteDrawn
-}
-
-func (e *ebitenBatch) renderBatch(target *ebiten.Image) {
-	sort.SliceStable(e.spritesDrawn, func(i, j int) bool {
-		if e.ebiten.reverseY {
-			return e.spritesDrawn[i].z > e.spritesDrawn[j].z
-		} else {
-			return e.spritesDrawn[i].z < e.spritesDrawn[j].z
-		}
-	})
-
-	spSheetHeight := e.spriteSheet.Bounds().Max.Y - e.spriteSheet.Bounds().Min.Y
-
-	for _, spriteDrawn := range e.spritesDrawn {
-
-		maxX := spriteDrawn.imageBound.X + spriteDrawn.imageBound.Width
-		maxY := spriteDrawn.imageBound.Y + spriteDrawn.imageBound.Height
-		bound := image.Rectangle{
-			Min: image.Point{
-				X: spriteDrawn.imageBound.X,
-				Y: spSheetHeight - maxY,
-			},
-			Max: image.Point{
-				X: maxX,
-				Y: spSheetHeight - spriteDrawn.imageBound.Y,
-			},
-		}
-
-		op := &ebiten.DrawImageOptions{}
-		op.GeoM.Scale(spriteDrawn.scale, spriteDrawn.scale)
-
-		scaledHeight := float64(spriteDrawn.imageBound.Height) * spriteDrawn.scale
-		adjustedY := adjustY(e.ebiten.reverseY, target, spriteDrawn.y, scaledHeight)
-		op.GeoM.Translate(
-			float64(spriteDrawn.x),
-			float64(adjustedY),
-		)
-
-		target.DrawImage(e.spriteSheet.SubImage(bound).(*ebiten.Image), op)
-	}
-	e.spritesDrawn = make([]*spriteDrawn, 0)
-}
-
-func (e *ebitenBatch) DrawSprite(x int, y int, z int, imageBound Bound, scale float64) {
-	e.spritesDrawn = append(e.spritesDrawn, &spriteDrawn{
-		x:          x,
-		y:          y,
-		z:          z,
-		imageBound: imageBound,
-		scale:      scale,
-	})
-}
-
-func newEbitenBatch(spriteSheet *ebiten.Image, ebiten *Ebiten) *ebitenBatch {
-	return &ebitenBatch{
-		spriteSheet:  spriteSheet,
-		spritesDrawn: make([]*spriteDrawn, 0),
-		ebiten:       ebiten,
-	}
-}
-
 func adjustY(shouldAdjust bool, screen *ebiten.Image, originalY int, scaledHeight float64) int {
 	if !shouldAdjust {
 		return originalY
@@ -194,4 +110,42 @@ func adjustY(shouldAdjust bool, screen *ebiten.Image, originalY int, scaledHeigh
 		screenHeight := screen.Bounds().Max.Y - screen.Bounds().Min.Y
 		return screenHeight - originalY - int(scaledHeight)
 	}
+}
+
+var _ Canvas = (*EbitenCanvas)(nil)
+
+type EbitenCanvas struct {
+	buf []byte
+}
+
+func (e *EbitenCanvas) OverrideContent(img image.Image) {
+	e.buf = toBytes(img)
+}
+
+func (e *EbitenCanvas) Render(img *ebiten.Image) {
+	if len(e.buf) == 0 {
+		return
+	}
+	img.ReplacePixels(e.buf)
+}
+
+func toBytes(img image.Image) []byte {
+	bound := img.Bounds()
+	width := bound.Max.X - bound.Min.X
+	height := bound.Max.Y - bound.Min.Y
+
+	buf := make([]byte, rgbaPixelByteCount*width*height)
+
+	for x := 0; x < width; x++ {
+		for y := 0; y < height; y++ {
+			index := (x*width + y) * rgbaPixelByteCount
+			setPixel(buf, index, img.At(x, y))
+		}
+	}
+	return buf
+}
+
+func setPixel(buf []byte, index int, c color.Color) {
+	r, g, b, a := c.RGBA()
+	buf[index], buf[index+1], buf[index+2], buf[index+2] = byte(r), byte(g), byte(b), byte(a)
 }

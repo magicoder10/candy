@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"candy/assets"
-	"candy/graphics"
+	"candy/ui/graphics"
 	"candy/input"
 )
 

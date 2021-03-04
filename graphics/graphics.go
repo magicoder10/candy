@@ -29,6 +29,10 @@ type Batch interface {
 	DrawSprite(x int, y int, z int, imageBound Bound, scale float64)
 }
 
+type Canvas interface {
+	OverrideContent(img image.Image)
+}
+
 type Graphics interface {
 	NewText(face font.Face, x int, y int, width int, height int, scale float64, alignment alignment) Text
 	StartNewBatch(spriteSheet image.Image) Batch

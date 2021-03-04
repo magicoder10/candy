@@ -76,9 +76,9 @@ func NewButton(props *ButtonProps, statefulStyle *StatefulStyle) *Button {
 							target.ResetState(HoverState)
 						},
 					}, []Component{
-						NewText(
-							&TextProps{Text: props.getText()},
-							textStatefulStyle),
+						//NewText(
+						//	&TextProps{Text: props.getText()},
+						//	textStatefulStyle),
 					},
 					boxStatefulStyle,
 				),
