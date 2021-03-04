@@ -1,9 +1,13 @@
 package ui
 
 import (
-	"candy/ui/ptr"
+	"encoding/json"
+	"fmt"
 	"image"
 	"image/color"
+	"reflect"
+
+	"candy/ui/ptr"
 
 	"github.com/golang/freetype/truetype"
 )
@@ -18,6 +22,89 @@ type Style struct {
 	Alignment  *Alignment
 	Background *Background
 	hasChanged bool
+}
+
+func (s Style) String() string {
+	buf, err := json.MarshalIndent(s, "", "  ")
+	if err != nil {
+		return ""
+	}
+	return fmt.Sprintf(string(buf))
+}
+
+type StatefulStyle struct {
+	Styles map[State]*Style
+}
+
+func (s *StatefulStyle) ComputeStyle(states map[State]struct{}) *Style {
+	// TODO
+	style := copyStyle(s.Styles[NormalState], true)
+	value := reflect.ValueOf(style).Elem()
+	for _, state := range statePriority {
+		if _, ok := states[state]; !ok {
+			continue
+		}
+		stateStyle, ok := s.Styles[state]
+		if !ok {
+			continue
+		}
+		stateValue := reflect.ValueOf(stateStyle).Elem()
+		styleType := stateValue.Type()
+
+		for i := 0; i < styleType.NumField(); i++ {
+			valueField := value.Field(i)
+			if !valueField.CanSet() {
+				continue
+			}
+			stateValueField := stateValue.Field(i)
+			if stateValueField.IsNil() {
+				continue
+			}
+			valueField.Set(stateValueField)
+		}
+	}
+	return style
+}
+
+func (s *StatefulStyle) ResetChangeDetection() {
+	for _, style := range s.Styles {
+		style.ResetChangeDetection()
+	}
+}
+
+func (s *StatefulStyle) Update(deps *UpdateDeps) {
+	for _, style := range s.Styles {
+		style.Update(deps)
+	}
+}
+
+func (s *StatefulStyle) HasChanged() bool {
+	for _, style := range s.Styles {
+		if style.hasChanged {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *StatefulStyle) Init() {
+	for _, style := range s.Styles {
+		style.hasChanged = true
+	}
+}
+
+func NewStatefulStyle() *StatefulStyle {
+	return &StatefulStyle{Styles: map[State]*Style{
+		NormalState: {},
+	}}
+}
+
+func NewStatefulStyleWithLayout(layoutType LayoutType) *StatefulStyle {
+	return &StatefulStyle{Styles: map[State]*Style{
+		NormalState: {
+			LayoutType: LayoutTypePtr(layoutType),
+		},
+	}}
 }
 
 func (s *Style) Update(deps *UpdateDeps) {
@@ -44,6 +131,13 @@ func (s *Style) ResetChangeDetection() {
 		s.FontStyle.ResetChangeDetection()
 	}
 	s.hasChanged = false
+}
+
+func (s Style) GetFontStyle() FontStyle {
+	if s.FontStyle == nil {
+		return FontStyle{}
+	}
+	return *s.FontStyle
 }
 
 func (s Style) GetWidth() int {
@@ -182,4 +276,27 @@ func highBits(num uint8) uint32 {
 
 func (c Color) toUniform() *image.Uniform {
 	return image.NewUniform(c)
+}
+
+func copyStatefulStyle(src *StatefulStyle, includeMargin bool) *StatefulStyle {
+	newStatefulStyle := NewStatefulStyle()
+	for state, style := range src.Styles {
+		newStatefulStyle.Styles[state] = copyStyle(style, includeMargin)
+	}
+	return newStatefulStyle
+}
+
+func copyStyle(src *Style, includeMargin bool) *Style {
+	target := Style{}
+	target.FontStyle = src.FontStyle
+	target.LayoutType = src.LayoutType
+	target.Padding = src.Padding
+	target.Alignment = src.Alignment
+	target.Background = src.Background
+	target.Width = src.Width
+	target.Height = src.Height
+	if includeMargin {
+		target.Margin = src.Margin
+	}
+	return &target
 }

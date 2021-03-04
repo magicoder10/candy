@@ -51,15 +51,18 @@ func NewApp(logger *observability.Logger, assets assets.Assets) (*App, error) {
 	if err != nil {
 		return nil, err
 	}
+	statefulStyle := ui.NewStatefulStyle()
+	statefulStyle.Styles[ui.NormalState].LayoutType = ui.LayoutTypePtr(ui.BoxLayoutType)
+
 	app := &App{
 		logger: logger,
 		assets: assets,
 		pubSub: pubSub,
 		router: rt,
 		SharedComponent: ui.SharedComponent{
-			Name:     "App",
-			Layout:   ui.NewLayout(ui.BoxLayoutType),
-			Children: []ui.Component{},
+			Name:          "App",
+			StatefulStyle: statefulStyle,
+			Children:      []ui.Component{},
 		},
 	}
 	rt.OnCurrentChange(func(curr ui.Component) {
