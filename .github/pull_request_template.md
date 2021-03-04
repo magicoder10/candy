@@ -4,7 +4,7 @@
 
 ### High Level
 
-### Detailed Explaination
+### Detailed Explanation
 
 ## New Behavior
 
@@ -12,4 +12,4 @@
 
 ### High Level
 
-### Detailed Explaination
+### Detailed Explanation
