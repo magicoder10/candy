@@ -113,7 +113,6 @@ func (g Game) increaseStepSize(amountIncrease int) {
 
 func (g Game) increaseCandyLimit(amountIncrease int) {
 	g.players[g.currPlayerIndex].IncreaseCandyLimit(amountIncrease)
-	g.players[g.currPlayerIndex].IncrementAvailableCandy()
 }
 
 func (g Game) incrementAvailableCandy(playerID int) {

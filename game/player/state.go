@@ -90,6 +90,7 @@ func (s *sharedState) increaseStepSize(amountIncrease int) {
 
 func (s *sharedState) increaseCandyLimit(amountIncrease int) {
 	s.candyLimit += amountIncrease
+	s.incrementAvailableCandy()
 }
 
 func (s *sharedState) incrementAvailableCandy() {
