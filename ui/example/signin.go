@@ -19,12 +19,12 @@ type SignIn struct {
 
 func (s SignIn) Init() {
 	s.SharedComponent.Init()
-	s.backgroundMusic.Play()
+	//s.backgroundMusic.Play()
 }
 
 func (s SignIn) Destroy() {
 	s.SharedComponent.Destroy()
-	s.backgroundMusic.Stop()
+	//s.backgroundMusic.Stop()
 }
 
 func NewSignIn(
@@ -48,21 +48,21 @@ func NewSignIn(
 	return &SignIn{
 		backgroundMusic: assets.GetAudio("screen/signin_bg.mp3"),
 		SharedComponent: ui.SharedComponent{
-			Name:   "SignIn",
-			Layout: ui.NewLayout(ui.BoxLayoutType),
+			Name:          "SignIn",
+			StatefulStyle: ui.NewStatefulStyleWithLayout(ui.BoxLayoutType),
 			Children: []ui.Component{
 				ui.NewBox(
 					nil,
 					[]ui.Component{
 						ui.NewButton(&ui.ButtonProps{
 							Text: ptr.String("Sign In with Github"),
-							OnClick: func() {
+							OnClick: func(target ui.Component) {
 								router.Navigate("/demo", nil)
 								fmt.Println("Sign In button clicked")
 							},
-						}, &signInButtonStyle),
+						}, &signInButtonStyles),
 					},
-					&boxStyle,
+					&boxStyles,
 				),
 			},
 		},

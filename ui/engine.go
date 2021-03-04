@@ -16,11 +16,12 @@ var _ graphics.Sprite = (*RenderEngine)(nil)
 
 type RenderEngine struct {
 	logger          *observability.Logger
-	graphics        graphics.Graphics
+	gh              graphics.Graphics
 	painter         *Painter
 	rootComponent   Component
 	rootConstraints Constraints
 	compositeLayer  draw.Image
+	bound           graphics.Bound
 	batch           graphics.Batch
 	updateDeps      *UpdateDeps
 }
@@ -31,6 +32,13 @@ func (r *RenderEngine) Render(component Component) {
 }
 
 func (r *RenderEngine) Draw() {
+	if r.rootComponent == nil {
+		return
+	}
+	if !r.rootComponent.HasChanged() {
+		return
+	}
+
 	r.render()
 	r.draw()
 }
@@ -50,41 +58,18 @@ func (r *RenderEngine) HandleInput(in input.Input) {
 }
 
 func (r *RenderEngine) render() {
-	if r.rootComponent == nil {
-		return
-	}
-	if !r.rootComponent.HasChanged() {
-		return
-	}
-
 	r.generateLayout(r.rootComponent)
-
-	r.compositeLayer = image.NewRGBA(image.Rectangle{
-		Max: image.Point{X: r.rootConstraints.maxWidth, Y: r.rootConstraints.maxHeight},
-	})
 
 	black := color.RGBA{R: 0, G: 0, B: 0, A: 255}
 	draw.Draw(r.compositeLayer, r.compositeLayer.Bounds(), &image.Uniform{C: black}, image.Point{}, draw.Src)
-
 	r.rootComponent.Paint(r.painter, r.compositeLayer, Offset{})
-
-	r.batch = r.graphics.StartNewBatch(r.compositeLayer)
+	r.batch = r.gh.StartNewBatch(r.compositeLayer)
 
 	r.rootComponent.ResetChangeDetection()
 }
 
 func (r *RenderEngine) draw() {
-	if r.compositeLayer == nil {
-		return
-	}
-	imageBound := r.compositeLayer.Bounds()
-	bound := graphics.Bound{
-		X:      0,
-		Y:      0,
-		Width:  imageBound.Max.X,
-		Height: imageBound.Max.Y,
-	}
-	r.batch.DrawSprite(0, 0, 0, bound, 1)
+	r.batch.DrawSprite(0, 0, 0, r.bound, 1)
 }
 
 func (r *RenderEngine) generateLayout(component Component) {
@@ -97,11 +82,23 @@ func NewRenderEngine(
 	gh graphics.Graphics,
 	assets *assets.Assets,
 ) *RenderEngine {
+	compositeLayer := image.NewRGBA(image.Rectangle{
+		Max: image.Point{X: rootConstraints.maxWidth, Y: rootConstraints.maxHeight},
+	})
+	imageBound := compositeLayer.Bounds()
+	bound := graphics.Bound{
+		X:      0,
+		Y:      0,
+		Width:  imageBound.Max.X,
+		Height: imageBound.Max.Y,
+	}
 	return &RenderEngine{
 		logger:          logger,
-		graphics:        gh,
+		gh:              gh,
 		painter:         &Painter{},
 		rootConstraints: rootConstraints,
+		compositeLayer:  compositeLayer,
+		bound:           bound,
 		updateDeps: &UpdateDeps{
 			assets:   assets,
 			fonts:    NewFonts(),

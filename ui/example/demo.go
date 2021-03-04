@@ -36,18 +36,18 @@ func newDemo() *demo {
 	//   <Image ImagePath="test/image1.jpg">
 	// </demo>
 	return &demo{ui.NewBox(
-		&ui.BoxProps{OnClick: func() {
+		&ui.BoxProps{OnClick: func(target ui.Component) {
 			fmt.Println("Box clicked")
 		}},
 		[]ui.Component{
 			ui.NewButton(
 				&ui.ButtonProps{
 					Text: ptr.String("Click"),
-					OnClick: func() {
+					OnClick: func(target ui.Component) {
 						fmt.Println("Button clicked")
 					},
 				},
-				&demoButtonStyle,
+				&demoButtonStyles,
 			),
 			ui.NewText(&ui.TextProps{Text: `
 I guess we could discuss the implications of the phrase "meant to be."
@@ -57,7 +57,7 @@ determination that "meant to be" is exactly as meaningless a phrase as it
 seems to be, and that none of us is actually meant to be doing anything at all. 
 But that's my existential underpants underpinnings showing. It's the way the 
 cookie crumbles. And now I want a cookie.
-`}, &textStyle),
+`}, &textStyles),
 			ui.NewImage(&ui.ImageProps{ImagePath: "test/image3.png"}, nil),
 			ui.NewImage(&ui.ImageProps{ImagePath: "test/image1.jpg"}, nil),
 		},

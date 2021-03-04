@@ -37,6 +37,7 @@ func (b BoxLayout) computeChildrenOffset(parent Component) []Offset {
 	offsets := make([]Offset, 0)
 	for _, child := range parent.getChildren() {
 		nextY += child.getStyle().GetMargin().GetTop()
+
 		offset := Offset{
 			x: aligner.AlignHorizontal(parent, child),
 			y: nextY,

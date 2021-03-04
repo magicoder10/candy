@@ -41,7 +41,7 @@ func main() {
 		return
 	}
 
-	eb := graphics.NewEbiten(true)
+	eb := graphics.NewEbiten(true, true)
 
 	ass, err := assets.LoadAssets("public")
 	if err != nil {
@@ -59,7 +59,7 @@ func main() {
 		panic(err)
 	}
 
-	g := graphics.NewEbitenWindow(graphics.WindowConfig{
+	g := graphics.NewEbitenWindow(&graphics.WindowConfig{
 		Width:  screen.Width,
 		Height: screen.Height,
 		Title:  "Candy",

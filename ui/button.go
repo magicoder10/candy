@@ -1,8 +1,6 @@
 package ui
 
 import (
-	"fmt"
-
 	"candy/ui/ptr"
 )
 
@@ -25,28 +23,27 @@ type Button struct {
 	SharedComponent
 }
 
-func NewButton(props *ButtonProps, style *Style) *Button {
+func NewButton(props *ButtonProps, statefulStyle *StatefulStyle) *Button {
 	if props == nil {
 		props = &ButtonProps{}
 	}
-	if style == nil {
-		style = &Style{
-			LayoutType: (*LayoutType)(ptr.Int(int(InlineLayoutType))),
-		}
+	if statefulStyle == nil {
+		statefulStyle = NewStatefulStyleWithLayout(InlineLayoutType)
 	}
-	if style.LayoutType == nil {
-		style.LayoutType = (*LayoutType)(ptr.Int(int(InlineLayoutType)))
+	normalStyle := statefulStyle.Styles[NormalState]
+	if normalStyle.LayoutType == nil {
+		normalStyle.LayoutType = LayoutTypePtr(InlineLayoutType)
 	}
-	if style.Background == nil {
-		style.Background = &Background{Color: &Color{
+	if normalStyle.Background == nil {
+		normalStyle.Background = &Background{Color: &Color{
 			Red:   87,
 			Green: 37,
 			Blue:  229,
 			Alpha: 255,
 		}}
 	}
-	if style.Padding == nil {
-		style.Padding = &EdgeSpacing{
+	if normalStyle.Padding == nil {
+		normalStyle.Padding = &EdgeSpacing{
 			Top:    ptr.Int(6),
 			Bottom: ptr.Int(6),
 			Left:   ptr.Int(20),
@@ -54,49 +51,39 @@ func NewButton(props *ButtonProps, style *Style) *Button {
 		}
 	}
 
-	textStyle := copyStyle(style)
-	textStyle.Padding = nil
-	textStyle.Background = nil
+	textStatefulStyle := copyStatefulStyle(statefulStyle, false)
+	textStatefulStyle.Styles[NormalState].Padding = nil
+	textStatefulStyle.Styles[NormalState].Background = nil
 
-	boxStyle := copyStyle(style)
+	boxStatefulStyle := copyStatefulStyle(statefulStyle, false)
 
-	style.Background = nil
-	style.Padding = nil
+	normalStyle.Background = nil
+	normalStyle.Padding = nil
 
 	return &Button{
 		SharedComponent: SharedComponent{
-			Name:   "Button",
-			Layout: NewLayout(InlineLayoutType),
-			Style:  style,
+			Name:          "Button",
+			StatefulStyle: statefulStyle,
+			States:        map[State]struct{}{},
 			Children: []Component{
 				NewBox(
 					&BoxProps{
 						OnClick: props.OnClick,
-						OnMouseEnter: func() {
-							fmt.Println("Mouse enter")
+						OnMouseEnter: func(target Component) {
+							target.SetState(HoverState)
 						},
-						OnMouseLeave: func() {
-							fmt.Println("Mouse leave")
+						OnMouseLeave: func(target Component) {
+							target.ResetState(HoverState)
 						},
 					}, []Component{
-						NewText(&TextProps{Text: props.getText()}, textStyle),
+						NewText(
+							&TextProps{Text: props.getText()},
+							textStatefulStyle),
 					},
-					boxStyle,
+					boxStatefulStyle,
 				),
 			},
 			childrenOffset: make([]Offset, 0),
 		},
 	}
-}
-
-func copyStyle(src *Style) *Style {
-	target := Style{}
-	target.FontStyle = src.FontStyle
-	target.LayoutType = src.LayoutType
-	target.Padding = src.Padding
-	target.Alignment = src.Alignment
-	target.Background = src.Background
-	target.Width = src.Width
-	target.Height = src.Height
-	return &target
 }
