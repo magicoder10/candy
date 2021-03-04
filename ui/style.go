@@ -38,8 +38,8 @@ type StatefulStyle struct {
 
 func (s *StatefulStyle) ComputeStyle(states map[State]struct{}) *Style {
 	// TODO
-	style := *copyStyle(s.Styles[NormalState])
-	value := reflect.ValueOf(style)
+	style := copyStyle(s.Styles[NormalState], true)
+	value := reflect.ValueOf(style).Elem()
 	for _, state := range statePriority {
 		if _, ok := states[state]; !ok {
 			continue
@@ -48,8 +48,8 @@ func (s *StatefulStyle) ComputeStyle(states map[State]struct{}) *Style {
 		if !ok {
 			continue
 		}
-		styleType := reflect.TypeOf(*stateStyle)
-		stateValue := reflect.ValueOf(*stateStyle)
+		stateValue := reflect.ValueOf(stateStyle).Elem()
+		styleType := stateValue.Type()
 
 		for i := 0; i < styleType.NumField(); i++ {
 			valueField := value.Field(i)
@@ -63,7 +63,7 @@ func (s *StatefulStyle) ComputeStyle(states map[State]struct{}) *Style {
 			valueField.Set(stateValueField)
 		}
 	}
-	return &style
+	return style
 }
 
 func (s *StatefulStyle) ResetChangeDetection() {
@@ -278,15 +278,15 @@ func (c Color) toUniform() *image.Uniform {
 	return image.NewUniform(c)
 }
 
-func copyStatefulStyle(src *StatefulStyle) *StatefulStyle {
+func copyStatefulStyle(src *StatefulStyle, includeMargin bool) *StatefulStyle {
 	newStatefulStyle := NewStatefulStyle()
 	for state, style := range src.Styles {
-		newStatefulStyle.Styles[state] = copyStyle(style)
+		newStatefulStyle.Styles[state] = copyStyle(style, includeMargin)
 	}
 	return newStatefulStyle
 }
 
-func copyStyle(src *Style) *Style {
+func copyStyle(src *Style, includeMargin bool) *Style {
 	target := Style{}
 	target.FontStyle = src.FontStyle
 	target.LayoutType = src.LayoutType
@@ -295,5 +295,8 @@ func copyStyle(src *Style) *Style {
 	target.Background = src.Background
 	target.Width = src.Width
 	target.Height = src.Height
+	if includeMargin {
+		target.Margin = src.Margin
+	}
 	return &target
 }

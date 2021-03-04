@@ -22,7 +22,7 @@ type EbitenWindow struct {
 	sp            Sprite
 	nanoPerUpdate int64
 	updateTime    time.Duration
-	windowConfig  WindowConfig
+	windowConfig  *WindowConfig
 	prevTime      time.Time
 	lag           int64
 	ebiten        *Ebiten
@@ -141,7 +141,7 @@ func (e *EbitenWindow) pollEvents() []input.Input {
 	return inputs
 }
 
-func NewEbitenWindow(windowConfig WindowConfig, sp Sprite, framesPerSeconds int, eb *Ebiten) *EbitenWindow {
+func NewEbitenWindow(windowConfig *WindowConfig, sp Sprite, framesPerSeconds int, eb *Ebiten) *EbitenWindow {
 	nanoPerUpdate := time.Second.Nanoseconds() / int64(framesPerSeconds)
 	return &EbitenWindow{
 		sp:            sp,

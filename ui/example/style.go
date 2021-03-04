@@ -42,6 +42,14 @@ var signInButtonStyles = ui.StatefulStyle{Styles: map[ui.State]*ui.Style{
 				Alpha: 255,
 			},
 		},
+		FontStyle: &ui.FontStyle{
+			Color: &ui.Color{
+				Red:   22,
+				Green: 107,
+				Blue:  107,
+				Alpha: 255,
+			},
+		},
 	},
 }}
 

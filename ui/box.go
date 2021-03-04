@@ -54,7 +54,7 @@ func NewBox(props *BoxProps, children []Component, statefulStyle *StatefulStyle)
 	return &Box{
 		SharedComponent: SharedComponent{
 			Name:           "Box",
-			States:        map[State]struct{}{},
+			States:         map[State]struct{}{},
 			StatefulStyle:  statefulStyle,
 			Children:       children,
 			childrenOffset: []Offset{},

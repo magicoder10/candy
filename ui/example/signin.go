@@ -34,7 +34,7 @@ func NewSignIn(
 	return &SignIn{
 		backgroundMusic: assets.GetAudio("screen/signin_bg.mp3"),
 		SharedComponent: ui.SharedComponent{
-			Name:   "SignIn",
+			Name:          "SignIn",
 			StatefulStyle: ui.NewStatefulStyleWithLayout(ui.BoxLayoutType),
 			Children: []ui.Component{
 				ui.NewBox(
@@ -42,7 +42,7 @@ func NewSignIn(
 					[]ui.Component{
 						ui.NewButton(&ui.ButtonProps{
 							Text: ptr.String("Sign In with Github"),
-							OnClick: func() {
+							OnClick: func(target ui.Component) {
 								router.Navigate("/demo", nil)
 								fmt.Println("Sign In button clicked")
 							},

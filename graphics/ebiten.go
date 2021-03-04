@@ -87,7 +87,10 @@ func (e *Ebiten) GetCursorPosition() image.Point {
 	return image.Point{X: x, Y: y}
 }
 
-func NewEbiten(reverseY bool) Ebiten {
+func NewEbiten(autoClearScreen bool, reverseY bool) Ebiten {
+	if autoClearScreen {
+		ebiten.SetScreenClearedEveryFrame(autoClearScreen)
+	}
 	return Ebiten{
 		texts:    make([]*ebitenText, 0),
 		batches:  make([]*ebitenBatch, 0),

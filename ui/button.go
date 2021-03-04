@@ -51,31 +51,29 @@ func NewButton(props *ButtonProps, statefulStyle *StatefulStyle) *Button {
 		}
 	}
 
-	textStatefulStyle := copyStatefulStyle(statefulStyle)
+	textStatefulStyle := copyStatefulStyle(statefulStyle, false)
 	textStatefulStyle.Styles[NormalState].Padding = nil
 	textStatefulStyle.Styles[NormalState].Background = nil
 
-	boxStatefulStyle := copyStatefulStyle(statefulStyle)
+	boxStatefulStyle := copyStatefulStyle(statefulStyle, false)
 
 	normalStyle.Background = nil
 	normalStyle.Padding = nil
-
-	states := map[State]struct{}{}
 
 	return &Button{
 		SharedComponent: SharedComponent{
 			Name:          "Button",
 			StatefulStyle: statefulStyle,
-			States:        states,
+			States:        map[State]struct{}{},
 			Children: []Component{
 				NewBox(
 					&BoxProps{
 						OnClick: props.OnClick,
-						OnMouseEnter: func() {
-							states[HoverState] = struct{}{}
+						OnMouseEnter: func(target Component) {
+							target.SetState(HoverState)
 						},
-						OnMouseLeave: func() {
-							delete(states, HoverState)
+						OnMouseLeave: func(target Component) {
+							target.ResetState(HoverState)
 						},
 					}, []Component{
 						NewText(

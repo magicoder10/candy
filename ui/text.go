@@ -26,13 +26,12 @@ type Text struct {
 }
 
 func (t *Text) ComputeLeafSize(constraints Constraints) Size {
-	if !t.hasChanged {
+	style := t.getStyle()
+	if !t.hasChanged || !style.GetFontStyle().hasChanged {
 		return t.size
 	}
 
-	style := t.getStyle()
 	lineWidth := t.breakIntoLines(style, constraints)
-
 	bottomOffset := *style.FontStyle.Size / 5 * 2
 	height := len(t.lines)*(*style.FontStyle.LineHeight) + bottomOffset
 	return Size{width: lineWidth, height: height}
@@ -92,32 +91,24 @@ func (t *Text) breakIntoLines(style *Style, constraints Constraints) int {
 	return maxLineWidth
 }
 
-func (t Text) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
-	if !t.hasChanged {
-		return
+func (t *Text) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
+	if t.hasChanged {
+		t.initContentLayer()
+
+		style := t.getStyle()
+		for index, line := range t.lines {
+			y := index * (*style.FontStyle.LineHeight)
+			destPoint := image.Point{X: 0, Y: y}
+			painter.drawString(
+				t.contentLayer, destPoint,
+				style.FontStyle.font, line,
+				*style.FontStyle.Size, *style.FontStyle.Color,
+			)
+
+		}
 	}
 
-	contentLayer := image.NewRGBA(image.Rectangle{
-		Max: image.Point{
-			X: t.SharedComponent.size.width,
-			Y: t.SharedComponent.size.height,
-		},
-	})
-
-	style := t.getStyle()
-
-	for index, line := range t.lines {
-		y := index * (*style.FontStyle.LineHeight)
-		destPoint := image.Point{X: 0, Y: y}
-		painter.drawString(
-			contentLayer, destPoint,
-			style.FontStyle.font, line,
-			*style.FontStyle.Size, *style.FontStyle.Color,
-		)
-
-	}
-
-	painter.drawImage(contentLayer, contentLayer.Bounds(), destLayer, image.Point{
+	painter.drawImage(t.contentLayer, t.contentLayer.Bounds(), destLayer, image.Point{
 		X: offset.x,
 		Y: offset.y,
 	})
@@ -132,7 +123,7 @@ func NewText(props *TextProps, statefulStyle *StatefulStyle) *Text {
 	}
 	return &Text{
 		SharedComponent: SharedComponent{
-			Name:  "Text",
+			Name:          "Text",
 			States:        map[State]struct{}{},
 			StatefulStyle: statefulStyle,
 		},

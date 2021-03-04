@@ -23,17 +23,15 @@ func (i *Image) Paint(painter *Painter, destLayer draw.Image, offset Offset) {
 	if i.image == nil {
 		return
 	}
-	contentLayer := image.NewRGBA(image.Rectangle{
-		Max: image.Point{
-			X: i.SharedComponent.size.width,
-			Y: i.SharedComponent.size.height,
-		},
-	})
-	painter.drawImage(i.image, i.image.Bounds(), contentLayer, image.Point{
-		X: 0,
-		Y: 0,
-	})
-	painter.drawImage(contentLayer, contentLayer.Bounds(), destLayer, image.Point{
+	if i.hasChanged {
+		i.initContentLayer()
+		painter.drawImage(i.image, i.image.Bounds(), i.contentLayer, image.Point{
+			X: 0,
+			Y: 0,
+		})
+	}
+
+	painter.drawImage(i.contentLayer, i.contentLayer.Bounds(), destLayer, image.Point{
 		X: offset.x,
 		Y: offset.y,
 	})

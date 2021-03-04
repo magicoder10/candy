@@ -15,14 +15,14 @@ type demo struct {
 
 func newDemo() *demo {
 	return &demo{ui.NewBox(
-		&ui.BoxProps{OnClick: func() {
+		&ui.BoxProps{OnClick: func(target ui.Component) {
 			fmt.Println("Box clicked")
 		}},
 		[]ui.Component{
 			ui.NewButton(
 				&ui.ButtonProps{
 					Text: ptr.String("Click"),
-					OnClick: func() {
+					OnClick: func(target ui.Component) {
 						fmt.Println("Button clicked")
 					},
 				},
