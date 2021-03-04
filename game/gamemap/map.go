@@ -203,14 +203,6 @@ func randomGameItem() gameitem.Type {
 	return gameitem.Types[index]
 }
 
-func (m Map) GetGridXOffset() int {
-	return m.gridXOffset
-}
-
-func (m Map) GetGridYOffset() int {
-	return m.gridYOffset
-}
-
 func (m Map) HasRevealedItem(c cell.Cell) bool {
 	if c.Row >= len(*m.grid) || (len(*m.grid) > 0 && c.Col >= len((*m.grid)[0])) {
 		return false
