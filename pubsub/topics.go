@@ -8,6 +8,7 @@ const (
 	OnPlayerWalking
 	IncreasePlayerPower
 	IncreasePlayerSpeed
+	IncreaseCandyLimit
 	OnDropCandy
 )
 

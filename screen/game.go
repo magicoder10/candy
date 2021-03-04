@@ -111,6 +111,10 @@ func (g Game) increaseStepSize(amountIncrease int) {
 	g.players[g.currPlayerIndex].IncreaseStepSize(amountIncrease)
 }
 
+func (g Game) increaseCandyLimit(amountIncrease int) {
+	g.players[g.currPlayerIndex].IncreaseCandyLimit(amountIncrease)
+}
+
 func (g Game) incrementAvailableCandy(playerID int) {
 	g.players[playerID].IncrementAvailableCandy()
 }
@@ -169,6 +173,10 @@ func NewGame(
 	pubSub.Subscribe(pubsub.IncreasePlayerSpeed, func(payload interface{}) {
 		stepSizeDelta := payload.(int)
 		gm.increaseStepSize(stepSizeDelta)
+	})
+	pubSub.Subscribe(pubsub.IncreaseCandyLimit, func(payload interface{}) {
+		candyLimitDelta := payload.(int)
+		gm.increaseCandyLimit(candyLimitDelta)
 	})
 	pubSub.Subscribe(pubsub.OnCandyStartExploding, func(payload interface{}) {
 		playerID := payload.(int)

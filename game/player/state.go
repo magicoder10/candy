@@ -22,6 +22,7 @@ type state interface {
 	increasePowerLevel(amountIncrease int)
 	increaseStepSize(amountIncrease int)
 	incrementAvailableCandy()
+	increaseCandyLimit(amountIncrease int)
 	isNormal() bool
 }
 
@@ -85,6 +86,11 @@ func (s *sharedState) increasePowerLevel(amountIncrease int) {
 
 func (s *sharedState) increaseStepSize(amountIncrease int) {
 	s.stepSize += amountIncrease
+}
+
+func (s *sharedState) increaseCandyLimit(amountIncrease int) {
+	s.candyLimit += amountIncrease
+	s.incrementAvailableCandy()
 }
 
 func (s *sharedState) incrementAvailableCandy() {
