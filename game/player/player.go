@@ -107,6 +107,7 @@ func (p *Player) IncrementAvailableCandy() {
 }
 
 func NewPlayer(
+	dropCandyChecker DropCandyChecker,
 	moveChecker MoveChecker,
 	character character,
 	gridX int,
@@ -122,7 +123,8 @@ func NewPlayer(
 		},
 		character: character,
 		state: newStandingStateOnSquare(
-			moveChecker, bodyWidth, feetLength,
+			dropCandyChecker, moveChecker,
+			bodyWidth, feetLength,
 			gridX, gridY,
 			row, col,
 			regionOffset{
