@@ -19,12 +19,13 @@ type walkingState struct {
 	lag int64
 }
 
-func (w *walkingState) update(timeElapsed time.Duration) {
+func (w *walkingState) update(timeElapsed time.Duration) state {
 	w.lag += timeElapsed.Nanoseconds()
 	steps := int(w.lag / nanoPerStep)
 	w.sharedState.currStep = nextStep(w.sharedState.currStep, steps)
 
 	w.lag %= nanoPerStep
+	return w
 }
 
 func (w walkingState) handleInput(in input.Input) state {

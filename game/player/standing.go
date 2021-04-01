@@ -5,6 +5,7 @@ import (
 	"candy/game/square"
 	"candy/input"
 	"candy/pubsub"
+	"time"
 )
 
 var _ state = (*standingState)(nil)
@@ -13,7 +14,11 @@ type standingState struct {
 	*sharedState
 }
 
-func (s standingState) handleInput(in input.Input) state {
+func (s *standingState) update(timeElapsed time.Duration) state {
+	return s
+}
+
+func (s *standingState) handleInput(in input.Input) state {
 	switch in.Action {
 	case input.Press:
 		switch in.Device {
@@ -44,8 +49,8 @@ func newStandingStateOnSquare(
 	regionOffset regionOffset,
 	character character,
 	pubSub *pubsub.PubSub,
-) standingState {
-	return standingState{
+) *standingState {
+	return &standingState{
 		&sharedState{
 			dropCandyChecker: dropCandyChecker,
 			moveChecker:      moveChecker,
@@ -62,6 +67,7 @@ func newStandingStateOnSquare(
 			availableCandy:   character.initialCandyLimit,
 			character:        character,
 			pubSub:           pubSub,
+			showMarker:       true,
 		},
 	}
 }
