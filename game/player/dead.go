@@ -8,7 +8,7 @@ import (
 )
 
 var _ state = (*deadState)(nil)
-var TombstoneImageDuration = (500 * time.Millisecond).Nanoseconds()
+var TombstoneImageDuration = (3 * time.Second).Nanoseconds()
 
 type deadState struct {
 	*sharedState
