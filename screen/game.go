@@ -181,7 +181,7 @@ func NewGame(
 	pubSub.Subscribe(pubsub.OnCandyStartExploding, func(payload interface{}) {
 		playerID := payload.(int)
 		gm.incrementAvailableCandy(playerID)
-
 	})
+
 	return &gm
 }

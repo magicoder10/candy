@@ -46,7 +46,9 @@ func (p Player) Draw(batch graphics.Batch) {
 		// TODO: player.state.getHeight() should rename to getDepth()
 		// TODO: square.Width need to be replaced with new getHeight()
 		markerY := p.state.getY() + square.Width + marker.YOffset
-		p.marker.Draw(batch, markerX, markerY, p.state.getY()+jellyZOffset-1)
+		if p.state.shouldShowMarker() {
+			p.marker.Draw(batch, markerX, markerY, p.state.getY()+jellyZOffset-1)
+		}
 	}
 }
 
@@ -58,8 +60,8 @@ func (p *Player) HandleInput(in input.Input) {
 	p.state = p.state.handleInput(in)
 }
 
-func (p Player) Update(timeElapsed time.Duration) {
-	p.state.update(timeElapsed)
+func (p *Player) Update(timeElapsed time.Duration) {
+	p.state = p.state.update(timeElapsed)
 	if p.marker != nil {
 		p.marker.Update(timeElapsed)
 	}

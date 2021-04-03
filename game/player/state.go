@@ -12,7 +12,7 @@ import (
 
 type state interface {
 	handleInput(in input.Input) state
-	update(timeElapsed time.Duration)
+	update(timeElapsed time.Duration) state
 	draw(batch graphics.Batch)
 	trapped() state
 	getX() int
@@ -24,6 +24,7 @@ type state interface {
 	incrementAvailableCandy()
 	increaseCandyLimit(amountIncrease int)
 	isNormal() bool
+	shouldShowMarker() bool
 }
 
 type sharedState struct {
@@ -33,6 +34,7 @@ type sharedState struct {
 	playerHeight     int
 	x                int
 	y                int
+	remainingTime    time.Duration
 	dropCandyChecker DropCandyChecker
 	moveChecker      MoveChecker
 	regionOffset     regionOffset
@@ -42,10 +44,7 @@ type sharedState struct {
 	candyLimit       int
 	character        character
 	pubSub           *pubsub.PubSub
-}
-
-func (s sharedState) update(timeElapsed time.Duration) {
-	return
+	showMarker       bool
 }
 
 func (s sharedState) isNormal() bool {
@@ -97,6 +96,10 @@ func (s *sharedState) incrementAvailableCandy() {
 	if s.availableCandy < s.candyLimit {
 		s.availableCandy++
 	}
+}
+
+func (s *sharedState) shouldShowMarker() bool {
+	return s.showMarker
 }
 
 func (s *sharedState) dropCandy() {
