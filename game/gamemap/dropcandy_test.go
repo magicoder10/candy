@@ -46,5 +46,4 @@ func TestDropCandyChecker_CanDropCandy(t *testing.T) {
 			assert.Equal(t, testCase.expectedCanDropCandy, gotCanDropCandyCheck)
 		})
 	}
-
 }
